@@ -3,14 +3,19 @@ import { Inter } from 'next/font/google';
 import '../styles/globals.css';
 import { Navbar } from '@/components/navbar';
 import { FooterLegal } from '@/components/footer-legal';
+import {
+  pageMetadata,
+  generatePersonSchema,
+  generateOrganizationSchema,
+} from '@/lib/seo';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  preload: true,
+});
 
-export const metadata: Metadata = {
-  title: 'Serbyn.pro - AI/ML Engineering Portfolio',
-  description:
-    'Professional portfolio of Vitalii Serbyn - Senior AI/ML Engineer',
-};
+export const metadata: Metadata = pageMetadata.home();
 
 export default function RootLayout({
   children,
@@ -19,6 +24,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(generatePersonSchema()),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(generateOrganizationSchema()),
+          }}
+        />
+      </head>
       <body className={inter.className}>
         <a
           href="#main"
