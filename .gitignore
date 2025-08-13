@@ -137,3 +137,133 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Security-sensitive files
+*.pem
+*.key
+*.cert
+*.crt
+*.p12
+*.pfx
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.staging
+.env.production
+.env.development
+.env.test
+.secrets
+secrets.json
+config/secrets.js
+config/secrets.ts
+
+# API keys and tokens
+**/keys/
+**/credentials/
+**/secrets/
+**/*secret*
+**/*apikey*
+**/*token*
+**/*password*
+**/auth-config.json
+**/service-account*.json
+.gcp-credentials.json
+aws-credentials
+.aws/
+.credentials
+.netrc
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+database.json
+
+# Backup files
+*.backup
+*.bak
+*.tmp
+*.temp
+*~
+
+# IDE and Editor files
+.vscode/settings.json
+.vscode/launch.json
+.vscode/tasks.json
+.vscode/extensions.json
+.vscode/.ropeproject
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+*.sublime-*
+.history/
+.metadata
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Runtime and temporary files
+pids
+*.pid
+*.seed
+*.pid.lock
+.tmp/
+temp/
+*.tmp.*
+*.lock
+
+# Build and distribution
+dist/
+build/
+release/
+lib-esm/
+lib-cjs/
+*.tgz
+*.tar.gz
+
+# Testing
+coverage/
+.nyc_output
+junit.xml
+test-results/
+playwright-report/
+test-results.xml
+
+# Logs and debugging
+*.log*
+logs/
+debug.log
+error.log
+access.log
+combined.log
+
+# Package managers
+.pnpm-debug.log
+.yarn-error.log
+.yarn-integrity
+yarn.lock.backup
+package-lock.json.backup
+
+# CI/CD sensitive files
+.github/workflows/*secret*
+.github/workflows/*key*
+.github/workflows/*token*
+.circleci/config.yml.backup
+.travis.yml.backup
+
+# Documentation that might contain sensitive info
+NOTES.md
+TODO.private.md
+PRIVATE.md
+SECRETS.md
