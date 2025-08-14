@@ -169,8 +169,8 @@ export default function TermsPage() {
                 <div>
                   <h3 className="font-semibold mb-2">Professional Indemnity</h3>
                   <p className="text-sm">
-                    We operate with standard business practices
-                    to cover errors and omissions in our professional services.
+                    We operate with standard business practices to cover errors
+                    and omissions in our professional services.
                   </p>
                 </div>
                 <div>

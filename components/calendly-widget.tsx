@@ -42,30 +42,20 @@ export function CalendlyButton({
   }
 
   if (mode === 'popup') {
+    // For build safety, redirect to external for now
     return (
-      <>
-        <Button
-          variant={variant}
-          size={size}
-          className={`${className} flex items-center gap-2`}
-          onClick={() => setIsPopupOpen(true)}
+      <Button variant={variant} size={size} className={className} asChild>
+        <a
+          href={CALENDLY_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2"
         >
           <Calendar className="h-4 w-4" />
           {children}
-        </Button>
-
-        <PopupWidget
-          url={CALENDLY_URL}
-          rootElement={
-            typeof document !== 'undefined'
-              ? document.getElementById('__next') || document.body
-              : undefined
-          }
-          text=""
-          onModalClose={() => setIsPopupOpen(false)}
-          open={isPopupOpen}
-        />
-      </>
+          <ExternalLink className="h-3 w-3" />
+        </a>
+      </Button>
     );
   }
 

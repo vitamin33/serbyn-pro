@@ -78,8 +78,7 @@ export function FooterLegal() {
                 </Link>
               </nav>
             </div>
-            <div className="text-sm text-gray-600">
-            </div>
+            <div className="text-sm text-gray-600"></div>
           </div>
         </div>
 
