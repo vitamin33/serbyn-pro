@@ -90,7 +90,7 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <button className="btn btn-secondary">
-                <a href="/case-studies">View All Case Studies</a>
+                <a href="/about">View Experience</a>
               </button>
               <button className="btn btn-primary">
                 <a href="#contact">Discuss Your Project</a>

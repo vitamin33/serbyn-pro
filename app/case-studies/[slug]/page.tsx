@@ -15,18 +15,11 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, ExternalLink } from 'lucide-react';
 import achievementsData from '@/data/achievements.json';
 
-// Generate static params for all case studies
+// Generate static params for all case studies - temporarily disabled for deployment
 export async function generateStaticParams() {
-  try {
-    const caseStudies = getAllCaseStudies();
-
-    return caseStudies.map(study => ({
-      slug: study.slug,
-    }));
-  } catch (error) {
-    console.warn('Error generating static params:', error);
-    return [];
-  }
+  // Return empty array to skip case study page generation during build
+  // This allows main portfolio to deploy while case studies are being fixed
+  return [];
 }
 
 // Generate metadata for each case study
