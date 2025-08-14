@@ -55,15 +55,16 @@ export default function AboutPage() {
           <h1 className="text-4xl font-bold tracking-tight mb-6">About</h1>
           <div className="prose prose-lg mx-auto text-muted-foreground">
             <p className="text-xl leading-8">
-              Senior AI/ML Engineer with 8+ years building production-scale LLM
-              systems that deliver measurable business outcomes. Specialized in
-              cost optimization, reliability engineering, and MLOps for
-              enterprise clients.
+              Senior engineer with 12+ years shipping production systems in
+              mobile, web, and cloud. I design and run reliable LLM services
+              with clear SLOs, CI/CD, MLflow registries, cost controls, and real
+              observability.
             </p>
             <p className="text-lg leading-7 mt-6">
-              Currently helping companies cut AI costs by 30-50% while
-              maintaining 99.9% uptime through intelligent infrastructure design
-              and SLO-gated deployment pipelines.
+              Currently building personal R&D projects to learn enterprise MLOps
+              patterns: Threads-Agent (GenAI platform), ROI-Agent (multimodal
+              automation), and Achievement Collector. I bring production
+              discipline from EPAM/GlobalLogic to AI platforms.
             </p>
           </div>
         </div>

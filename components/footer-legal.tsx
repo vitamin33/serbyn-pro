@@ -10,12 +10,9 @@ export function FooterLegal() {
           {/* Company Information */}
           <div className="space-y-4">
             <div>
-              <h3 className="font-semibold text-gray-900 mb-2">
-                Serbyn Solutions Ltd
-              </h3>
+              <h3 className="font-semibold text-gray-900 mb-2">Easelect LTD</h3>
               <div className="space-y-1 text-sm text-gray-600">
-                <p>Company Number: 15876543</p>
-                <p>VAT Number: GB 987654321</p>
+                <p>Company Number: 15983917</p>
               </div>
             </div>
             <div className="text-sm text-gray-600">
@@ -23,11 +20,11 @@ export function FooterLegal() {
                 Registered Office:
               </p>
               <address className="not-italic">
-                71-75 Shelton Street
+                Office 12, Initial Business Centre
                 <br />
-                Covent Garden
+                Wilson Business Park
                 <br />
-                London, WC2H 9JQ
+                Manchester, M40 8WN
                 <br />
                 United Kingdom
               </address>
@@ -41,10 +38,10 @@ export function FooterLegal() {
               <div className="space-y-1 text-sm text-gray-600">
                 <p>
                   <a
-                    href="mailto:vitalii@serbyn.pro"
+                    href="mailto:serbyn.vitalii@gmail.com"
                     className="hover:text-blue-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 rounded"
                   >
-                    vitalii@serbyn.pro
+                    serbyn.vitalii@gmail.com
                   </a>
                 </p>
                 <p>Remote from Kyiv, Ukraine</p>
@@ -82,8 +79,6 @@ export function FooterLegal() {
               </nav>
             </div>
             <div className="text-sm text-gray-600">
-              <p>Professional Indemnity Insurance: £2M</p>
-              <p>Data Protection Registration: ZA123456</p>
             </div>
           </div>
         </div>
@@ -93,7 +88,7 @@ export function FooterLegal() {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="text-sm text-gray-600">
               <p>
-                © {currentYear} Serbyn Solutions Ltd. All rights reserved.
+                © {currentYear} Easelect LTD. All rights reserved.
                 <span className="ml-2 inline-block">
                   <span className="sr-only">Location:</span>
                   Incorporated in England & Wales
@@ -102,7 +97,7 @@ export function FooterLegal() {
             </div>
             <div className="flex items-center gap-4 text-sm text-gray-600">
               <a
-                href="https://find-and-update.company-information.service.gov.uk/company/15876543"
+                href="https://find-and-update.company-information.service.gov.uk/company/15983917"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-blue-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 rounded"

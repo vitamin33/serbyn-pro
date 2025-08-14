@@ -167,12 +167,12 @@ export function generatePersonSchema() {
     url: siteConfig.url,
     image: siteConfig.ogImage,
     sameAs: [
-      'https://linkedin.com/in/vitalii-serbyn',
+      'https://www.linkedin.com/in/vitalii-serbyn-b517a083',
       'https://github.com/vitamin33',
     ],
     worksFor: {
       '@type': 'Organization',
-      name: 'Serbyn Solutions Ltd',
+      name: 'Easelect LTD',
       url: siteConfig.url,
     },
     address: {
@@ -196,16 +196,16 @@ export function generateOrganizationSchema() {
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'Serbyn Solutions Ltd',
+    name: 'Easelect LTD',
     url: siteConfig.url,
     logo: `${siteConfig.url}/logo.png`,
     description:
       'AI/ML engineering consulting specializing in LLM systems and MLOps.',
     address: {
       '@type': 'PostalAddress',
-      streetAddress: '71-75 Shelton Street',
-      addressLocality: 'London',
-      postalCode: 'WC2H 9JQ',
+      streetAddress: 'Office 12, Initial Business Centre, Wilson Business Park',
+      addressLocality: 'Manchester',
+      postalCode: 'M40 8WN',
       addressCountry: 'GB',
     },
     contactPoint: {

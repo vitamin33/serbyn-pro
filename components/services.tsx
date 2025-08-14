@@ -156,7 +156,7 @@ export function Services() {
 
         {/* Call-to-Action */}
         <div className="mt-12 text-center">
-          <p className="text-muted-foreground mb-4">
+          <p className="text-muted-foreground mb-4 max-w-2xl mx-auto">
             Need a custom solution? Let&apos;s discuss your specific
             requirements.
           </p>

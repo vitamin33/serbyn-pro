@@ -26,7 +26,7 @@ export default function PrivacyPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <p>
-                  Serbyn Solutions Ltd (&quot;we&quot;, &quot;our&quot;, or
+                  Easelect LTD (&quot;we&quot;, &quot;our&quot;, or
                   &quot;us&quot;) is committed to protecting your privacy. This
                   policy explains how we collect, use, and protect your personal
                   information in compliance with UK GDPR and applicable data
@@ -158,11 +158,11 @@ export default function PrivacyPage() {
                 <div className="bg-muted/50 p-4 rounded-lg">
                   <div className="space-y-2 text-sm">
                     <p>
-                      <strong>Email:</strong> privacy@serbyn.pro
+                      <strong>Email:</strong> serbyn.vitalii@gmail.com
                     </p>
                     <p>
-                      <strong>Mail:</strong> Serbyn Solutions Ltd, 71-75 Shelton
-                      Street, London, WC2H 9JQ
+                      <strong>Mail:</strong> Easelect LTD, Office 12, Initial
+                      Business Centre, Wilson Business Park, Manchester, M40 8WN
                     </p>
                     <p>
                       <strong>Response Time:</strong> We will respond within 30

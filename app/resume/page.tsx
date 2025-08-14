@@ -29,20 +29,16 @@ export default function ResumePage() {
           <header className="text-center mb-8">
             <h1 className="text-3xl font-bold mb-2">Vitalii Serbyn</h1>
             <h2 className="text-xl text-muted-foreground mb-4">
-              Senior AI/ML Engineer & MLOps Specialist
+              AI Platform / MLOps Engineer
             </h2>
             <div className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground">
               <span className="flex items-center gap-1">
                 <Mail className="h-4 w-4" />
-                vitalii@serbyn.pro
-              </span>
-              <span className="flex items-center gap-1">
-                <Phone className="h-4 w-4" />
-                +380 XX XXX XXXX
+                serbyn.vitalii@gmail.com
               </span>
               <span className="flex items-center gap-1">
                 <MapPin className="h-4 w-4" />
-                Kyiv, Ukraine (Remote US/EU)
+                Kyiv, Ukraine · Remote only · UK LTD for contracting
               </span>
               <span className="flex items-center gap-1">
                 <Globe className="h-4 w-4" />
@@ -57,13 +53,12 @@ export default function ResumePage() {
               Professional Summary
             </h3>
             <p className="text-sm leading-relaxed">
-              Senior AI/ML Engineer with 11+ years of experience building
-              scalable machine learning systems and LLM infrastructure. Expert
-              in MLOps, cost optimization, and production deployment of AI
-              systems. Led teams of 5-12 engineers, shipped products to 10M+
-              users. Specialized in LLM inference optimization, RAG systems, and
-              SLO-gated CI/CD pipelines. UK LTD registered consultant serving US
-              and European clients.
+              Senior engineer with 12+ years shipping production systems in
+              mobile, web, and cloud. I design and run reliable LLM services
+              with clear SLOs, CI/CD, MLflow registries, cost controls, and real
+              observability. I have led small teams, owned release trains, and I
+              bring that discipline to building and operating AI platforms that
+              are easy to deploy, measure, and roll back.
             </p>
           </section>
 
@@ -74,46 +69,74 @@ export default function ResumePage() {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div>
-                <h4 className="font-medium mb-2">AI/ML & LLMs</h4>
+                <h4 className="font-medium mb-2">
+                  LLM & GenAI (Current Focus)
+                </h4>
                 <div className="flex flex-wrap gap-1 mb-3">
-                  <Badge variant="secondary">Python</Badge>
-                  <Badge variant="secondary">PyTorch</Badge>
-                  <Badge variant="secondary">TensorFlow</Badge>
-                  <Badge variant="secondary">Hugging Face</Badge>
-                  <Badge variant="secondary">LangChain</Badge>
+                  <Badge variant="secondary">LangChain/LangGraph</Badge>
                   <Badge variant="secondary">vLLM</Badge>
+                  <Badge variant="secondary">OpenAI API</Badge>
                   <Badge variant="secondary">Ollama</Badge>
+                  <Badge variant="secondary">BLIP-2</Badge>
+                  <Badge variant="secondary">RAG</Badge>
+                  <Badge variant="secondary">Hybrid Retrieval</Badge>
                 </div>
 
-                <h4 className="font-medium mb-2">MLOps & Infrastructure</h4>
+                <h4 className="font-medium mb-2">
+                  MLOps & Platform (Learning)
+                </h4>
                 <div className="flex flex-wrap gap-1 mb-3">
                   <Badge variant="secondary">MLflow</Badge>
-                  <Badge variant="secondary">Kubeflow</Badge>
-                  <Badge variant="secondary">Docker</Badge>
-                  <Badge variant="secondary">Kubernetes</Badge>
-                  <Badge variant="secondary">Airflow</Badge>
-                  <Badge variant="secondary">DVC</Badge>
+                  <Badge variant="secondary">SLO-gated CI</Badge>
+                  <Badge variant="secondary">A/B Evaluation</Badge>
+                  <Badge variant="secondary">Experiment Tracking</Badge>
+                  <Badge variant="secondary">Model Registry</Badge>
+                  <Badge variant="secondary">Canary Deployment</Badge>
+                </div>
+
+                <h4 className="font-medium mb-2">Backend & Data (12+ years)</h4>
+                <div className="flex flex-wrap gap-1 mb-3">
+                  <Badge variant="secondary">Python</Badge>
+                  <Badge variant="secondary">FastAPI</Badge>
+                  <Badge variant="secondary">Node.js/NestJS</Badge>
+                  <Badge variant="secondary">Celery</Badge>
+                  <Badge variant="secondary">PostgreSQL</Badge>
+                  <Badge variant="secondary">Redis</Badge>
+                  <Badge variant="secondary">RabbitMQ</Badge>
+                  <Badge variant="secondary">Qdrant</Badge>
                 </div>
               </div>
 
               <div>
-                <h4 className="font-medium mb-2">Cloud & DevOps</h4>
+                <h4 className="font-medium mb-2">
+                  Cloud & Infrastructure (Production)
+                </h4>
                 <div className="flex flex-wrap gap-1 mb-3">
-                  <Badge variant="secondary">AWS</Badge>
-                  <Badge variant="secondary">GCP</Badge>
-                  <Badge variant="secondary">Azure</Badge>
-                  <Badge variant="secondary">Terraform</Badge>
+                  <Badge variant="secondary">Kubernetes</Badge>
+                  <Badge variant="secondary">Docker</Badge>
+                  <Badge variant="secondary">AWS ECS/EKS</Badge>
+                  <Badge variant="secondary">GCP/GKE</Badge>
                   <Badge variant="secondary">GitHub Actions</Badge>
-                  <Badge variant="secondary">Jenkins</Badge>
+                  <Badge variant="secondary">Terraform basics</Badge>
                 </div>
 
-                <h4 className="font-medium mb-2">Databases & Storage</h4>
+                <h4 className="font-medium mb-2">
+                  Observability & Ops (Expert)
+                </h4>
                 <div className="flex flex-wrap gap-1 mb-3">
-                  <Badge variant="secondary">PostgreSQL</Badge>
-                  <Badge variant="secondary">Redis</Badge>
-                  <Badge variant="secondary">Elasticsearch</Badge>
-                  <Badge variant="secondary">Pinecone</Badge>
-                  <Badge variant="secondary">Weaviate</Badge>
+                  <Badge variant="secondary">Prometheus</Badge>
+                  <Badge variant="secondary">Grafana</Badge>
+                  <Badge variant="secondary">Jaeger</Badge>
+                  <Badge variant="secondary">Sentry</Badge>
+                  <Badge variant="secondary">CloudWatch</Badge>
+                  <Badge variant="secondary">PagerDuty</Badge>
+                </div>
+
+                <h4 className="font-medium mb-2">Frontend & Mobile</h4>
+                <div className="flex flex-wrap gap-1 mb-3">
+                  <Badge variant="secondary">Flutter</Badge>
+                  <Badge variant="secondary">Android/Kotlin</Badge>
+                  <Badge variant="secondary">React basics</Badge>
                 </div>
               </div>
             </div>
@@ -129,9 +152,9 @@ export default function ResumePage() {
             <div className="mb-6 page-break-inside-avoid">
               <div className="flex justify-between items-start mb-2">
                 <div>
-                  <h4 className="font-medium">Senior AI/ML Consultant</h4>
+                  <h4 className="font-medium">AI Platform / MLOps Engineer</h4>
                   <p className="text-sm text-muted-foreground">
-                    Serbyn.pro (UK LTD) • Remote
+                    Easelect LTD • Remote
                   </p>
                 </div>
                 <span className="text-sm text-muted-foreground">
@@ -140,24 +163,24 @@ export default function ResumePage() {
               </div>
               <ul className="list-disc list-inside text-sm space-y-1 ml-4">
                 <li>
-                  Reduced LLM inference costs by 30-50% using vLLM optimization
-                  and model quantization
+                  Built Threads-Agent GenAI platform with MLflow registry,
+                  SLO-gated CI, and production observability
                 </li>
                 <li>
-                  Implemented MLflow model registry with SLO-gated CI/CD,
-                  achieving &lt;2min rollback times
+                  Implemented ROI-Agent for automated media buying with
+                  multimodal pipeline (BLIP-2 + LLM analysis)
                 </li>
                 <li>
-                  Built RAG systems with 99.5% accuracy for financial compliance
-                  and e-commerce personalization
+                  Created Achievement Collector for PR impact analysis and
+                  automated portfolio generation
                 </li>
                 <li>
-                  Designed A/B testing frameworks for LLM model comparisons with
-                  statistical significance
+                  Developed reliable LLM services with clear SLOs, cost
+                  controls, and real observability
                 </li>
                 <li>
-                  Deployed production systems serving 1M+ requests/day with
-                  99.9% uptime SLA
+                  Applied production discipline to AI platforms: explicit SLOs,
+                  fast rollback, cost budgets
                 </li>
               </ul>
             </div>
@@ -166,105 +189,47 @@ export default function ResumePage() {
             <div className="mb-6 page-break-inside-avoid">
               <div className="flex justify-between items-start mb-2">
                 <div>
-                  <h4 className="font-medium">Lead ML Engineer</h4>
+                  <h4 className="font-medium">Senior/Lead Engineer</h4>
                   <p className="text-sm text-muted-foreground">
-                    AdTech Startup • Remote
+                    EPAM, GlobalLogic, Startups • Remote/Hybrid
                   </p>
                 </div>
                 <span className="text-sm text-muted-foreground">
-                  2021 - 2023
+                  2013 - 2023
                 </span>
               </div>
               <ul className="list-disc list-inside text-sm space-y-1 ml-4">
                 <li>
-                  Led team of 8 engineers building real-time bidding ML models
-                  for programmatic advertising
+                  Led teams of 3–4 engineers, owned release trains with 99.5+
+                  uptime for mobile apps (5M+ MAU)
                 </li>
                 <li>
-                  Implemented MLOps pipeline reducing model deployment time from
-                  weeks to hours
+                  Optimized backend APIs serving 1M+ requests/day with p95
+                  latency &lt;200ms (Redis caching, query optimization)
                 </li>
                 <li>
-                  Built feature store and data pipeline processing 100TB+ daily
-                  with Apache Spark
+                  Implemented A/B testing frameworks processing 100k+ events/day
+                  for user behavior analysis
                 </li>
                 <li>
-                  Achieved 15% CTR improvement and $2M+ annual revenue increase
-                  through model optimization
+                  Built event-driven architectures with message queues handling
+                  50k+ messages/min peak load
                 </li>
                 <li>
-                  Established monitoring and alerting system with Grafana and
-                  Prometheus for ML models
+                  Established monitoring with Prometheus/Grafana: 15+ custom
+                  metrics, alert rules, SLA tracking
+                </li>
+                <li>
+                  Reduced deployment time from 45min to 3min using Docker +
+                  Kubernetes + automated rollback
                 </li>
               </ul>
-            </div>
-
-            {/* Experience 3 */}
-            <div className="mb-6 page-break-inside-avoid">
-              <div className="flex justify-between items-start mb-2">
-                <div>
-                  <h4 className="font-medium">Senior Software Engineer</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Mobile Gaming Company • Kyiv
-                  </p>
-                </div>
-                <span className="text-sm text-muted-foreground">
-                  2018 - 2021
-                </span>
-              </div>
-              <ul className="list-disc list-inside text-sm space-y-1 ml-4">
-                <li>
-                  Developed recommendation engines for mobile games with 10M+
-                  MAU
-                </li>
-                <li>
-                  Built real-time analytics platform processing 50M+ events/day
-                </li>
-                <li>
-                  Implemented A/B testing framework improving player retention
-                  by 25%
-                </li>
-                <li>
-                  Led migration from monolith to microservices architecture on
-                  Kubernetes
-                </li>
-                <li>
-                  Mentored 5 junior developers and established code review
-                  processes
-                </li>
-              </ul>
-            </div>
-
-            {/* Experience 4 */}
-            <div className="mb-6 page-break-inside-avoid">
-              <div className="flex justify-between items-start mb-2">
-                <div>
-                  <h4 className="font-medium">Full-Stack Developer</h4>
-                  <p className="text-sm text-muted-foreground">
-                    E-commerce Platform • Kyiv
-                  </p>
-                </div>
-                <span className="text-sm text-muted-foreground">
-                  2013 - 2018
-                </span>
-              </div>
-              <ul className="list-disc list-inside text-sm space-y-1 ml-4">
-                <li>
-                  Built scalable e-commerce platform handling 1M+ orders
-                  annually
-                </li>
-                <li>
-                  Implemented search and recommendation systems improving
-                  conversion by 18%
-                </li>
-                <li>
-                  Developed CI/CD pipeline reducing deployment time by 80%
-                </li>
-                <li>
-                  Optimized database queries and caching, reducing page load
-                  time by 60%
-                </li>
-              </ul>
+              <p className="text-xs text-muted-foreground mt-2 italic">
+                <strong>AI Relevance:</strong> These same patterns apply to LLM
+                services: p95 latency SLOs, request/response caching, event
+                processing for model inputs, monitoring for drift detection, and
+                fast rollback for model deployments.
+              </p>
             </div>
           </section>
 
@@ -276,58 +241,108 @@ export default function ResumePage() {
 
             <div className="space-y-4">
               <div className="page-break-inside-avoid">
-                <h4 className="font-medium">LLM Cost Optimization Platform</h4>
+                <h4 className="font-medium">
+                  Threads-Agent — GenAI Content Platform
+                </h4>
                 <p className="text-sm text-muted-foreground mb-2">
-                  MLflow • vLLM • Grafana • GitHub Actions • 2024
+                  LangGraph • MLflow • Kubernetes • Prometheus • 2024 • Personal
+                  R&D
                 </p>
                 <ul className="list-disc list-inside text-sm space-y-1 ml-4">
                   <li>
-                    Built model registry with automated cost/performance
-                    benchmarking
+                    Multi-service system: persona runtime, optimizer service,
+                    publishing adapters
                   </li>
                   <li>
-                    Implemented SLO-gated deployments with automatic rollback
-                    capabilities
+                    MLflow model registry with evaluation jobs tied to CI for
+                    automated quality gates
                   </li>
                   <li>
-                    Achieved 45% cost reduction while maintaining 99.5% SLA
-                    compliance
+                    SLO-gated deployments on p95 latency, error rate, and
+                    token-cost deltas
                   </li>
-                </ul>
-              </div>
-
-              <div className="page-break-inside-avoid">
-                <h4 className="font-medium">Financial Compliance RAG System</h4>
-                <p className="text-sm text-muted-foreground mb-2">
-                  LangChain • OpenAI • Elasticsearch • FastAPI • 2023
-                </p>
-                <ul className="list-disc list-inside text-sm space-y-1 ml-4">
                   <li>
-                    Processed 10K+ regulatory documents with 99.5% accuracy
-                  </li>
-                  <li>Reduced manual compliance review time by 80%</li>
-                  <li>
-                    SOC 2 compliant deployment with audit trail and access
-                    controls
+                    Full observability stack: Prometheus metrics, Grafana
+                    dashboards, Jaeger tracing
                   </li>
                 </ul>
               </div>
 
               <div className="page-break-inside-avoid">
                 <h4 className="font-medium">
-                  Real-time Personalization Engine
+                  ROI-Agent — Media Buyer Automation
                 </h4>
                 <p className="text-sm text-muted-foreground mb-2">
-                  Python • Redis • Kubernetes • Kafka • 2022
+                  BLIP-2 • Ollama • Meta Ads API • Celery • 2024 • Personal R&D
                 </p>
                 <ul className="list-disc list-inside text-sm space-y-1 ml-4">
-                  <li>Served 1M+ daily users with &lt;100ms response time</li>
                   <li>
-                    Improved conversion rates by 23% and reduced churn by 15%
+                    Multimodal pipeline: BLIP-2 for creative captions, LLM
+                    analysis for copy variants
                   </li>
                   <li>
-                    Implemented feature store with real-time and batch
-                    processing
+                    Hybrid inference: local Ollama (Mixtral) with OpenAI
+                    fallback and structured output
+                  </li>
+                  <li>
+                    A/B testing with sequential decision rules, performance
+                    rollups, policy guardrails
+                  </li>
+                  <li>
+                    Integrations: Facebook Graph API, Shopify webhooks, Slack to
+                    Linear automation
+                  </li>
+                </ul>
+              </div>
+
+              <div className="page-break-inside-avoid">
+                <h4 className="font-medium">
+                  Achievement Collector — Portfolio Automation
+                </h4>
+                <p className="text-sm text-muted-foreground mb-2">
+                  GitHub API • Impact Analysis • Portfolio Generation • 2024 •
+                  Personal R&D
+                </p>
+                <ul className="list-disc list-inside text-sm space-y-1 ml-4">
+                  <li>
+                    GitHub PR analysis extracting technical metrics and
+                    generating ImpactScores
+                  </li>
+                  <li>
+                    Automated portfolio generation from development activity and
+                    MLflow experiments
+                  </li>
+                  <li>
+                    CI integration for consistent reporting and resume bullet
+                    generation
+                  </li>
+                </ul>
+              </div>
+
+              <div className="page-break-inside-avoid">
+                <h4 className="font-medium">
+                  High-Traffic Mobile Backend Infrastructure
+                </h4>
+                <p className="text-sm text-muted-foreground mb-2">
+                  Node.js • PostgreSQL • Redis • Kubernetes • 2018-2022 •
+                  EPAM/GlobalLogic
+                </p>
+                <ul className="list-disc list-inside text-sm space-y-1 ml-4">
+                  <li>
+                    API gateway handling 1M+ requests/day with circuit breakers
+                    and rate limiting
+                  </li>
+                  <li>
+                    Real-time event processing: 100k+ events/day through Redis
+                    Streams and message queues
+                  </li>
+                  <li>
+                    Database optimization: query performance tuning reducing p95
+                    response time from 800ms to 120ms
+                  </li>
+                  <li>
+                    Monitoring implementation: 20+ custom Prometheus metrics
+                    with Grafana dashboards and PagerDuty alerts
                   </li>
                 </ul>
               </div>
@@ -339,36 +354,52 @@ export default function ResumePage() {
             <h3 className="text-lg font-semibold mb-3 border-b pb-1">
               Education
             </h3>
-            <div className="flex justify-between items-start">
-              <div>
-                <h4 className="font-medium">
-                  Master of Science in Computer Science
-                </h4>
-                <p className="text-sm text-muted-foreground">
-                  National Technical University of Ukraine
-                </p>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <div>
+                  <h4 className="font-medium">M.Sc. in Computer Science</h4>
+                  <p className="text-muted-foreground">
+                    V. N. Karazin Kharkiv National University
+                  </p>
+                </div>
+                <span className="text-muted-foreground">2009 - 2011</span>
               </div>
-              <span className="text-sm text-muted-foreground">2009 - 2011</span>
+              <div className="flex justify-between">
+                <div>
+                  <h4 className="font-medium">
+                    Software Engineering Management
+                  </h4>
+                  <p className="text-muted-foreground">EPAM School</p>
+                </div>
+                <span className="text-muted-foreground">2019</span>
+              </div>
             </div>
           </section>
 
-          {/* Certifications */}
+          {/* Business Setup & Legal */}
           <section className="mb-8 page-break-inside-avoid">
             <h3 className="text-lg font-semibold mb-3 border-b pb-1">
-              Certifications
+              Business Setup & Legal
             </h3>
             <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span>AWS Certified Machine Learning - Specialty</span>
-                <span className="text-muted-foreground">2023</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Google Professional Machine Learning Engineer</span>
-                <span className="text-muted-foreground">2022</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Kubernetes Certified Application Developer (CKAD)</span>
-                <span className="text-muted-foreground">2021</span>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h4 className="font-medium mb-2">Contracting</h4>
+                  <ul className="list-disc list-inside space-y-1 ml-4">
+                    <li>UK LTD available for contracting</li>
+                    <li>Comfortable with W-8BEN-E for US clients</li>
+                    <li>Professional indemnity insurance</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-medium mb-2">Payments</h4>
+                  <ul className="list-disc list-inside space-y-1 ml-4">
+                    <li>Wise Business or Revolut Business</li>
+                    <li>Crypto: USDC/USDT (ERC-20, SOL, TRX)</li>
+                    <li>Invoices in USD, EUR, or GBP</li>
+                    <li>Standard contracting terms available</li>
+                  </ul>
+                </div>
               </div>
             </div>
           </section>

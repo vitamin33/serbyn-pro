@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { pageMetadata } from '@/lib/seo';
+import { ScheduleCallButton } from '@/components/calendly-widget';
 
 export const metadata = pageMetadata.howToPay();
 
@@ -137,6 +138,29 @@ export default function HowToPayPage() {
         </svg>
       ),
     },
+    {
+      title: 'Crypto (USDC/USDT)',
+      description: 'Stablecoins on multiple networks',
+      regions: 'Global',
+      processingTime: '5-15 minutes',
+      preferred: true,
+      icon: (
+        <svg
+          className="w-6 h-6 text-primary"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+          <circle cx="12" cy="12" r="3" fill="currentColor" stroke="none" />
+        </svg>
+      ),
+    },
   ];
 
   return (
@@ -175,9 +199,7 @@ export default function HowToPayPage() {
                   <ul className="space-y-2 text-sm">
                     <li className="flex items-start gap-2">
                       <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></span>
-                      <span>
-                        Invoices issued from Serbyn Solutions Ltd (UK LTD)
-                      </span>
+                      <span>Invoices issued from Easelect LTD</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></span>
@@ -216,10 +238,98 @@ export default function HowToPayPage() {
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></span>
-                      <span>Currency: USD, EUR, or GBP accepted</span>
+                      <span>
+                        Currency: USD, EUR, GBP, or crypto stablecoins
+                      </span>
                     </li>
                   </ul>
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* Crypto Payment Details */}
+        <section className="mb-16">
+          <Card className="max-w-4xl mx-auto">
+            <CardHeader className="text-center">
+              <CardTitle className="text-2xl">
+                Cryptocurrency Payments
+              </CardTitle>
+              <p className="text-muted-foreground">
+                Fast, secure stablecoin payments on multiple networks
+              </p>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid gap-6 md:grid-cols-2">
+                <div className="space-y-4">
+                  <h3 className="font-semibold text-lg">
+                    Supported Stablecoins
+                  </h3>
+                  <ul className="space-y-2 text-sm">
+                    <li className="flex items-start gap-2">
+                      <span className="w-1.5 h-1.5 bg-green-500 rounded-full mt-2 flex-shrink-0"></span>
+                      <span>
+                        <strong>USDC</strong> - USD Coin (recommended)
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="w-1.5 h-1.5 bg-green-500 rounded-full mt-2 flex-shrink-0"></span>
+                      <span>
+                        <strong>USDT</strong> - Tether USD
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+                <div className="space-y-4">
+                  <h3 className="font-semibold text-lg">Supported Networks</h3>
+                  <ul className="space-y-2 text-sm">
+                    <li className="flex items-start gap-2">
+                      <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 flex-shrink-0"></span>
+                      <span>
+                        <strong>ERC-20</strong> (Ethereum) - Lower fees during
+                        off-peak
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="w-1.5 h-1.5 bg-purple-500 rounded-full mt-2 flex-shrink-0"></span>
+                      <span>
+                        <strong>SOL</strong> (Solana) - Fast, low-cost
+                        transactions
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="w-1.5 h-1.5 bg-red-500 rounded-full mt-2 flex-shrink-0"></span>
+                      <span>
+                        <strong>TRX</strong> (Tron) - Minimal transaction fees
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div className="bg-muted/50 p-4 rounded-lg">
+                <h4 className="font-semibold mb-2">Crypto Payment Process</h4>
+                <ol className="text-sm space-y-1 list-decimal list-inside">
+                  <li>
+                    Invoice sent with crypto option and current exchange rate
+                  </li>
+                  <li>
+                    Wallet address provided for chosen network (USDC/USDT)
+                  </li>
+                  <li>
+                    Payment confirmed on blockchain (5-15 minute settlement)
+                  </li>
+                  <li>Receipt issued with transaction hash reference</li>
+                </ol>
+              </div>
+
+              <div className="text-center">
+                <p className="text-sm text-muted-foreground">
+                  <strong>Note:</strong> Exchange rates locked for 24 hours from
+                  invoice date. Network fees (gas) paid by client. USDC on
+                  Solana recommended for lowest fees.
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -266,13 +376,11 @@ export default function HowToPayPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild>
-              <a href="mailto:vitalii@serbyn.pro?subject=Payment Discussion">
+              <a href="mailto:serbyn.vitalii@gmail.com?subject=Payment Discussion">
                 Discuss Payment Terms
               </a>
             </Button>
-            <Button variant="outline" asChild>
-              <a href="#contact">Schedule a Call</a>
-            </Button>
+            <ScheduleCallButton variant="outline" />
           </div>
         </section>
       </div>

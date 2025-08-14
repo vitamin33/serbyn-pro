@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { BookConsultationButton } from '@/components/calendly-widget';
 
 export function Hero() {
   return (
@@ -8,16 +9,17 @@ export function Hero() {
           {/* Main Headline */}
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
             <span className="text-balance">
-              AI engineer who ships reliable{' '}
-              <span className="text-primary">LLM systems</span>
+              AI engineer who builds reliable{' '}
+              <span className="text-primary">LLM platforms</span>
             </span>
           </h1>
 
           {/* Subhead */}
           <p className="mx-auto mt-6 max-w-3xl text-lg sm:text-xl text-muted-foreground leading-8">
             <span className="text-pretty">
-              Cut token cost 30–50% at stable p95 with MLflow registry,
-              SLO-gated CI, vLLM, and clean rollbacks
+              I design and run production-ready LLM services with clear SLOs,
+              MLflow registries, and cost controls. 12+ years of production
+              discipline applied to AI platforms.
             </span>
           </p>
 
@@ -25,25 +27,17 @@ export function Hero() {
           <div className="mt-6 flex items-center justify-center gap-2 text-sm text-muted-foreground">
             <span className="flex items-center gap-2">
               <span className="inline-block h-2 w-2 rounded-full bg-green-500"></span>
-              UK LTD
+              Easelect LTD
             </span>
             <span className="text-border">·</span>
-            <span>Remote from Kyiv</span>
+            <span>12+ years production systems</span>
             <span className="text-border">·</span>
-            <span>US/EU clients</span>
+            <span>Personal R&D lab</span>
           </div>
 
           {/* CTAs */}
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button
-              size="lg"
-              className="w-full sm:w-auto min-w-[160px]"
-              asChild
-            >
-              <a href="#contact" className="font-semibold">
-                Book a Call
-              </a>
-            </Button>
+            <BookConsultationButton size="lg" />
 
             <Button
               variant="outline"

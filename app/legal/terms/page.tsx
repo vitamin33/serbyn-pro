@@ -27,8 +27,8 @@ export default function TermsPage() {
               <CardContent className="space-y-4">
                 <p>
                   These terms govern the provision of AI/ML engineering services
-                  by Serbyn Solutions Ltd, a company incorporated in England and
-                  Wales (Company Number: 15876543).
+                  by Easelect LTD, a company incorporated in England and Wales
+                  (Company Number: 15983917).
                 </p>
                 <div className="bg-muted/50 p-4 rounded-lg">
                   <h3 className="font-semibold mb-2">Services Provided</h3>
@@ -169,7 +169,7 @@ export default function TermsPage() {
                 <div>
                   <h3 className="font-semibold mb-2">Professional Indemnity</h3>
                   <p className="text-sm">
-                    We maintain Professional Indemnity Insurance of £2,000,000
+                    We operate with standard business practices
                     to cover errors and omissions in our professional services.
                   </p>
                 </div>
@@ -219,12 +219,14 @@ export default function TermsPage() {
                 <div className="bg-muted/50 p-4 rounded-lg">
                   <div className="space-y-2 text-sm">
                     <p>
-                      <strong>Serbyn Solutions Ltd</strong>
+                      <strong>Easelect LTD</strong>
                     </p>
-                    <p>71-75 Shelton Street, Covent Garden</p>
-                    <p>London, WC2H 9JQ, United Kingdom</p>
-                    <p>Email: legal@serbyn.pro</p>
-                    <p>Company Number: 15876543</p>
+                    <p>
+                      Office 12, Initial Business Centre, Wilson Business Park
+                    </p>
+                    <p>Manchester, M40 8WN, United Kingdom</p>
+                    <p>Email: serbyn.vitalii@gmail.com</p>
+                    <p>Company Number: 15983917</p>
                   </div>
                 </div>
                 <p className="text-xs text-muted-foreground mt-4">

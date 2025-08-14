@@ -85,7 +85,7 @@ export default function Home() {
           </div>
 
           <div className="mt-12 text-center">
-            <p className="text-muted-foreground mb-4">
+            <p className="text-muted-foreground mb-4 max-w-2xl mx-auto">
               Want to see more detailed case studies and technical deep-dives?
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -121,7 +121,7 @@ export default function Home() {
           />
 
           <div className="mt-12 text-center">
-            <p className="text-muted-foreground mb-4">
+            <p className="text-muted-foreground mb-4 max-w-2xl mx-auto">
               Real-time achievements pulled from GitHub PRs and deployment
               metrics
             </p>

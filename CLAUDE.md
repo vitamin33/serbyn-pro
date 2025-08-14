@@ -1,176 +1,169 @@
 # Professional Portfolio Website | serbyn.pro
 
-Next.js 14 + TypeScript + Tailwind + shadcn/ui | AI/ML Engineer Portfolio
+Next.js 14 + TypeScript + Tailwind + shadcn/ui | AI Platform / MLOps Engineer Portfolio
 
-## 🎯 Project Status & Next Steps
+## 🎯 Project Status & Authentic Positioning Strategy
 
-**COMPLETED (M1):** Foundation + marketing site - DEPLOYED ✅
-- ✅ Dev environment + shadcn/ui setup
-- ✅ Navigation (navbar, footer with UK LTD compliance) 
-- ✅ Homepage sections: Hero, ProofPack, Services, CaseCard, Contact
-- ✅ Business pages: About, How-to-Pay, Legal (Privacy, Terms)
-- ✅ SEO foundation: metadata, sitemap, robots.txt
-- ✅ Professional styling with responsive design
+**COMPLETED (ALL MILESTONES):** Production-ready portfolio with authentic real-project positioning ✅
+- ✅ M1: Foundation + marketing site deployed
+- ✅ M2: Resume with print functionality and real CV data
+- ✅ M3: Case studies with authentic project positioning
+- ✅ M4: Achievements system (currently static JSON, API-ready)
 
-**CURRENT MILESTONE:** M2 - Resume & Print Mode
-**NEXT:** M3 - MDX Case Studies, M4 - Live Achievements
+**POSITIONING STRATEGY:** "Personal R&D Lab + Enterprise Experience"
+**TARGET:** Senior MLOps Engineer / AI Platform Engineer (US Remote, $150k-$250k)
 
-## 📋 Remaining Development Tasks
+## 👤 **Real Professional Profile**
 
-### M2: Resume & Print Mode (30-60min)
-1. Create `app/resume/page.tsx` with ATS-friendly resume
-2. Add print CSS in `globals.css` for PDF generation
-3. Skills matrix component with tabs (Hard/Soft skills)
+### **Core Identity**
+- **Name**: Vitalii Serbyn
+- **Title**: AI Platform / MLOps Engineer  
+- **Location**: Kyiv, Ukraine · Remote only · UK LTD for contracting
+- **Contact**: serbyn.vitalii@gmail.com
+- **Experience**: 12+ years shipping production systems (mobile, web, cloud)
+- **Current Focus**: Reliable LLM services with SLOs, MLflow, cost controls, observability
 
-### M3: MDX Case Studies (35-70min)
-1. Install Contentlayer for MDX processing
-2. Create `content/case-studies/*.mdx` with frontmatter
-3. Build `app/case-studies/[slug]/page.tsx` for dynamic routing
-
-### M4: Live Achievements (35-60min)
-1. Create `data/*.json` for dynamic content
-2. Build achievements display component
-3. Add `app/api/resume/route.ts` (JSON Resume format)
-4. GitHub Actions for automated data sync
-
-## 🏗️ Project Architecture
-
-### Key Files Structure:
-```
-app/
-├─ page.tsx              # ✅ Homepage with all sections
-├─ layout.tsx            # ✅ Root layout + SEO schemas
-├─ about/page.tsx        # ✅ Bio + resume download
-├─ resume/page.tsx       # 🔄 NEXT: Full resume + print CSS
-├─ case-studies/         # 🔄 NEXT: MDX-driven case studies
-├─ how-to-pay/page.tsx   # ✅ Payment methods + UK LTD
-├─ legal/                # ✅ Privacy/Terms compliance
-├─ sitemap.ts            # ✅ SEO sitemap
-└─ robots.ts             # ✅ SEO robots
-
-components/
-├─ navbar.tsx            # ✅ Navigation with all links
-├─ footer-legal.tsx      # ✅ UK LTD compliance footer
-├─ hero.tsx              # ✅ Main value prop + CTAs
-├─ proof-pack.tsx        # ✅ 4 evidence cards
-├─ services.tsx          # ✅ 3 service offerings
-├─ case-card.tsx         # ✅ Reusable case previews
-├─ contact.tsx           # ✅ Contact section + CTAs
-└─ ui/                   # ✅ shadcn components (Button, Card)
-
-lib/
-├─ seo.ts               # ✅ Metadata + schema generators
-└─ utils.ts             # ✅ Utility functions
-
-data/                   # 🔄 NEXT: JSON data sources
-├─ achievements.json
-├─ projects.json
-└─ resume.json
+### **Real Technical Stack**
+```typescript
+const realSkills = {
+  llm_genai: ["LangChain/LangGraph", "vLLM", "OpenAI API", "Ollama", "RAG", "Hybrid Retrieval"],
+  mlops_platform: ["MLflow", "SLO-gated CI", "A/B Evaluation", "Experiment Tracking", "Canary Deployment"],
+  backend_data: ["Python", "FastAPI", "Celery", "PostgreSQL", "Redis", "RabbitMQ", "Qdrant", "OpenSearch"],
+  cloud_infra: ["Kubernetes", "Docker", "AWS ECS/EKS", "GCP/GKE", "GitHub Actions", "Terraform"],
+  observability: ["Prometheus", "Grafana", "Jaeger", "Sentry", "CloudWatch"],
+  frontend_mobile: ["Flutter", "Android/Kotlin", "React basics"]
+}
 ```
 
-## 🎨 Design System (Implemented)
+### **Real Project Portfolio**
+1. **Threads-Agent** (2024): GenAI content platform with MLflow registry + SLO-gated CI
+2. **ROI-Agent** (2024): Multimodal media buyer automation (BLIP-2 + LLM analysis)
+3. **Achievement Collector** (2024): PR impact analysis and portfolio generation
+4. **Tech Doc Generator** (2024): Automated documentation and ADR generation
 
-**Colors:** Blue-600 accent, gray scale (50,100,200,500,700,900)
-**Typography:** Inter (UI), JetBrains Mono (code/metrics)
-**Layout:** max-w-6xl container, py-16 section spacing, p-6 card padding
-**Components:** shadcn Card, Button with consistent styling
+### **Enterprise Background**
+- **EPAM, GlobalLogic, Startups** (2013-2023)
+- **Led teams of 3-4 engineers**, owned release trains
+- **Shipped high-traffic mobile apps** with millions of users
+- **Built backends** in Node/NestJS and Python (GCP, AWS)
+- **Introduced monitoring/incident routines** reducing on-call noise
 
-## 📝 Content Requirements
+## 🎨 **Authentic Content Strategy**
 
-### Hero Section (✅ Implemented):
-- H1: "AI engineer who ships reliable LLM systems"
-- Subhead: "Cut token cost 30–50% at stable p95..."
-- Trust line: "UK LTD · Remote from Kyiv · US/EU clients"
-- CTAs: "Book a Call", "See Proof Pack"
+### **Hero Section (Updated)**
+- **H1**: "AI engineer who builds reliable LLM platforms"
+- **Subhead**: "I design and run production-ready LLM services with clear SLOs, MLflow registries, and cost controls"
+- **Trust line**: "UK LTD · 11+ years production systems · Personal R&D lab"
 
-### ProofPack (✅ Implemented):
-4 evidence cards: MLflow lifecycle, SLO-gated CI, vLLM comparison, Grafana monitoring
+### **Proof Pack (Real Projects)**
+1. **MLflow Pipeline**: Threads-Agent with model registry and rollback
+2. **SLO-gated CI**: Automated deployment with performance gates  
+3. **Multimodal AI**: ROI-Agent with BLIP-2 + LLM analysis
+4. **Cost Analysis**: vLLM vs hosted API benchmarking
 
-### Services (✅ Implemented):
-1. LLM Infrastructure & RAG
-2. MLOps & Lifecycle Management  
-3. GenAI for Marketing & E-commerce
+### **Services (Experience-Based)**
+1. **LLM Platform Engineering**: Production-ready inference with monitoring
+2. **MLOps & Lifecycle**: Registry, evaluation, SLO-gated deployments
+3. **AI System Reliability**: Observability, cost controls, incident handling
 
-## 🚀 Development Commands
+## 📊 **Real Achievement Data Structure**
+
+### **Current Setup**: Static JSON with authentic projects
+```json
+{
+  "meta": {
+    "total_achievements": 4,
+    "total_business_value": 0.0,
+    "avg_impact_score": 85.0,
+    "note": "Personal R&D projects demonstrating enterprise MLOps patterns"
+  },
+  "projects": [
+    "Threads-Agent: MLflow Registry + SLO-gated CI",
+    "ROI-Agent: Multimodal Media Buyer Automation", 
+    "Achievement Collector: PR Impact Analysis",
+    "Tech Doc Generator: Automated Documentation"
+  ]
+}
+```
+
+### **Future Enhancement**: Real API Integration
+- **Live Data Source**: Your Achievement Collector API
+- **Real Metrics**: Actual performance benchmarks from your systems
+- **Dynamic Updates**: Fresh data from GitHub PRs and deployments
+- **Fallback Mode**: Static JSON when API unavailable
+
+## 🚀 **Development Commands**
 
 ```bash
-# Development
-npm run dev              # Start dev server
+# Development with real data
+npm run dev              # Local server with current data
 npm run build           # Production build
-npm run lint            # ESLint check
+npm run lint            # Code quality
 npm run type-check      # TypeScript validation
 
-# Quality Gates (MUST pass before deploy)
-npm run build && npm run lint && npm run type-check
+# Update achievements data
+curl http://localhost:3000/api/case-studies/sync  # Check sync status
 ```
 
-## 🔧 Quick Implementation Prompts
+## 🎯 **Authentic Positioning Framework**
 
-### Resume Page (M2):
-```
-Create app/resume/page.tsx with:
-- ATS-friendly semantic structure
-- Print CSS that hides nav/footer, formats for A4
-- Sections: Summary, Experience, Projects, Skills, Education
-- "Download PDF" button using window.print()
-- Professional content for senior AI/ML engineer (11+ years)
+### **Interview Narrative**
+"I've been building personal R&D projects to understand enterprise MLOps patterns. My Threads-Agent project taught me MLflow model registries and SLO-gated CI/CD. ROI-Agent showed me multimodal AI pipelines. I apply the same production discipline I learned at EPAM/GlobalLogic to these AI systems: clear SLOs, fast rollback, cost budgets, and proper observability."
 
-Add print styles to globals.css:
-@media print { .no-print { display: none !important; } }
-```
+### **Strength Positioning**
+- ✅ **Real Systems**: "I build working code, not just presentations"
+- ✅ **Production Mindset**: "11+ years of production discipline applied to AI"
+- ✅ **Continuous Learning**: "I study enterprise patterns by implementing them"
+- ✅ **Business Awareness**: "I understand cost controls and SLOs matter"
 
-### Case Studies with MDX (M3):
-```
-Install Contentlayer and create:
-1. contentlayer.config.js with case study schema
-2. content/case-studies/[slug].mdx files with frontmatter
-3. app/case-studies/[slug]/page.tsx for dynamic routing
-4. Update app/case-studies/page.tsx to list all cases
+### **Technical Credibility**
+- ✅ **GitHub Evidence**: Real repositories with commit history
+- ✅ **System Thinking**: End-to-end platforms, not just scripts
+- ✅ **Enterprise Patterns**: MLflow, Kubernetes, observability stack
+- ✅ **Production Experience**: EPAM/GlobalLogic background
 
-Frontmatter schema:
-title, slug, summary, tech: string[], outcomes: string[], date, links: {demo?, repo?}
-```
+## 📈 **Enhancement Roadmap**
 
-### Live Achievements (M4):
-```
-Create data/achievements.json with schema:
-{ id, date, title, tags: ["MLOps", "LLM"], impact, link }
+### **Phase 1: Authentic Content (This Week)**
+1. Update all portfolio content with real project positioning
+2. Enhance case studies to match actual project implementations
+3. Add "Personal R&D" framing throughout site
+4. Update hero messaging for authentic positioning
 
-Build components/achievements-live.tsx:
-- Reads JSON at build time
-- Latest 6 achievements with tag filtering
-- Responsive card layout
+### **Phase 2: Real Metrics (Next Week)** 
+1. Add actual performance benchmarks to Threads-Agent
+2. Create real monitoring dashboards for your projects
+3. Generate actual cost comparisons (vLLM vs APIs)
+4. Document real before/after improvements
 
-Add app/api/resume/route.ts serving JSON Resume format
-```
+### **Phase 3: Live Integration (Following Week)**
+1. Connect Achievement Collector API for dynamic data
+2. Add real-time updates to portfolio
+3. Create live demos of working systems
+4. Build interactive project showcases
 
-## ⚡ Performance Requirements
+## 🏆 **Success Metrics (Authentic)**
 
-**Lighthouse Targets:** >90 all categories
-**Core Web Vitals:** LCP <2.5s, FID <100ms, CLS <0.1
-**Print Mode:** Clean A4 layout, hidden nav/footer
-**Mobile:** Responsive design, touch-friendly CTAs
+**Positioning Goals**:
+- Position as **"Production-minded AI engineer"** not just researcher
+- Demonstrate **"Learning by building"** approach
+- Show **"Enterprise patterns applied"** to personal projects
+- Emphasize **"Real working systems"** over theoretical knowledge
 
-## 🔒 Compliance (✅ Implemented)
+**Target Outcome**: Interviews for Senior MLOps Engineer roles where your **real projects + enterprise experience + production mindset** create compelling candidate profile.
 
-**UK LTD:** Footer shows company details, registered office
-**GDPR:** Privacy policy structure, contact for data requests
-**Security:** Proper meta tags, no sensitive data in repo
-**SEO:** Sitemap, robots.txt, structured data schemas
+## 💡 **Key Message**
 
-## 📈 Business Goals
+**"I don't just talk about MLOps - I build it."**
 
-**Primary:** Replace PDF CV with professional portfolio site
-**Secondary:** Lead generation for US/EU AI consulting clients
-**Success Metrics:** Contact form submissions, resume downloads, case study engagement
+Your portfolio demonstrates someone who:
+- Takes initiative to learn by building real systems
+- Applies enterprise-grade practices to personal projects  
+- Has actual production experience from established companies
+- Understands both technical implementation and business requirements
 
-## 🔄 Deployment (Vercel)
-
-**Domain:** serbyn.pro (www → apex redirect)
-**Build:** Automatic on push to main
-**Environment:** Production-ready with HTTPS
-**DNS:** CNAME records pointing to Vercel
+This authentic positioning is **much stronger** than fake enterprise metrics and shows genuine passion for the field.
 
 ---
 
-**Current Status:** M1 complete - professional marketing site deployed and ready to replace PDF CV. M2-M4 add depth and automation for enhanced portfolio showcase.
+**Updated Status**: Portfolio now positioned for authentic senior-level applications with real project foundation and clear enhancement path for maximum credibility.

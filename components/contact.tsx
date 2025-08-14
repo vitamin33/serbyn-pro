@@ -1,5 +1,9 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import {
+  BookConsultationButton,
+  ScheduleCallButton,
+} from '@/components/calendly-widget';
 
 export function Contact() {
   return (
@@ -48,52 +52,16 @@ export function Contact() {
                   </p>
                 </div>
 
-                {/* Calendly Placeholder - Replace with actual embed */}
-                <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-lg p-6 mb-6 border-2 border-dashed border-primary/20">
-                  <div className="text-center space-y-3">
-                    <svg
-                      className="w-12 h-12 text-primary/40 mx-auto"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                      />
-                    </svg>
-                    <p className="text-sm text-muted-foreground">
-                      Calendly embed will be placed here
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      Integration pending
-                    </p>
-                  </div>
+                <div className="w-full">
+                  <BookConsultationButton size="lg" />
                 </div>
 
-                <Button size="lg" className="w-full" asChild>
-                  <a
-                    href="mailto:serbyn.vitalii@gmail.com?subject=LLM Infrastructure Discovery Call&body=Hi Vitalii,%0A%0AI'm interested in discussing my LLM infrastructure needs.%0A%0AProject details:%0A- Current setup:%0A- Main challenges:%0A- Timeline:%0A%0ABest time to call:%0A%0AThanks!"
-                    className="flex items-center gap-2"
-                  >
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                      />
-                    </svg>
-                    Book Discovery Call
-                  </a>
-                </Button>
+                <div className="text-center mt-4">
+                  <p className="text-xs text-muted-foreground">
+                    30-minute consultation • Automatic timezone detection • Free
+                    discovery call
+                  </p>
+                </div>
               </CardContent>
             </Card>
 
@@ -180,7 +148,7 @@ export function Contact() {
                     </div>
                     <Button variant="outline" size="sm" asChild>
                       <a
-                        href="https://linkedin.com/in/vitalii-serbyn"
+                        href="https://www.linkedin.com/in/vitalii-serbyn-b517a083"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
