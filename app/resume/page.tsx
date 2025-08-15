@@ -388,7 +388,7 @@ export default function ResumePage() {
                   <ul className="list-disc list-inside space-y-1 ml-4">
                     <li>UK LTD available for contracting</li>
                     <li>Comfortable with W-8BEN-E for US clients</li>
-                    <li>Professional indemnity insurance</li>
+                    <li>Standard business terms available</li>
                   </ul>
                 </div>
                 <div>

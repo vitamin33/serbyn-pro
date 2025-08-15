@@ -245,7 +245,7 @@ export function Contact() {
                     clipRule="evenodd"
                   />
                 </svg>
-                <span>£2M insurance</span>
+                <span>Professional setup</span>
               </div>
               <div className="flex items-center gap-2">
                 <svg
