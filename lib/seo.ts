@@ -5,7 +5,7 @@ export const siteConfig = {
   description:
     'Reliable LLM systems with MLflow, vLLM, SLO-gated CI. Remote US/EU consultant.',
   url: 'https://serbyn.pro',
-  ogImage: 'https://serbyn.pro/og.png',
+  ogImage: 'https://serbyn.pro/logo.png',
   creator: 'Vitalii Serbyn',
   keywords: [
     'AI Engineer',
@@ -89,7 +89,7 @@ export function createMetadata({
     },
     icons: {
       icon: '/favicon.ico',
-      shortcut: '/favicon-16x16.png',
+      shortcut: '/favicon.ico',
       apple: '/apple-touch-icon.png',
     },
     manifest: '/site.webmanifest',
@@ -173,7 +173,7 @@ export function generatePersonSchema() {
     jobTitle: 'AI Engineer & MLOps Specialist',
     description: siteConfig.description,
     url: siteConfig.url,
-    image: siteConfig.ogImage,
+    image: 'https://serbyn.pro/logo.png',
     sameAs: [
       'https://www.linkedin.com/in/vitalii-serbyn-b517a083',
       'https://github.com/vitamin33',
@@ -206,7 +206,7 @@ export function generateOrganizationSchema() {
     '@type': 'Organization',
     name: 'Easelect LTD',
     url: siteConfig.url,
-    logo: `${siteConfig.url}/logo.png`,
+    logo: 'https://serbyn.pro/logo.png',
     description:
       'AI/ML engineering consulting specializing in LLM systems and MLOps.',
     address: {

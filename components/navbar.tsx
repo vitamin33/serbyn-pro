@@ -62,11 +62,18 @@ export function Navbar() {
           <div className="flex items-center">
             <Link
               href="/"
-              className="flex items-center space-x-2 font-bold text-xl hover:text-blue-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 rounded-md p-1"
+              className="flex items-center space-x-3 hover:opacity-80 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 rounded-md p-1"
               aria-label="Serbyn.pro - Home"
             >
-              <span className="font-mono text-blue-600">$</span>
-              <span>serbyn.pro</span>
+              <img 
+                src="/logo.svg" 
+                alt="Serbyn.pro Logo" 
+                className="h-8 w-8"
+              />
+              <div className="flex items-center space-x-1">
+                <span className="font-bold text-xl">serbyn</span>
+                <span className="font-mono text-blue-600">.pro</span>
+              </div>
             </Link>
           </div>
 

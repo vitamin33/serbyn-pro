@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <desc>serbyn.pro minimalist AI node logo</desc>
+  <g>
+    <line x1="512.00" y1="392.00" x2="512.00" y2="132.00" stroke="black" stroke-width="56" stroke-linecap="round" /><line x1="408.08" y1="572.00" x2="182.91" y2="702.00" stroke="black" stroke-width="56" stroke-linecap="round" /><line x1="615.92" y1="572.00" x2="841.09" y2="702.00" stroke="black" stroke-width="56" stroke-linecap="round" />
+    <circle cx="512.00" cy="512.00" r="120.00" fill="black"/>
+    <circle cx="512.00" cy="132.00" r="64.00" fill="white" stroke="black" stroke-width="56"/><circle cx="182.91" cy="702.00" r="64.00" fill="white" stroke="black" stroke-width="56"/><circle cx="841.09" cy="702.00" r="64.00" fill="white" stroke="black" stroke-width="56"/>
+  </g>
+</svg>
