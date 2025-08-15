@@ -154,6 +154,14 @@ export const pageMetadata = {
         'Real-world AI/ML implementations with measurable outcomes. Production systems serving 10M+ requests.',
       canonicalUrl: `${siteConfig.url}/case-studies`,
     }),
+
+  payments: () =>
+    createMetadata({
+      title: 'Payments & Terms',
+      description:
+        'Payment methods and terms for AI/ML engineering services. Crypto preferred (USDC/USDT), weekly retainers, milestone-based projects.',
+      canonicalUrl: `${siteConfig.url}/payments`,
+    }),
 };
 
 // JSON-LD structured data generators

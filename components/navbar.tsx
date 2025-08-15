@@ -25,6 +25,11 @@ const navigationLinks = [
     href: '/how-to-pay' as const,
     description: 'Payment methods',
   },
+  {
+    name: 'Payments',
+    href: '/payments' as const,
+    description: 'Terms & methods',
+  },
   { name: 'Contact', href: '#contact' as const, description: 'Get in touch' },
 ];
 

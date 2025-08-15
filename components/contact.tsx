@@ -4,6 +4,7 @@ import {
   BookConsultationButton,
   ScheduleCallButton,
 } from '@/components/calendly-widget';
+import { PaymentNote } from '@/components/payment-note';
 
 export function Contact() {
   return (
@@ -262,6 +263,9 @@ export function Contact() {
                 <span>UK LTD registered</span>
               </div>
             </div>
+
+            {/* Payment Information */}
+            <PaymentNote />
           </div>
         </div>
       </div>
