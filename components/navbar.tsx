@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const navigationLinks = [
   {
@@ -65,9 +66,11 @@ export function Navbar() {
               className="flex items-center space-x-3 hover:opacity-80 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 rounded-md p-1"
               aria-label="Serbyn.pro - Home"
             >
-              <img 
-                src="/logo.svg" 
-                alt="Serbyn.pro Logo" 
+              <Image
+                src="/logo.svg"
+                alt="Serbyn.pro Logo"
+                width={32}
+                height={32}
                 className="h-8 w-8"
               />
               <div className="flex items-center space-x-1">
