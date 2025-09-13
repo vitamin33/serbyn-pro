@@ -26,7 +26,7 @@ export function CaseStudyCard({ caseStudy }: CaseStudyCardProps) {
     if (score >= 90) return 'text-green-600 bg-green-50';
     if (score >= 80) return 'text-blue-600 bg-blue-50';
     if (score >= 70) return 'text-yellow-600 bg-yellow-50';
-    return 'text-gray-600 bg-gray-50';
+    return 'text-muted-foreground bg-muted';
   };
 
   return (

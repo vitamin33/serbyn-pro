@@ -4,19 +4,21 @@ export function FooterLegal() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-gray-200 bg-gray-50 no-print">
+    <footer className="border-t border-border bg-muted no-print">
       <div className="container py-12">
         <div className="grid gap-8 lg:grid-cols-3">
           {/* Company Information */}
           <div className="space-y-4">
             <div>
-              <h3 className="font-semibold text-gray-900 mb-2">Easelect LTD</h3>
-              <div className="space-y-1 text-sm text-gray-600">
+              <h3 className="font-semibold text-foreground mb-2">
+                Easelect LTD
+              </h3>
+              <div className="space-y-1 text-sm text-muted-foreground">
                 <p>Company Number: 15983917</p>
               </div>
             </div>
-            <div className="text-sm text-gray-600">
-              <p className="font-medium text-gray-900 mb-1">
+            <div className="text-sm text-muted-foreground">
+              <p className="font-medium text-foreground mb-1">
                 Registered Office:
               </p>
               <address className="not-italic">
@@ -34,8 +36,8 @@ export function FooterLegal() {
           {/* Contact Information */}
           <div className="space-y-4">
             <div>
-              <h3 className="font-semibold text-gray-900 mb-2">Contact</h3>
-              <div className="space-y-1 text-sm text-gray-600">
+              <h3 className="font-semibold text-foreground mb-2">Contact</h3>
+              <div className="space-y-1 text-sm text-muted-foreground">
                 <p>
                   <a
                     href="mailto:serbyn.vitalii@gmail.com"
@@ -48,7 +50,7 @@ export function FooterLegal() {
                 <p>Serving US/EU clients</p>
               </div>
             </div>
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-muted-foreground">
               <p>Business Hours: Monday-Friday, 9AM-6PM GMT</p>
             </div>
           </div>
@@ -56,36 +58,36 @@ export function FooterLegal() {
           {/* Legal Links */}
           <div className="space-y-4">
             <div>
-              <h3 className="font-semibold text-gray-900 mb-2">Legal</h3>
+              <h3 className="font-semibold text-foreground mb-2">Legal</h3>
               <nav className="space-y-2 text-sm" aria-label="Legal pages">
                 <Link
                   href={'/legal/privacy' as any}
-                  className="block text-gray-600 hover:text-blue-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 rounded"
+                  className="block text-muted-foreground hover:text-blue-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 rounded"
                 >
                   Privacy Policy
                 </Link>
                 <Link
                   href={'/legal/terms' as any}
-                  className="block text-gray-600 hover:text-blue-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 rounded"
+                  className="block text-muted-foreground hover:text-blue-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 rounded"
                 >
                   Terms of Service
                 </Link>
                 <Link
                   href={'/legal/cookies' as any}
-                  className="block text-gray-600 hover:text-blue-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 rounded"
+                  className="block text-muted-foreground hover:text-blue-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 rounded"
                 >
                   Cookie Policy
                 </Link>
               </nav>
             </div>
-            <div className="text-sm text-gray-600"></div>
+            <div className="text-sm text-muted-foreground"></div>
           </div>
         </div>
 
         {/* Bottom Bar */}
         <div className="mt-8 pt-8 border-t border-gray-200">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-muted-foreground">
               <p>
                 © {currentYear} Easelect LTD. All rights reserved.
                 <span className="ml-2 inline-block">
@@ -94,7 +96,7 @@ export function FooterLegal() {
                 </span>
               </p>
             </div>
-            <div className="flex items-center gap-4 text-sm text-gray-600">
+            <div className="flex items-center gap-4 text-sm text-muted-foreground">
               <a
                 href="https://find-and-update.company-information.service.gov.uk/company/15983917"
                 target="_blank"
@@ -113,9 +115,9 @@ export function FooterLegal() {
       </div>
 
       {/* Compliance Notice */}
-      <div className="bg-gray-100 py-3">
+      <div className="bg-muted/50 py-3">
         <div className="container">
-          <p className="text-xs text-gray-600 text-center">
+          <p className="text-xs text-muted-foreground text-center">
             This website complies with UK GDPR, Companies Act 2006, and VAT
             regulations.
             <span className="ml-2">

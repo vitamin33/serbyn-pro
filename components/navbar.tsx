@@ -22,14 +22,9 @@ const navigationLinks = [
     description: 'Full work history',
   },
   {
-    name: 'How to Pay',
-    href: '/how-to-pay' as const,
-    description: 'Payment methods',
-  },
-  {
     name: 'Payments',
     href: '/payments' as const,
-    description: 'Terms & methods',
+    description: 'Payment methods & terms',
   },
   { name: 'Contact', href: '#contact' as const, description: 'Get in touch' },
 ];
@@ -54,7 +49,7 @@ export function Navbar() {
 
   return (
     <nav
-      className="sticky top-0 z-50 border-b border-gray-200 bg-white/80 backdrop-blur-md supports-[backdrop-filter]:bg-white/60"
+      className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60"
       aria-label="Main navigation"
     >
       <div className="container">
@@ -62,7 +57,7 @@ export function Navbar() {
           {/* Logo */}
           <div className="flex items-center">
             <Link
-              href="/"
+              href={'/' as any}
               className="flex items-center space-x-3 hover:opacity-80 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 rounded-md p-1"
               aria-label="Serbyn.pro - Home"
             >
@@ -160,20 +155,20 @@ export function Navbar() {
         }`}
         aria-hidden={!isMobileMenuOpen}
       >
-        <div className="border-t border-gray-200 bg-white px-4 py-2 shadow-lg">
+        <div className="border-t border-border bg-background px-4 py-2 shadow-lg">
           <ul className="space-y-1" role="menu">
             {navigationLinks.map(link => (
               <li key={link.name} role="none">
                 <Link
                   href={link.href as any}
-                  className="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
+                  className="block rounded-md px-3 py-2 text-base font-medium text-foreground hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   role="menuitem"
                   aria-label={link.description}
                   onClick={closeMobileMenu}
                 >
                   <div>
                     <div className="font-medium">{link.name}</div>
-                    <div className="text-sm text-gray-500">
+                    <div className="text-sm text-muted-foreground">
                       {link.description}
                     </div>
                   </div>

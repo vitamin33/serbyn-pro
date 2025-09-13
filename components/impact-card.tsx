@@ -87,7 +87,7 @@ export function ImpactCard({
             {outcomes.map((outcome, index) => (
               <div
                 key={index}
-                className="flex items-start gap-3 p-3 rounded-lg bg-white/50"
+                className="flex items-start gap-3 p-3 rounded-lg bg-muted/30"
               >
                 <div className="h-2 w-2 rounded-full bg-green-500 mt-2 flex-shrink-0" />
                 <span className="text-sm font-medium">{outcome}</span>

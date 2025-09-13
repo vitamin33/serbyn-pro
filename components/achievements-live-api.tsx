@@ -32,14 +32,23 @@ export function AchievementsLiveAPI({
   } = useSWR(
     useStatic
       ? null
-      : `${process.env.NEXT_PUBLIC_ACHIEVEMENT_API_URL}/api/v1/portfolio/achievements`,
+      : `${process.env.NEXT_PUBLIC_ACHIEVEMENT_API_URL}/achievements/`,
     fetcher,
     {
       refreshInterval: 300000, // 5 minutes
       revalidateOnFocus: false,
-      onError: () => {
-        console.log('Live API failed, falling back to static data');
+      onError: err => {
+        console.error('❌ API Error:', err);
+        console.log('🔗 API URL:', process.env.NEXT_PUBLIC_ACHIEVEMENT_API_URL);
+        console.log('📊 Falling back to static data');
         setUseStatic(true);
+      },
+      onSuccess: data => {
+        console.log('✅ API Success:', data?.total || 0, 'achievements loaded');
+        console.log(
+          '💰 Total value:',
+          data?.meta?.total_business_value || 'N/A'
+        );
       },
     }
   );
@@ -107,6 +116,7 @@ export function AchievementsLiveAPI({
         showFilters={showFilters}
         limit={limit}
         featuredOnly={featuredOnly}
+        liveData={liveData}
       />
     </>
   );

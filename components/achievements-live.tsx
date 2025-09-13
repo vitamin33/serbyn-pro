@@ -236,6 +236,7 @@ interface AchievementsLiveProps {
   showFilters?: boolean;
   limit?: number;
   featuredOnly?: boolean;
+  liveData?: any;
 }
 
 export function AchievementsLive({
@@ -243,11 +244,59 @@ export function AchievementsLive({
   showFilters = true,
   limit = 6,
   featuredOnly = false,
+  liveData,
 }: AchievementsLiveProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedTag, setSelectedTag] = useState<string>('all');
 
-  const data: AchievementsData = achievementsData;
+  // Transform live API data to match static data format
+  const transformLiveData = (apiData: any): AchievementsData => {
+    if (!apiData || !apiData.items) return achievementsData;
+
+    return {
+      meta: {
+        generated_at: new Date().toISOString(),
+        total_achievements: apiData.total || 0,
+        total_business_value: 0, // Will be calculated from items
+        total_time_saved_hours: 0, // Will be calculated from items
+        avg_impact_score: 0, // Will be calculated from items
+      },
+      achievements: apiData.items.map((achievement: any) => ({
+        id: achievement.id.toString(),
+        date: achievement.completed_at,
+        title: achievement.title,
+        category: achievement.category,
+        tags: achievement.skills_demonstrated || achievement.tags || [],
+        skills: achievement.skills_demonstrated || achievement.skills || [],
+        impact_score: achievement.impact_score,
+        complexity_score:
+          achievement.complexity_score || achievement.impact_score,
+        business_value: parseFloat(
+          achievement.business_value?.replace(/[^0-9.-]/g, '') || '0'
+        ),
+        time_saved_hours: achievement.time_saved_hours || 0,
+        duration_hours: achievement.duration_hours || 0,
+        performance_improvement: achievement.performance_improvement_pct || 0,
+        description: achievement.description || achievement.summary || '',
+        summary: achievement.description || achievement.summary || '',
+        technical_details: achievement.ai_technical_analysis || '',
+        evidence: {
+          before_metrics: achievement.metrics_before || {},
+          after_metrics: achievement.metrics_after || {},
+          pr_number: achievement.metrics_after?.pr_number,
+        },
+        link:
+          achievement.source_url || achievement.metrics_after?.repo_url || '',
+        source_type: 'api',
+        featured: achievement.impact_score >= 85,
+        portfolio_ready: achievement.portfolio_ready !== false,
+      })),
+    };
+  };
+
+  const data: AchievementsData = liveData
+    ? transformLiveData(liveData)
+    : achievementsData;
 
   // Get unique categories and tags
   const categories = useMemo(() => {

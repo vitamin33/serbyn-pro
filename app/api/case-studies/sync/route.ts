@@ -129,7 +129,8 @@ export async function POST(request: Request) {
     const { apiUrl, apiKey } = await request.json();
 
     // Default to environment variables if not provided
-    const achievementApiUrl = apiUrl || process.env.ACHIEVEMENT_API_URL;
+    const achievementApiUrl =
+      apiUrl || process.env.NEXT_PUBLIC_ACHIEVEMENT_API_URL;
     const achievementApiKey = apiKey || process.env.ACHIEVEMENT_API_KEY;
 
     if (!achievementApiUrl) {
@@ -140,15 +141,12 @@ export async function POST(request: Request) {
     }
 
     // Fetch latest achievements from achievement_collector
-    const response = await fetch(
-      `${achievementApiUrl}/api/v1/portfolio/generate`,
-      {
-        headers: {
-          Authorization: `Bearer ${achievementApiKey}`,
-          'Content-Type': 'application/json',
-        },
-      }
-    );
+    const response = await fetch(`${achievementApiUrl}/export/web-portfolio`, {
+      headers: {
+        Authorization: `Bearer ${achievementApiKey}`,
+        'Content-Type': 'application/json',
+      },
+    });
 
     if (!response.ok) {
       throw new Error(`Achievement API error: ${response.status}`);

@@ -159,7 +159,7 @@ export const pageMetadata = {
     createMetadata({
       title: 'Payments & Terms',
       description:
-        'Payment methods and terms for AI/ML engineering services. Crypto preferred (USDC/USDT), weekly retainers, milestone-based projects.',
+        'Payment methods and terms for AI/ML engineering services. Crypto preferred (USDC/USDT) with ACH, SEPA, Wise alternatives. Transparent pricing $150-200/hr.',
       canonicalUrl: `${siteConfig.url}/payments`,
     }),
 };

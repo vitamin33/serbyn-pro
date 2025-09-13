@@ -17,6 +17,7 @@ export function MetricsComparison({
     // Convert to numbers if they're strings with units
     const parseMetric = (value: string | number): number | null => {
       if (typeof value === 'number') return value;
+      if (value === null || value === undefined) return null;
 
       const str = value.toString().toLowerCase();
 
@@ -116,57 +117,63 @@ export function MetricsComparison({
       </CardHeader>
       <CardContent>
         <div className="grid gap-4">
-          {Object.keys(beforeMetrics).map(key => {
-            const beforeValue = beforeMetrics[key];
-            const afterValue = afterMetrics[key];
-            const improvement = calculateImprovement(beforeValue, afterValue);
-            const trendIcon = getTrendIcon(improvement, key);
-            const improvementText = getImprovementText(improvement, key);
+          {Object.keys(beforeMetrics)
+            .filter(
+              key =>
+                beforeMetrics[key] !== undefined &&
+                afterMetrics[key] !== undefined
+            )
+            .map(key => {
+              const beforeValue = beforeMetrics[key];
+              const afterValue = afterMetrics[key];
+              const improvement = calculateImprovement(beforeValue, afterValue);
+              const trendIcon = getTrendIcon(improvement, key);
+              const improvementText = getImprovementText(improvement, key);
 
-            return (
-              <div
-                key={key}
-                className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 rounded-lg bg-muted/30"
-              >
-                <div className="md:col-span-1">
-                  <h4 className="font-medium capitalize mb-1">
-                    {key.replace(/_/g, ' ')}
-                  </h4>
-                  {improvement !== null && (
-                    <div className="flex items-center gap-1 text-sm">
-                      {trendIcon}
-                      <span className="font-medium">{improvementText}</span>
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex items-center justify-between md:col-span-2">
-                  {/* Before */}
-                  <div className="text-center">
-                    <div className="text-sm text-muted-foreground mb-1">
-                      Before
-                    </div>
-                    <div className="text-lg font-semibold">
-                      {formatMetricValue(beforeValue)}
-                    </div>
+              return (
+                <div
+                  key={key}
+                  className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 rounded-lg bg-muted/30"
+                >
+                  <div className="md:col-span-1">
+                    <h4 className="font-medium capitalize mb-1">
+                      {key.replace(/_/g, ' ')}
+                    </h4>
+                    {improvement !== null && (
+                      <div className="flex items-center gap-1 text-sm">
+                        {trendIcon}
+                        <span className="font-medium">{improvementText}</span>
+                      </div>
+                    )}
                   </div>
 
-                  {/* Arrow */}
-                  <ArrowRight className="h-4 w-4 text-muted-foreground mx-4" />
-
-                  {/* After */}
-                  <div className="text-center">
-                    <div className="text-sm text-muted-foreground mb-1">
-                      After
+                  <div className="flex items-center justify-between md:col-span-2">
+                    {/* Before */}
+                    <div className="text-center">
+                      <div className="text-sm text-muted-foreground mb-1">
+                        Before
+                      </div>
+                      <div className="text-lg font-semibold">
+                        {formatMetricValue(beforeValue)}
+                      </div>
                     </div>
-                    <div className="text-lg font-semibold text-green-600">
-                      {formatMetricValue(afterValue)}
+
+                    {/* Arrow */}
+                    <ArrowRight className="h-4 w-4 text-muted-foreground mx-4" />
+
+                    {/* After */}
+                    <div className="text-center">
+                      <div className="text-sm text-muted-foreground mb-1">
+                        After
+                      </div>
+                      <div className="text-lg font-semibold text-green-600">
+                        {formatMetricValue(afterValue)}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
         </div>
       </CardContent>
     </Card>
