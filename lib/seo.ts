@@ -1,27 +1,25 @@
 import type { Metadata } from 'next';
 
 export const siteConfig = {
-  name: 'Vitalii Serbyn — AI Engineer & MLOps Specialist',
+  name: 'Vitalii Serbyn — AI Systems Architect',
   description:
-    'Reliable LLM systems with MLflow, vLLM, SLO-gated CI. Remote US/EU consultant.',
+    'I design autonomous agent systems, trust-layered orchestration, and production AI infrastructure.',
   url: 'https://serbyn.pro',
   ogImage: 'https://serbyn.pro/logo.png',
   creator: 'Vitalii Serbyn',
   keywords: [
-    'AI Engineer',
-    'MLOps Specialist',
-    'LLM Systems',
-    'Machine Learning',
-    'vLLM',
-    'MLflow',
-    'RAG',
-    'SLO',
-    'Cost Optimization',
-    'Remote Consultant',
-    'US/EU Clients',
-    'Production ML',
-    'Model Deployment',
+    'Agent Orchestration',
+    'Autonomous Agents',
+    'Trust Layers',
     'AI Infrastructure',
+    'AI Systems Architect',
+    'LLM Systems',
+    'MLOps',
+    'Multi-Agent Systems',
+    'Production AI',
+    'Cost Optimization',
+    'AI Platform Engineering',
+    'Remote Consultant',
   ],
 };
 
@@ -100,7 +98,6 @@ export function createMetadata({
   };
 }
 
-// Page-specific metadata generators
 export const pageMetadata = {
   home: () =>
     createMetadata({
@@ -111,16 +108,24 @@ export const pageMetadata = {
     createMetadata({
       title: 'About',
       description:
-        'Senior AI/ML Engineer with 8+ years building production-scale LLM systems. Specialized in cost optimization and enterprise MLOps.',
+        '12+ years shipping production systems. From mobile apps at EPAM/GlobalLogic to autonomous AI agent orchestration. Kyiv-based, UK LTD.',
       canonicalUrl: `${siteConfig.url}/about`,
     }),
 
-  howToPay: () =>
+  work: () =>
     createMetadata({
-      title: 'How to Pay',
+      title: 'Work',
       description:
-        'Payment methods and invoicing for AI/ML engineering services. ACH, SEPA, Stripe, and Wise transfers accepted.',
-      canonicalUrl: `${siteConfig.url}/how-to-pay`,
+        'Real projects: 15-agent autonomous system, signal-driven AI platform, multi-project enterprise delivery. Architecture case studies with authentic metrics.',
+      canonicalUrl: `${siteConfig.url}/work`,
+    }),
+
+  blog: () =>
+    createMetadata({
+      title: 'Blog',
+      description:
+        'Technical writing on agent orchestration, trust layers, cost engineering, and production AI systems.',
+      canonicalUrl: `${siteConfig.url}/blog`,
     }),
 
   privacy: () =>
@@ -135,7 +140,7 @@ export const pageMetadata = {
     createMetadata({
       title: 'Terms of Service',
       description:
-        'Terms of service for AI/ML engineering consulting. Clear service delivery and liability terms.',
+        'Terms of service for AI systems architecture consulting. Clear service delivery and liability terms.',
       canonicalUrl: `${siteConfig.url}/legal/terms`,
     }),
 
@@ -143,34 +148,17 @@ export const pageMetadata = {
     createMetadata({
       title: 'Resume',
       description:
-        'Detailed technical resume and work history. Download PDF or view online with ATS-optimized format.',
+        'AI Systems Architect resume. 12+ years production systems, autonomous agent orchestration, MLOps. Download PDF or view online.',
       canonicalUrl: `${siteConfig.url}/resume`,
-    }),
-
-  caseStudies: () =>
-    createMetadata({
-      title: 'Case Studies',
-      description:
-        'Real-world AI/ML implementations with measurable outcomes. Production systems serving 10M+ requests.',
-      canonicalUrl: `${siteConfig.url}/case-studies`,
-    }),
-
-  payments: () =>
-    createMetadata({
-      title: 'Payments & Terms',
-      description:
-        'Payment methods and terms for AI/ML engineering services. Crypto preferred (USDC/USDT) with ACH, SEPA, Wise alternatives. Transparent pricing $150-200/hr.',
-      canonicalUrl: `${siteConfig.url}/payments`,
     }),
 };
 
-// JSON-LD structured data generators
 export function generatePersonSchema() {
   return {
     '@context': 'https://schema.org',
     '@type': 'Person',
     name: 'Vitalii Serbyn',
-    jobTitle: 'AI Engineer & MLOps Specialist',
+    jobTitle: 'AI Systems Architect',
     description: siteConfig.description,
     url: siteConfig.url,
     image: 'https://serbyn.pro/logo.png',
@@ -190,12 +178,14 @@ export function generatePersonSchema() {
       addressRegion: 'Kyiv',
     },
     knowsAbout: [
-      'Machine Learning',
-      'Large Language Models',
+      'Agent Orchestration',
+      'Autonomous Agent Systems',
+      'Trust-Layered AI',
+      'Multi-Agent Systems',
       'MLOps',
       'AI Infrastructure',
-      'Model Deployment',
-      'Cost Optimization',
+      'Cost Engineering',
+      'Production AI Systems',
     ],
   };
 }
@@ -208,7 +198,7 @@ export function generateOrganizationSchema() {
     url: siteConfig.url,
     logo: 'https://serbyn.pro/logo.png',
     description:
-      'AI/ML engineering consulting specializing in LLM systems and MLOps.',
+      'AI systems architecture consulting. Autonomous agent orchestration, trust layers, and production AI infrastructure.',
     address: {
       '@type': 'PostalAddress',
       streetAddress: 'Office 12, Initial Business Centre, Wilson Business Park',

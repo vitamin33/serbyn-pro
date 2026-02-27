@@ -1,0 +1,96 @@
+---
+title: 'Ascend: Agent Orchestration Daemon'
+slug: ascend-autonomous-agents
+summary: 'Self-hosted orchestration daemon with trust-gated execution (L0-L4), policy engine, and audit logging. 19 agents managing 4 live projects.'
+description: 'Autonomous agent orchestration daemon with trust-layered L0-L4 execution, YAML policy engine, budget guards, and audit logging. 19 agents manage code review, deployments, monitoring, and client reports across 4 production projects.'
+category: platform
+project_type: primary
+highlight_metrics:
+  - '19 agents (12 mature)'
+  - 'L0-L4 trust gating'
+  - '4 live projects managed'
+  - '~2h/day automated'
+impact_score: 96
+tech:
+  - Python
+  - aiohttp
+  - SQLite
+  - YAML policies
+  - OpenClaw gateway
+  - GitHub Actions
+outcomes:
+  - '19 agents built, 12 operating at mature trust levels (L2+)'
+  - '~2 hours of daily work automated across 4 projects'
+  - 'Trust-gated execution prevents unauthorized agent actions'
+  - 'Budget guards enforce per-agent cost limits with auto-demotion'
+date: '2024-12-01'
+links:
+  repo: 'https://github.com/vitamin33'
+cover: ''
+featured: true
+portfolio_ready: true
+seo_keywords:
+  - agent orchestration
+  - autonomous agents
+  - trust layers
+  - multi-agent systems
+  - policy engine
+  - AI infrastructure
+---
+
+## The Challenge
+
+Running 4 production projects simultaneously created a scaling problem. Manual context-switching between repositories, deployment pipelines, and monitoring systems consumed hours daily. Standard automation tools (scripts, cron jobs) lacked the judgment to handle edge cases - they either did too much or too little.
+
+The core question: how do you give AI agents enough autonomy to be useful while maintaining enough control to be safe?
+
+## Architecture
+
+Ascend uses a layered architecture where every agent action flows through a trust and policy evaluation pipeline.
+
+### Agent Runtime
+
+Each agent is a Python process with an async event loop (aiohttp), running in either subprocess or tmux sessions depending on trust level. Agents declare their capabilities, required permissions, and trust level in YAML configuration files. The runtime evaluates each action request against the agent's trust level and applicable policies before execution.
+
+Agents span the full operational lifecycle: `morning_briefing` generates daily digests, `health_monitor` runs endpoint checks, `pr_comment_watcher` and `code_review_screener` handle PR review, `dependabot_merger` auto-merges safe dependency updates, `incident_triage` classifies Sentry errors, `client_report` generates weekly status reports, and `dev_planner` creates prioritized daily work plans.
+
+### Trust Levels (L0-L4)
+
+- **L0 - Observer**: Read-only access. Can query systems, read logs, fetch metrics. Cannot modify anything. Runs as subprocess.
+- **L1 - Contributor**: Can draft content, post PR comments, and propose changes — but execution requires human approval.
+- **L2 - Trusted**: Can auto-execute within policy boundaries with notification. Handles health checks, dependency merges, and test runs.
+- **L3 - Senior**: Cross-project workflows without human approval. Manages routine deployments, monitoring alerts, and coordinated updates across repositories.
+- **L4 - Architect**: System-level changes with full audit trail. Reserved for the meta-orchestrator that coordinates other agents and handles novel situations.
+
+### Policy Engine
+
+Policies are defined in YAML and evaluated at runtime. Each policy specifies:
+
+- **Scope**: Which agents and actions it applies to
+- **Conditions**: When the policy is active (time windows, system state, cost thresholds)
+- **Constraints**: What limits apply (rate limits, cost budgets, resource boundaries)
+- **Escalation**: What happens when an action exceeds policy bounds
+
+### Cost Controls
+
+Every agent action has a cost estimate. The system tracks cumulative daily/weekly/monthly costs and enforces budgets at the policy level. When an agent approaches its budget limit, it automatically downgrades to a lower trust level (e.g., L3 → L1) rather than stopping entirely.
+
+## Results
+
+After iterative development across 12+ sprints:
+
+- **19 agents built**, 12 operating at mature trust levels (L2+)
+- **4 production projects managed**: code review, deployments, monitoring, client reports
+- **~2 hours/day of manual work automated**: cross-project status checks, PR screening, dependency merges, client report generation, deployment monitoring
+- **Zero unauthorized actions**: the trust/policy system catches and blocks every out-of-bounds request
+- **Agent costs under $1/month**: script-based agents (health checks, test runners) cost $0; LLM-powered agents average ~$0.02-0.05 per run
+
+## Key Learnings
+
+**Start at L0, earn L1.** Every agent begins as an Observer. Promotion to Contributor requires demonstrated reliability, not upfront trust. This approach caught several agent bugs during the observation phase that would have caused problems at higher trust levels.
+
+**Policies over permissions.** Role-based access control is too coarse for agent systems. Policy-based control lets you express nuanced rules like "can deploy to staging during business hours if test coverage > 80% and cost delta < $5/month."
+
+**Cost awareness is a feature.** Agents that understand their cost impact make better decisions. When the multi-model routing agent knows that GPT-4 costs 30x more than a local model, it naturally routes appropriately without explicit rules.
+
+**Gradual autonomy beats binary control.** The L0-L4 spectrum means you can give agents exactly the right amount of freedom. Most agents don't need Architect-level access — they work well at Trusted/Senior (L2/L3) with clear policy boundaries.

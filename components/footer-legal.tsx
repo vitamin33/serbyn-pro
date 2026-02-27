@@ -13,9 +13,12 @@ export function FooterLegal() {
               <h3 className="font-semibold text-foreground mb-2">
                 Easelect LTD
               </h3>
-              <div className="space-y-1 text-sm text-muted-foreground">
-                <p>Company Number: 15983917</p>
-              </div>
+              <p className="text-sm text-muted-foreground">
+                AI Systems Architecture
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Company Number: 15983917
+              </p>
             </div>
             <div className="text-sm text-muted-foreground">
               <p className="font-medium text-foreground mb-1">
@@ -41,17 +44,14 @@ export function FooterLegal() {
                 <p>
                   <a
                     href="mailto:serbyn.vitalii@gmail.com"
-                    className="hover:text-blue-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 rounded"
+                    className="hover:text-primary transition-colors"
                   >
                     serbyn.vitalii@gmail.com
                   </a>
                 </p>
                 <p>Remote from Kyiv, Ukraine</p>
-                <p>Serving US/EU clients</p>
+                <p>GMT+2 timezone</p>
               </div>
-            </div>
-            <div className="text-sm text-muted-foreground">
-              <p>Business Hours: Monday-Friday, 9AM-6PM GMT</p>
             </div>
           </div>
 
@@ -62,37 +62,29 @@ export function FooterLegal() {
               <nav className="space-y-2 text-sm" aria-label="Legal pages">
                 <Link
                   href={'/legal/privacy' as any}
-                  className="block text-muted-foreground hover:text-blue-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 rounded"
+                  className="block text-muted-foreground hover:text-primary transition-colors"
                 >
                   Privacy Policy
                 </Link>
                 <Link
                   href={'/legal/terms' as any}
-                  className="block text-muted-foreground hover:text-blue-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 rounded"
+                  className="block text-muted-foreground hover:text-primary transition-colors"
                 >
                   Terms of Service
                 </Link>
-                <Link
-                  href={'/legal/cookies' as any}
-                  className="block text-muted-foreground hover:text-blue-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 rounded"
-                >
-                  Cookie Policy
-                </Link>
               </nav>
             </div>
-            <div className="text-sm text-muted-foreground"></div>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-8 pt-8 border-t border-gray-200">
+        <div className="mt-8 pt-8 border-t border-border">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="text-sm text-muted-foreground">
               <p>
-                © {currentYear} Easelect LTD. All rights reserved.
+                &copy; {currentYear} Easelect LTD. All rights reserved.
                 <span className="ml-2 inline-block">
-                  <span className="sr-only">Location:</span>
-                  Incorporated in England & Wales
+                  Incorporated in England &amp; Wales
                 </span>
               </p>
             </div>
@@ -101,34 +93,15 @@ export function FooterLegal() {
                 href="https://find-and-update.company-information.service.gov.uk/company/15983917"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-blue-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 rounded"
+                className="hover:text-primary transition-colors"
                 aria-label="View company information at Companies House (opens in new tab)"
               >
                 Companies House
-                <span className="sr-only"> (opens in new tab)</span>
               </a>
-              <span className="text-gray-300">|</span>
+              <span className="text-border">|</span>
               <span className="font-mono text-xs">UK LTD</span>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Compliance Notice */}
-      <div className="bg-muted/50 py-3">
-        <div className="container">
-          <p className="text-xs text-muted-foreground text-center">
-            This website complies with UK GDPR, Companies Act 2006, and VAT
-            regulations.
-            <span className="ml-2">
-              <Link
-                href={'/legal/compliance' as any}
-                className="hover:text-blue-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 rounded"
-              >
-                View compliance details
-              </Link>
-            </span>
-          </p>
         </div>
       </div>
     </footer>

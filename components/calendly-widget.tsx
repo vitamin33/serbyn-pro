@@ -19,7 +19,7 @@ export function CalendlyButton({
   variant = 'default',
   size = 'default',
   className = '',
-  children = 'Book a Call',
+  children = 'Book Architecture Review',
   mode = 'popup',
 }: CalendlyButtonProps) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);

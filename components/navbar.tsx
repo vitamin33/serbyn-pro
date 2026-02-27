@@ -6,27 +6,21 @@ import Image from 'next/image';
 
 const navigationLinks = [
   {
-    name: 'Proof',
-    href: '#proof' as const,
-    description: 'Evidence of my work',
+    name: 'Work',
+    href: '/work' as const,
+    description: 'Projects and case studies',
   },
-  { name: 'Services', href: '#services' as const, description: 'What I offer' },
   {
-    name: 'Case Studies',
-    href: '/case-studies' as const,
-    description: 'Project examples',
+    name: 'About',
+    href: '/about' as const,
+    description: 'Background and principles',
   },
   {
     name: 'Resume',
     href: '/resume' as const,
     description: 'Full work history',
   },
-  {
-    name: 'Payments',
-    href: '/payments' as const,
-    description: 'Payment methods & terms',
-  },
-  { name: 'Contact', href: '#contact' as const, description: 'Get in touch' },
+  { name: 'Blog', href: '/blog' as const, description: 'Technical writing' },
 ];
 
 export function Navbar() {
@@ -34,7 +28,6 @@ export function Navbar() {
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
-    // Prevent body scroll when mobile menu is open
     if (typeof window !== 'undefined') {
       document.body.classList.toggle('mobile-menu-open', !isMobileMenuOpen);
     }
@@ -58,7 +51,7 @@ export function Navbar() {
           <div className="flex items-center">
             <Link
               href={'/' as any}
-              className="flex items-center space-x-3 hover:opacity-80 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 rounded-md p-1"
+              className="flex items-center space-x-3 hover:opacity-80 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-md p-1"
               aria-label="Serbyn.pro - Home"
             >
               <Image
@@ -70,7 +63,7 @@ export function Navbar() {
               />
               <div className="flex items-center space-x-1">
                 <span className="font-bold text-xl">serbyn</span>
-                <span className="font-mono text-blue-600">.pro</span>
+                <span className="font-mono text-primary">.pro</span>
               </div>
             </Link>
           </div>
@@ -85,9 +78,6 @@ export function Navbar() {
                     className="btn btn-ghost px-3 py-2 text-sm"
                     role="menuitem"
                     aria-label={link.description}
-                    onClick={
-                      link.href.startsWith('#') ? closeMobileMenu : undefined
-                    }
                   >
                     {link.name}
                   </Link>

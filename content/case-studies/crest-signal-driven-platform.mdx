@@ -1,0 +1,126 @@
+---
+title: 'Crest: AI Content Platform with Signal-Driven Optimization'
+slug: crest-signal-driven-platform
+summary: 'AI content platform with a 6-stage LangGraph pipeline, Thompson Sampling for variant optimization, multi-model routing (GPT-4o/3.5), and multi-platform publishing. Deployed live with 91+ tests.'
+description: 'Production AI content platform with LangGraph AI pipeline, multi-model routing (GPT-4o/GPT-3.5), Thompson Sampling for content optimization, MLflow experiment tracking, and multi-platform publishing to Twitter, LinkedIn, and Telegram.'
+category: platform
+project_type: startup
+highlight_metrics:
+  - '6-stage LangGraph pipeline'
+  - 'GPT-4o/3.5 model routing'
+  - 'Thompson Sampling A/B'
+  - '91+ unit tests'
+impact_score: 94
+tech:
+  - Python
+  - FastAPI
+  - LangGraph
+  - Docker
+  - PostgreSQL
+  - Redis
+  - RabbitMQ
+  - Qdrant
+  - MLflow
+  - Prometheus
+outcomes:
+  - '6-stage LangGraph pipeline with multi-model routing'
+  - 'Multi-model routing: GPT-4o for creative hooks, GPT-3.5 for body generation'
+  - 'Thompson Sampling variant optimization with 91+ unit tests'
+  - 'Live production deployment with multi-platform publishing (Twitter, LinkedIn, Telegram)'
+date: '2024-10-01'
+links:
+  repo: 'https://github.com/vitamin33/threads-agent'
+cover: ''
+featured: true
+portfolio_ready: true
+seo_keywords:
+  - LangGraph
+  - Thompson Sampling
+  - multi-model routing
+  - MLflow
+  - AI platform
+  - AI content pipeline
+---
+
+## The Challenge
+
+Building a content generation platform that optimizes itself. The system needed to research trends, generate content across multiple personas, post to social media, and learn which content patterns work — all automatically. Traditional A/B testing was too slow for this scale, and running inference on expensive models for every task would make the platform unsustainable.
+
+Three constraints had to be solved simultaneously: inference cost control, content quality optimization, and operational observability across the platform.
+
+## Architecture
+
+### Platform Architecture
+
+The platform runs as a Docker Compose-based system with core services working together: an Orchestrator (FastAPI gateway with rate limiting and circuit breakers), Persona Runtime (LangGraph AI workflow engine), Celery workers for async task processing via RabbitMQ, AI/ML services (RAG pipeline, pattern analysis, learning flywheel), and supporting infrastructure (monitoring, cost tracking, dashboards).
+
+Each service is independently deployable and communicates through well-defined APIs and message queues. The system is deployed live and serving requests in production.
+
+### LangGraph AI Pipeline
+
+Content generation uses a structured 6-stage LangGraph workflow with observable state transitions:
+
+- **Brief**: Receive persona config and topic signals
+- **Ideas**: Query SearXNG for real-time trend data and generate content angles
+- **Hook**: Generate attention-grabbing opening (GPT-4o — creative decisions need the best model)
+- **Body**: Generate full content (GPT-3.5-turbo — significantly cheaper, sufficient quality for body text)
+- **Guardrail**: Prompt injection detection and AI safety checks
+- **Publish**: Final formatting, variant tagging, and multi-platform distribution
+
+Each node tracks latency, token usage, and cost metrics. The pipeline supports SSE streaming for real-time progress updates. End-to-end workflow is verified through automated E2E tests covering Brief → Ideas → Content → Publication.
+
+### Multi-Model Routing
+
+Instead of using one model for everything, tasks are routed by complexity:
+
+- **GPT-4o**: Hook generation, creative decisions, complex reasoning
+- **GPT-3.5-turbo**: Content body generation, formatting, summarization
+
+This routing reduces inference costs by routing expensive model calls only to tasks where quality difference is measurable (hooks drive engagement, bodies need to be good enough).
+
+### Thompson Sampling for Variant Optimization
+
+Content variants are optimized using Thompson Sampling (multi-armed bandit) instead of traditional A/B testing. The implementation uses Beta distribution sampling:
+
+- Each variant tracks impressions and successes
+- Selection samples from Beta(successes + 1, impressions - successes + 1)
+- 70% exploitation of proven variants, 30% exploration of new ones
+- Cold start handling returns random variants when no history exists
+- Fatigue detection prevents pattern staleness through diversity selection
+
+This converges faster than fixed-split testing — critical when testing across many personas with thin per-variant traffic. The implementation is backed by 91+ unit tests.
+
+### Multi-Platform Publishing
+
+The platform publishes content across multiple social platforms:
+
+- **Twitter/X**: Thread formatting with hook-first structure
+- **LinkedIn**: Professional formatting with engagement optimization
+- **Telegram**: Channel posting with rich media support
+
+Each platform adapter handles API integration, rate limiting, and format-specific content optimization.
+
+### Observability Stack
+
+Prometheus + Grafana + Jaeger infrastructure:
+
+- **Prometheus metrics**: Token usage tracking, per-model cost metrics, pipeline latency
+- **Jaeger distributed tracing**: End-to-end latency breakdown across the full request chain
+- **Health monitoring**: Endpoint health checks with circuit breaker patterns
+
+## Results
+
+- **Live production deployment** — system deployed and serving requests at api.serbyn.pro
+- **6-stage LangGraph pipeline** with end-to-end automated testing
+- **Multi-model routing** reducing inference costs on body generation vs. creative hooks
+- **Thompson Sampling** with 91+ unit tests for variant optimization
+- **Multi-platform publishing** to Twitter, LinkedIn, and Telegram
+- **CI/CD pipelines** via GitHub Actions with automated testing
+
+## Key Learnings
+
+**Route by task, not by budget.** Multi-model routing works best when tied to task complexity, not cost targets. GPT-4o for hooks is worth the premium because hooks drive engagement. GPT-3.5 for bodies saves money without quality loss.
+
+**Thompson Sampling beats A/B for thin traffic.** When traffic per variant is thin, Thompson Sampling starts exploiting winners immediately while traditional A/B testing needs weeks to reach significance.
+
+**Test the algorithm, not just the system.** The 91+ unit tests on Thompson Sampling caught edge cases (cold start, fatigue, exploration rate) that would have silently degraded content quality in production.

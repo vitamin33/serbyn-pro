@@ -29,7 +29,7 @@ export default function ResumePage() {
           <header className="text-center mb-8">
             <h1 className="text-3xl font-bold mb-2">Vitalii Serbyn</h1>
             <h2 className="text-xl text-muted-foreground mb-4">
-              AI Platform / MLOps Engineer
+              AI Systems Architect
             </h2>
             <div className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground">
               <span className="flex items-center gap-1">
@@ -152,7 +152,7 @@ export default function ResumePage() {
             <div className="mb-6 page-break-inside-avoid">
               <div className="flex justify-between items-start mb-2">
                 <div>
-                  <h4 className="font-medium">AI Platform / MLOps Engineer</h4>
+                  <h4 className="font-medium">AI Systems Architect</h4>
                   <p className="text-sm text-muted-foreground">
                     Easelect LTD • Remote
                   </p>
@@ -163,24 +163,24 @@ export default function ResumePage() {
               </div>
               <ul className="list-disc list-inside text-sm space-y-1 ml-4">
                 <li>
-                  Built Threads-Agent GenAI platform with MLflow registry,
-                  SLO-gated CI, and production observability
+                  Designed Ascend: 15-agent autonomous orchestration system with
+                  trust-gated L0-L4 execution across 4 production projects
                 </li>
                 <li>
-                  Implemented ROI-Agent for automated media buying with
-                  multimodal pipeline (BLIP-2 + LLM analysis)
+                  Built policy engine with YAML-based permission boundaries,
+                  reducing costs from $82 to $34/mo (58% reduction)
                 </li>
                 <li>
-                  Created Achievement Collector for PR impact analysis and
-                  automated portfolio generation
+                  Created Crest signal-driven AI platform with 8-agent pipeline,
+                  Thompson Sampling, multi-model routing ($500 → $50/mo)
                 </li>
                 <li>
-                  Developed reliable LLM services with clear SLOs, cost
-                  controls, and real observability
+                  Delivered 3 concurrent client projects (healthcare, Web3,
+                  content) across 9+ repos serving 10k+ users
                 </li>
                 <li>
-                  Applied production discipline to AI platforms: explicit SLOs,
-                  fast rollback, cost budgets
+                  Applied production discipline to AI systems: trust layers,
+                  cost controls, observability, fast rollback
                 </li>
               </ul>
             </div>

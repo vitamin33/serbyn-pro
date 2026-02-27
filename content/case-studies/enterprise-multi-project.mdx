@@ -1,0 +1,140 @@
+---
+title: 'Full-Stack Architecture Across Healthcare, Web3, and AI'
+slug: enterprise-multi-project
+summary: 'Production platforms across 3 domains: healthcare (Flutter/Firebase, 10k+ users), Web3 token launchpad (Solana/NestJS, 80-90% RPC cost reduction), and AI content pipeline.'
+description: 'Full-stack architecture across healthcare, Web3, and AI domains. Healthcare app serving 10k+ users, Web3 token launchpad on Solana with real-time blockchain indexing and RPC optimization, and AI content platform. 9+ repositories, 4 tech stacks.'
+category: infrastructure
+project_type: anonymized
+highlight_metrics:
+  - '3 production domains'
+  - '9+ repositories'
+  - '10k+ end users'
+  - '80-90% RPC cost reduction'
+impact_score: 89
+tech:
+  - Flutter
+  - Firebase
+  - NestJS
+  - Python
+  - FastAPI
+  - Solana
+  - PostgreSQL
+  - MongoDB
+  - Redis
+  - AWS ECS
+outcomes:
+  - 'Healthcare platform serving 10k+ active users across 4 Flutter apps'
+  - '80-90% RPC cost reduction on Web3 platform via caching and bot detection'
+  - 'Web3 token launchpad with real-time Solana blockchain indexing'
+  - 'Reusable engineering patterns across all domains reduced setup time by ~40%'
+date: '2024-06-01'
+links: {}
+cover: ''
+featured: true
+portfolio_ready: true
+seo_keywords:
+  - full-stack architecture
+  - enterprise engineering
+  - Flutter
+  - Solana
+  - NestJS
+  - Web3 platform
+  - AWS ECS
+---
+
+## The Challenge
+
+Building production platforms across three distinct domains — healthcare, Web3, and AI — each with different tech stacks, regulatory requirements, and performance constraints. The challenge was applying consistent production discipline across diverse architectures while adapting to each domain's unique requirements.
+
+Projects are described with technical specifics but anonymized per NDA agreements.
+
+## Project 1: Healthcare Platform
+
+A mobile-first healthcare application serving 10k+ users across 4 Flutter apps (iOS, Android, 2 web dashboards).
+
+**Stack**: Flutter, Firebase (Functions, Firestore, Auth), Claude API
+
+**Key challenges**:
+
+- AI assistant integration with healthcare-specific prompt engineering
+- Sub-300ms response times for AI chat features
+- Cost control at $0.02/user/month for AI inference
+- Firebase Cloud Functions as AI gateway with conversation history in Firestore
+- 4 separate Flutter apps sharing a common codebase through packages
+
+**Architecture decisions**:
+
+- Firebase Cloud Functions as a thin gateway to Claude API rather than direct client-to-API calls (security, cost control, rate limiting)
+- Conversation history stored in Firestore with TTL-based cleanup to manage storage costs
+- BLoC pattern for state management across all Flutter apps
+
+## Project 2: Web3 Token Launchpad (Solana)
+
+A token launchpad platform with AMM (Automated Market Maker) using Meteora Dynamic Bonding Curves, real-time blockchain indexing, and AI-powered recommendations. Three separate codebases: Next.js frontend (1,454+ TypeScript files), NestJS backend, and FastAPI Python backend.
+
+**Stack**: Next.js 14, NestJS 11, FastAPI, Solana, PostgreSQL, MongoDB, Redis, Qdrant, AWS ECS
+
+**Key challenges**:
+
+- Real-time blockchain data synchronization — indexer fetches pools, token metadata from Arweave, and prices from CoinGecko every 60 seconds, with WebSocket subscriptions for live swap detection
+- RPC cost explosion: 26,000+ daily RPC calls to Solana (getAccountInfo), consuming 32.6% of QuickNode Build tier
+- Bot traffic: 14,000 calls during 1-5am window (48% of daily total) from automated scrapers
+- Dual-backend coordination: NestJS for blockchain indexing and pool API, Python for auth, AI agents, and token economy
+
+**RPC optimization** (the biggest technical win):
+
+- Redis balance proxy with 60s TTL — 90% reduction in getAccountInfo calls
+- 5-tier bot detection middleware with behavioral analysis — 96% of bot traffic blocked
+- Rate limiting (40/min, 500/hour) with graceful degradation
+- Result: 26,000 → 2,800-5,000 daily calls (80-90% reduction), saving ~21.6M monthly credits
+
+**Architecture decisions**:
+
+- Contract-first API design: OpenAPI specs as single source of truth, frontend types auto-generated from backend
+- Dual database strategy: MongoDB for flexible document storage (user profiles, tasks), PostgreSQL for financial data requiring ACID guarantees
+- Qdrant for AI-powered task recommendations rather than collaborative filtering (better cold-start performance)
+- Graceful Redis degradation: app continues functioning even when Redis is down
+- Multi-wallet support: Phantom, Solflare, mobile adapters
+
+**Monitoring**: Sentry integration across all services, Prometheus metrics in NestJS, Winston structured logging, health check endpoints.
+
+## Project 3: Content Platform
+
+AI content generation and optimization platform (this evolved into the Crest project documented separately).
+
+**Stack**: Python, FastAPI, Next.js, PostgreSQL, Redis, Celery
+
+**Key challenges**:
+
+- Multi-model LLM routing for cost optimization
+- Content pipeline automation with quality gates
+- A/B testing framework for content variants
+- 8-queue Celery system for task prioritization
+
+## Shared Engineering Practices
+
+Several engineering patterns proved valuable across all domains:
+
+**Standardized monitoring**: Health check endpoints, error tracking (Sentry), and deployment notifications were consistent across all projects regardless of stack.
+
+**CI/CD templates**: GitHub Actions workflows were templated and reused. A Flutter deployment pipeline written for the healthcare project was adapted for any future Flutter projects in under 30 minutes.
+
+**Cost tracking**: Every project had explicit cost budgets for cloud resources and AI inference. Weekly cost reviews caught overruns early — a MongoDB index issue in the Web3 project was causing $40/month in unnecessary compute.
+
+**Documentation standards**: Each project maintained CLAUDE.md files documenting architecture decisions, code patterns, and forbidden zones. This proved valuable when revisiting decisions months later.
+
+## Results
+
+- **10k+ active users** across healthcare and Web3 platforms
+- **80-90% RPC cost reduction** on Web3 platform through caching and bot detection
+- **9+ repositories** managed with consistent CI/CD, monitoring, and documentation patterns
+- **Pattern reuse** across projects reduced setup time by roughly 40%
+- **Zero critical production incidents** during the delivery period
+
+## Key Learnings
+
+**Patterns compound.** The monitoring setup from the healthcare project took 2 days. Adapting it for the Web3 project took 3 hours. By the content platform, it was a 30-minute copy-and-configure. Investing in reusable patterns pays off quickly across projects.
+
+**Cost awareness prevents surprises.** Weekly cost reviews across all projects caught 4 separate cost overruns before they became significant. The RPC optimization alone saved thousands in monthly credits.
+
+**Domain diversity strengthens architecture instincts.** Working across healthcare (compliance-sensitive), Web3 (real-time, financial), and AI (cost-sensitive, latency-critical) forced clear thinking about trade-offs. Each domain taught patterns that improved the others.

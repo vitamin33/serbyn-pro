@@ -1,9 +1,18 @@
 import { MetadataRoute } from 'next';
 import { siteConfig } from '@/lib/seo';
+import { getAllCaseStudies } from '@/lib/case-studies';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = siteConfig.url;
   const currentDate = new Date().toISOString();
+
+  const caseStudies = getAllCaseStudies();
+  const caseStudyRoutes = caseStudies.map(study => ({
+    url: `${baseUrl}${study.url}`,
+    lastModified: currentDate,
+    changeFrequency: 'monthly' as const,
+    priority: 0.7,
+  }));
 
   const routes = [
     {
@@ -13,15 +22,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1.0,
     },
     {
+      url: `${baseUrl}/work`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly' as const,
+      priority: 0.9,
+    },
+    {
       url: `${baseUrl}/about`,
       lastModified: currentDate,
       changeFrequency: 'monthly' as const,
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/case-studies`,
-      lastModified: currentDate,
-      changeFrequency: 'weekly' as const,
       priority: 0.8,
     },
     {
@@ -31,11 +40,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     },
     {
-      url: `${baseUrl}/payments`,
+      url: `${baseUrl}/blog`,
       lastModified: currentDate,
-      changeFrequency: 'monthly' as const,
+      changeFrequency: 'weekly' as const,
       priority: 0.6,
     },
+    ...caseStudyRoutes,
     {
       url: `${baseUrl}/legal/privacy`,
       lastModified: currentDate,
