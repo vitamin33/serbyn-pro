@@ -4,7 +4,7 @@ Analyze all projects in ~/development/ using Gemini Flash (free tier).
 Generates architecture reports, code quality findings, and cross-project patterns.
 
 Usage:
-    pip install google-generativeai
+    pip install google-genai
     python scripts/analyze-projects.py
 
 Output: scripts/analysis-reports/ directory with per-project reports
@@ -17,9 +17,9 @@ import pathlib
 from datetime import datetime
 
 try:
-    import google.generativeai as genai
+    from google import genai
 except ImportError:
-    print("Install: pip install google-generativeai")
+    print("Install: pip install google-genai")
     exit(1)
 
 # --- Config ---
@@ -32,6 +32,7 @@ SKIP_DIRS = {
     ".venv", "venv", ".eggs", "site-packages", ".dart_tool",
     ".pub-cache", ".git", ".gradle", ".idea", "ios/Pods",
     "android/.gradle", "coverage", ".turbo", ".cache",
+    ".claude",
 }
 
 SOURCE_EXTENSIONS = {
@@ -102,7 +103,7 @@ def should_skip(path: pathlib.Path) -> bool:
     return any(skip in path.parts for skip in SKIP_DIRS)
 
 
-def collect_files(project_dir: pathlib.Path) -> list[dict]:
+def collect_files(project_dir: pathlib.Path) -> tuple[list[dict], int]:
     """Collect source files from a project, prioritizing important files."""
     files = []
     total_chars = 0
@@ -158,7 +159,7 @@ def build_source_block(files: list[dict]) -> str:
     return "\n".join(parts)
 
 
-def analyze_project(model, project_name: str, project_dir: pathlib.Path) -> dict:
+def analyze_project(client, project_name: str, project_dir: pathlib.Path) -> dict:
     """Analyze a single project with Gemini Flash."""
     print(f"\n{'='*60}")
     print(f"Analyzing: {project_name}")
@@ -166,7 +167,7 @@ def analyze_project(model, project_name: str, project_dir: pathlib.Path) -> dict
 
     files, total_chars = collect_files(project_dir)
     if not files:
-        print(f"  No source files found, skipping.")
+        print("  No source files found, skipping.")
         return None
 
     source_files_count = len([f for f in files if not f["priority"]])
@@ -181,7 +182,10 @@ def analyze_project(model, project_name: str, project_dir: pathlib.Path) -> dict
     )
 
     try:
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt,
+        )
         report = response.text
         print(f"  Analysis complete ({len(report):,} chars)")
 
@@ -213,8 +217,7 @@ def main():
         print("Set GEMINI_API_KEY environment variable")
         exit(1)
 
-    genai.configure(api_key=GEMINI_API_KEY)
-    model = genai.GenerativeModel("gemini-2.5-flash")
+    client = genai.Client(api_key=GEMINI_API_KEY)
 
     # Create output directory
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -234,7 +237,7 @@ def main():
 
     results = []
     for project_dir in projects:
-        result = analyze_project(model, project_dir.name, project_dir)
+        result = analyze_project(client, project_dir.name, project_dir)
         if result:
             results.append(result)
 
