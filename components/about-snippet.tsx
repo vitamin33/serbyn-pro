@@ -24,9 +24,8 @@ export function AboutSnippet() {
             <div className="space-y-4 text-muted-foreground">
               <p>
                 12+ years shipping production systems — from Android apps with
-                100M+ users at GlobalLogic to 24-microservice AI platforms
-                today. Solo architect across Web3, healthcare, and AI agent
-                systems.
+                100M+ users at GlobalLogic to production AI platforms today.
+                Solo architect across Web3, healthcare, and AI agent systems.
               </p>
               <p>
                 Now I build agent orchestration daemons, LangGraph pipelines,
