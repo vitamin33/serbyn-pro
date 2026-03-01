@@ -1,20 +1,25 @@
 #!/usr/bin/env python3
 """
-Analyze all projects in ~/development/ using Gemini Flash (free tier).
+Analyze projects in ~/development/ using Gemini Flash (free tier).
 Generates architecture reports, code quality findings, and cross-project patterns.
 
 Usage:
     pip install google-genai
-    python scripts/analyze-projects.py
+    python scripts/analyze-projects.py                    # all projects
+    python scripts/analyze-projects.py --projects threads-agent,ascend,ragline
+    python scripts/analyze-projects.py --changed-since 30  # only repos with commits in last 30 days
 
 Output: scripts/analysis-reports/ directory with per-project reports
 """
 
 import os
+import sys
 import json
 import time
+import argparse
 import pathlib
-from datetime import datetime
+import subprocess
+from datetime import datetime, timedelta
 
 try:
     from google import genai
@@ -212,7 +217,36 @@ def analyze_project(client, project_name: str, project_dir: pathlib.Path) -> dic
         }
 
 
+PORTFOLIO_PROJECTS = [
+    "threads-agent", "ascend", "roi-agent", "serbyn-pro",
+    "osint-system", "ragline", "forge-ui", "assisterr",
+    "solana-rescue-bot", "vitelle",
+]
+
+
+def has_recent_commits(project_dir: pathlib.Path, days: int) -> bool:
+    """Check if a git repo has commits within the last N days."""
+    since = (datetime.now() - timedelta(days=days)).strftime("%Y-%m-%d")
+    try:
+        result = subprocess.run(
+            ["git", "log", "--oneline", f"--since={since}", "-1"],
+            cwd=project_dir, capture_output=True, text=True, timeout=10,
+        )
+        return bool(result.stdout.strip())
+    except Exception:
+        return True  # if we can't check, analyze anyway
+
+
 def main():
+    parser = argparse.ArgumentParser(description="Analyze projects with Gemini Flash")
+    parser.add_argument("--projects", type=str, default=None,
+                        help="Comma-separated project names to analyze (default: portfolio list)")
+    parser.add_argument("--changed-since", type=int, default=None,
+                        help="Only analyze repos with commits in the last N days")
+    parser.add_argument("--all", action="store_true",
+                        help="Analyze ALL projects in ~/development/, not just portfolio list")
+    args = parser.parse_args()
+
     if not GEMINI_API_KEY:
         print("Set GEMINI_API_KEY environment variable")
         exit(1)
@@ -223,16 +257,30 @@ def main():
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     # Discover projects (~/development/ + ~/ascend/)
-    projects = sorted([
+    all_dirs = sorted([
         d for d in DEV_DIR.iterdir()
         if d.is_dir() and not d.name.startswith(".")
     ])
-    # Add ~/ascend/ if it exists
     ascend_dir = pathlib.Path.home() / "ascend"
     if ascend_dir.is_dir():
-        projects.append(ascend_dir)
+        all_dirs.append(ascend_dir)
 
-    print(f"Found {len(projects)} projects in {DEV_DIR}")
+    # Filter to requested projects
+    if args.projects:
+        names = [n.strip() for n in args.projects.split(",")]
+        projects = [d for d in all_dirs if d.name in names]
+    elif args.all:
+        projects = all_dirs
+    else:
+        projects = [d for d in all_dirs if d.name in PORTFOLIO_PROJECTS]
+
+    # Filter by recent changes
+    if args.changed_since:
+        before = len(projects)
+        projects = [d for d in projects if has_recent_commits(d, args.changed_since)]
+        print(f"Filtered to {len(projects)}/{before} projects with commits in last {args.changed_since} days")
+
+    print(f"Analyzing {len(projects)} projects")
     print(f"Output: {OUTPUT_DIR}\n")
 
     results = []
