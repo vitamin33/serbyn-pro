@@ -24,6 +24,8 @@ export default async function Image({ params }: { params: { slug: string } }) {
           flexDirection: 'column',
           justifyContent: 'space-between',
           backgroundColor: '#0A0C10',
+          backgroundImage:
+            'radial-gradient(circle at 78% 18%, rgba(10,133,255,0.22), transparent 46%), radial-gradient(circle at 8% 92%, rgba(10,133,255,0.10), transparent 42%)',
           padding: '80px',
           fontFamily: 'sans-serif',
         }}

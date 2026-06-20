@@ -3,6 +3,10 @@ import Link from 'next/link';
 import { ArrowLeft, ExternalLink } from 'lucide-react';
 import { getAllCaseStudies, getCaseStudyBySlug } from '@/lib/case-studies';
 import { createMetadata } from '@/lib/seo';
+import { extractToc, slugify } from '@/lib/toc';
+import { firstCodeBlock } from '@/lib/extract-code';
+import { EssayMap } from '@/components/lab/essay-map';
+import { CodePanel } from '@/components/lab/code-panel';
 
 interface PageProps {
   params: { slug: string };
@@ -29,27 +33,30 @@ export default function CaseStudyPage({ params }: PageProps) {
   const study = getCaseStudyBySlug(params.slug);
   if (!study) notFound();
 
+  const toc = extractToc(study.content);
+  const code = firstCodeBlock(study.content);
+  const projectLabel =
+    study.project_type === 'primary'
+      ? 'Primary R&D'
+      : study.project_type === 'startup'
+        ? 'Startup'
+        : 'Enterprise';
+
   return (
-    <div className="py-16">
-      <div className="container max-w-3xl">
-        {/* Back link */}
+    <div className="py-12">
+      <div className="container max-w-6xl">
         <Link
           href={'/work' as any}
-          className="mb-8 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+          className="mb-8 inline-flex items-center gap-2 font-mono text-xs text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="h-4 w-4" />
-          All work
+          INDEX / WORK
         </Link>
 
-        {/* Header */}
-        <header className="mb-12">
+        <header className="mb-10 max-w-3xl">
           {study.project_type && (
-            <span className="mb-3 inline-block rounded-full bg-secondary px-3 py-1 font-mono text-xs text-muted-foreground">
-              {study.project_type === 'primary'
-                ? 'Primary R&D'
-                : study.project_type === 'startup'
-                  ? 'Startup'
-                  : 'Enterprise'}
+            <span className="label-caps mb-3 inline-block rounded-sm border border-border px-2 py-1 text-muted-foreground">
+              {projectLabel}
             </span>
           )}
           <h1 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl">
@@ -57,7 +64,6 @@ export default function CaseStudyPage({ params }: PageProps) {
           </h1>
           <p className="mb-6 text-lg text-muted-foreground">{study.summary}</p>
 
-          {/* Tech badges */}
           <div className="flex flex-wrap gap-1.5">
             {study.tech.map(t => (
               <span
@@ -69,7 +75,6 @@ export default function CaseStudyPage({ params }: PageProps) {
             ))}
           </div>
 
-          {/* Highlight metrics */}
           {study.highlight_metrics && study.highlight_metrics.length > 0 && (
             <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {study.highlight_metrics.map(metric => (
@@ -84,60 +89,73 @@ export default function CaseStudyPage({ params }: PageProps) {
           )}
         </header>
 
-        <hr className="my-12 border-border" />
+        <div className="grid gap-10 lg:grid-cols-[180px_1fr] xl:grid-cols-[180px_1fr_340px]">
+          <aside className="hidden lg:block">
+            <div className="sticky top-8">
+              <EssayMap items={toc} />
+            </div>
+          </aside>
 
-        {/* MDX content */}
-        <article className="case-study-content">
-          <div
-            dangerouslySetInnerHTML={{ __html: markdownToHtml(study.content) }}
-          />
-        </article>
+          <article className="case-study-content min-w-0">
+            <div
+              dangerouslySetInnerHTML={{
+                __html: markdownToHtml(study.content),
+              }}
+            />
 
-        {/* Links */}
-        {study.links && Object.values(study.links).some(Boolean) && (
-          <div className="mt-8 flex flex-wrap gap-3">
-            {study.links.repo && (
+            {study.links && Object.values(study.links).some(Boolean) && (
+              <div className="mt-8 flex flex-wrap gap-3">
+                {study.links.repo && (
+                  <a
+                    href={study.links.repo}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm hover:bg-accent"
+                  >
+                    GitHub
+                    <ExternalLink className="h-3.5 w-3.5" />
+                  </a>
+                )}
+                {study.links.demo && (
+                  <a
+                    href={study.links.demo}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm hover:bg-accent"
+                  >
+                    Demo
+                    <ExternalLink className="h-3.5 w-3.5" />
+                  </a>
+                )}
+              </div>
+            )}
+
+            <div className="mt-16 rounded-lg border border-primary/20 bg-card/50 p-8 text-center">
+              <h2 className="mb-2 text-xl font-semibold">
+                Discuss this architecture
+              </h2>
+              <p className="mb-4 text-sm text-muted-foreground">
+                Want to explore how similar patterns could work for your system?
+              </p>
               <a
-                href={study.links.repo}
+                href="https://calendly.com/serbyn-vitalii/30min"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm hover:bg-accent"
+                className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
               >
-                GitHub
-                <ExternalLink className="h-3.5 w-3.5" />
+                Book Architecture Review
+                <ExternalLink className="h-4 w-4" />
               </a>
-            )}
-            {study.links.demo && (
-              <a
-                href={study.links.demo}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm hover:bg-accent"
-              >
-                Demo
-                <ExternalLink className="h-3.5 w-3.5" />
-              </a>
-            )}
-          </div>
-        )}
+            </div>
+          </article>
 
-        {/* Bottom CTA */}
-        <div className="mt-16 rounded-lg border border-primary/20 bg-card/50 p-8 text-center">
-          <h2 className="mb-2 text-xl font-semibold">
-            Discuss This Architecture
-          </h2>
-          <p className="mb-4 text-sm text-muted-foreground">
-            Want to explore how similar patterns could work for your system?
-          </p>
-          <a
-            href="https://calendly.com/serbyn-vitalii/30min"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            Book Architecture Review
-            <ExternalLink className="h-4 w-4" />
-          </a>
+          {code && (
+            <aside className="hidden xl:block">
+              <div className="sticky top-8">
+                <CodePanel block={code} />
+              </div>
+            </aside>
+          )}
         </div>
       </div>
     </div>
@@ -232,7 +250,9 @@ function markdownToHtml(markdown: string): string {
     }
     if (trimmed.startsWith('## ')) {
       closeLists();
-      html.push(`<h2>${inlineFormat(trimmed.slice(3))}</h2>`);
+      const raw = trimmed.slice(3);
+      const id = slugify(raw.replace(/\*\*/g, '').replace(/`/g, '').trim());
+      html.push(`<h2 id="${id}">${inlineFormat(raw)}</h2>`);
       continue;
     }
     if (trimmed.startsWith('# ')) {
