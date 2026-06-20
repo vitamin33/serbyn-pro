@@ -101,6 +101,7 @@ export function createMetadata({
     metadataBase: new URL(siteConfig.url),
     alternates: {
       canonical: canonicalUrl || siteConfig.url,
+      types: { 'application/rss+xml': `${siteConfig.url}/feed.xml` },
     },
   };
 }

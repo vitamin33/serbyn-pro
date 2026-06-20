@@ -1,9 +1,11 @@
 import { ExternalLink, Mail } from 'lucide-react';
+import { TerminalSignup } from '@/components/lab/terminal-signup';
 
 export function CTASection() {
   return (
     <section className="section border-t border-border">
       <div className="container">
+        <TerminalSignup className="mx-auto mb-16 max-w-2xl" />
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="mb-4 text-3xl font-bold tracking-tight">
             Book an Architecture Review

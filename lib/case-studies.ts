@@ -38,6 +38,14 @@ export interface CaseStudyMeta {
   featured: boolean;
   portfolio_ready: boolean;
   seo_keywords?: string[];
+
+  // Redesign (Kinetic Lab) additive fields — see docs/redesign/02_DATA_MODEL_AND_GAPS.md
+  system_id?: string;
+  status_chips?: {
+    label: string;
+    variant: 'active' | 'success' | 'warning' | 'neutral';
+  }[];
+  relevance?: number;
 }
 
 export interface CaseStudy extends CaseStudyMeta {

@@ -88,18 +88,31 @@ export function FooterLegal() {
                 </span>
               </p>
             </div>
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+            <div className="flex items-center gap-4 font-mono text-xs text-muted-foreground">
               <a
-                href="https://find-and-update.company-information.service.gov.uk/company/15983917"
+                href="https://github.com/vitamin33"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-primary transition-colors"
-                aria-label="View company information at Companies House (opens in new tab)"
+                className="transition-colors hover:text-primary"
               >
-                Companies House
+                GITHUB
+              </a>
+              <a
+                href="https://www.linkedin.com/in/vitalii-serbyn-b517a083"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition-colors hover:text-primary"
+              >
+                LINKEDIN
+              </a>
+              <a
+                href="/feed.xml"
+                className="transition-colors hover:text-primary"
+              >
+                RSS_FEED
               </a>
               <span className="text-border">|</span>
-              <span className="font-mono text-xs">UK LTD</span>
+              <span>UK LTD</span>
             </div>
           </div>
         </div>

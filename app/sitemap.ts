@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next';
 import { siteConfig } from '@/lib/seo';
 import { getAllCaseStudies } from '@/lib/case-studies';
+import { getAllBlogPosts } from '@/lib/blog-posts';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = siteConfig.url;
@@ -12,6 +13,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: currentDate,
     changeFrequency: 'monthly' as const,
     priority: 0.7,
+  }));
+
+  const blogPosts = getAllBlogPosts();
+  const blogRoutes = blogPosts.map(post => ({
+    url: `${baseUrl}${post.url}`,
+    lastModified: post.date,
+    changeFrequency: 'monthly' as const,
+    priority: 0.6,
   }));
 
   const routes = [
@@ -46,6 +55,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.6,
     },
     ...caseStudyRoutes,
+    ...blogRoutes,
     {
       url: `${baseUrl}/legal/privacy`,
       lastModified: currentDate,

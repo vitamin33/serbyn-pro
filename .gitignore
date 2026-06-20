@@ -267,3 +267,5 @@ NOTES.md
 TODO.private.md
 PRIVATE.md
 SECRETS.md
+.vercel
+.env*.local

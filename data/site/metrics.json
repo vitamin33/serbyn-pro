@@ -1,0 +1,20 @@
+{
+  "generated_at": "2026-06-20T00:00:00Z",
+  "availability": {
+    "open": true,
+    "label": "AVAILABLE FOR NEW ENGAGEMENTS"
+  },
+  "hero_metrics": [
+    { "label": "AGENTS", "value": "30", "sub": "20 mature" },
+    { "label": "TESTS", "value": "1,375", "sub": "ruff+mypy clean" },
+    { "label": "TRUST", "value": "L0–L4", "sub": "auto-gated" },
+    { "label": "AUTOMATED", "value": "120h+", "sub": "saved to date" }
+  ],
+  "category_counts": {
+    "architecture": 2,
+    "infrastructure": 1,
+    "optimization": 0,
+    "research": 0
+  },
+  "system_status": "ONLINE"
+}

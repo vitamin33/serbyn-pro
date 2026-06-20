@@ -1,22 +1,27 @@
 import Link from 'next/link';
 import { ArrowRight, ExternalLink } from 'lucide-react';
+import { getSiteMetrics } from '@/lib/site-metrics';
+import { MetricStrip } from '@/components/lab/metric-strip';
+import { StatusChip } from '@/components/lab/status-chip';
 
 export function HeroArchitect() {
+  const metrics = getSiteMetrics();
+
   return (
-    <section className="relative py-24 sm:py-32 lg:py-40">
-      {/* Subtle grid overlay */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage:
-            'linear-gradient(hsl(var(--muted-foreground)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--muted-foreground)) 1px, transparent 1px)',
-          backgroundSize: '64px 64px',
-        }}
-      />
+    <section className="relative py-24 sm:py-28 lg:py-32">
+      <div className="blueprint-grid pointer-events-none absolute inset-0 opacity-40" />
 
       <div className="container relative">
         <div className="max-w-3xl">
-          <p className="mb-4 font-mono text-sm tracking-wide text-muted-foreground">
+          {metrics.availability.open && (
+            <StatusChip
+              label={metrics.availability.label}
+              variant="active"
+              className="mb-6"
+            />
+          )}
+
+          <p className="label-caps mb-4 text-muted-foreground">
             {'// AI Systems Architect'}
           </p>
 
@@ -29,26 +34,11 @@ export function HeroArchitect() {
 
           <p className="mb-8 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
             I design and ship multi-agent orchestration, LangGraph pipelines,
-            and production AI infrastructure. 6 AI systems shipped in 18 months
-            — from an AI content platform with a 6-stage LangGraph pipeline to a
-            trust-gated orchestration daemon with 19 agents managing 4 live
-            projects.
+            and production AI infrastructure — from a 6-stage content platform
+            to a trust-gated orchestration daemon running a fleet of agents
+            across live projects.
           </p>
 
-          {/* Trust indicators */}
-          <div className="mb-10 flex flex-wrap items-center gap-x-6 gap-y-2 font-mono text-sm text-muted-foreground">
-            <span>Easelect LTD (UK)</span>
-            <span className="hidden text-border sm:inline" aria-hidden="true">
-              /
-            </span>
-            <span>12+ years production</span>
-            <span className="hidden text-border sm:inline" aria-hidden="true">
-              /
-            </span>
-            <span>6 AI systems shipped</span>
-          </div>
-
-          {/* CTAs */}
           <div className="flex flex-wrap gap-4">
             <Link
               href={'/work' as any}
@@ -68,6 +58,11 @@ export function HeroArchitect() {
             </a>
           </div>
         </div>
+
+        <MetricStrip
+          metrics={metrics.hero_metrics}
+          className="mt-14 max-w-4xl"
+        />
       </div>
     </section>
   );
