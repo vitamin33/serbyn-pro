@@ -1,14 +1,30 @@
 {
-  "generated_at": "2026-06-20T00:00:00Z",
+  "generated_at": "2026-06-20T15:49:02.539452+00:00",
   "availability": {
     "open": true,
     "label": "AVAILABLE FOR NEW ENGAGEMENTS"
   },
   "hero_metrics": [
-    { "label": "AGENTS", "value": "30", "sub": "20 mature" },
-    { "label": "TESTS", "value": "1,375", "sub": "ruff+mypy clean" },
-    { "label": "TRUST", "value": "L0–L4", "sub": "auto-gated" },
-    { "label": "AUTOMATED", "value": "120h+", "sub": "saved to date" }
+    {
+      "label": "AGENTS",
+      "value": "31",
+      "sub": "20 mature"
+    },
+    {
+      "label": "TESTS",
+      "value": "1,178",
+      "sub": "ruff+mypy clean"
+    },
+    {
+      "label": "TRUST",
+      "value": "L0\u2013L4",
+      "sub": "auto-gated"
+    },
+    {
+      "label": "AUTOMATED",
+      "value": "14h+",
+      "sub": "saved to date"
+    }
   ],
   "category_counts": {
     "architecture": 2,
