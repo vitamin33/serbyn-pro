@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter, JetBrains_Mono } from 'next/font/google';
 import '../styles/globals.css';
-import { Navbar } from '@/components/navbar';
-import { FooterLegal } from '@/components/footer-legal';
+import { AppShell } from '@/components/lab/app-shell';
 import {
   pageMetadata,
   generatePersonSchema,
@@ -57,13 +56,7 @@ export default function RootLayout({
         >
           Skip to content
         </a>
-        <div className="flex min-h-screen flex-col">
-          <Navbar />
-          <main id="main" className="flex-1">
-            {children}
-          </main>
-          <FooterLegal />
-        </div>
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );
