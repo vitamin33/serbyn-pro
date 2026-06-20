@@ -26,7 +26,9 @@ export const siteConfig = {
 interface SEOProps {
   title?: string;
   description?: string;
-  image?: string;
+  // `null` => omit the static image so a route-level opengraph-image.tsx
+  // (dynamic next/og card) supplies it instead.
+  image?: string | null;
   noIndex?: boolean;
   canonicalUrl?: string;
 }
@@ -40,7 +42,8 @@ export function createMetadata({
 }: SEOProps = {}): Metadata {
   const metaTitle = title ? `${title} | ${siteConfig.name}` : siteConfig.name;
   const metaDescription = description;
-  const imageUrl = image;
+  const includeImage = image !== null;
+  const imageUrl = image ?? siteConfig.ogImage;
 
   return {
     title: metaTitle,
@@ -67,21 +70,25 @@ export function createMetadata({
       siteName: siteConfig.name,
       title: metaTitle,
       description: metaDescription,
-      images: [
-        {
-          url: imageUrl,
-          width: 1200,
-          height: 630,
-          alt: metaTitle,
-          type: 'image/png',
-        },
-      ],
+      ...(includeImage
+        ? {
+            images: [
+              {
+                url: imageUrl,
+                width: 1200,
+                height: 630,
+                alt: metaTitle,
+                type: 'image/png',
+              },
+            ],
+          }
+        : {}),
     },
     twitter: {
       card: 'summary_large_image',
       title: metaTitle,
       description: metaDescription,
-      images: [imageUrl],
+      ...(includeImage ? { images: [imageUrl] } : {}),
       creator: '@VitaliiSerbyn',
       site: '@VitaliiSerbyn',
     },
