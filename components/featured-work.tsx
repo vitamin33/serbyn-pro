@@ -1,5 +1,6 @@
 import { getFeaturedCaseStudies } from '@/lib/case-studies';
 import { ProjectCard } from '@/components/lab/project-card';
+import { Reveal } from '@/components/lab/reveal';
 
 export function FeaturedWork() {
   const studies = getFeaturedCaseStudies();
@@ -17,7 +18,9 @@ export function FeaturedWork() {
 
         <div className="grid gap-6 md:grid-cols-3">
           {studies.map((study, i) => (
-            <ProjectCard key={study.slug} study={study} index={i} />
+            <Reveal key={study.slug} delay={i * 80}>
+              <ProjectCard study={study} index={i} />
+            </Reveal>
           ))}
         </div>
       </div>
