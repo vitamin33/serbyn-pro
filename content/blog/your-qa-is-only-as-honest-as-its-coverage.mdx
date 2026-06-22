@@ -1,0 +1,115 @@
+---
+title: "QA Is Only as Honest as Its Coverage"
+slug: your-qa-is-only-as-honest-as-its-coverage
+description: "A PR merged over a red CI job while dev-loop QA said green. Here's the root cause, the fix, and why partial greens are the most dangerous lies in agent systems."
+date: '2026-06-22'
+keywords:
+- false green CI
+- fail-closed merge gate
+- agent eval coverage
+- contract regression testing
+- QA scope gaps
+- autonomous agent reliability
+- merge readiness conditions
+seo_keywords:
+- false green CI
+- fail-closed merge gate
+- agent eval coverage
+- contract regression testing
+- QA scope gaps
+- autonomous agent reliability
+- merge readiness conditions
+category: architecture
+author: Vitalii Serbyn
+featured: false
+---
+> Part of the series: [Six False-Greens: Field Notes from a Self-Auditing Agent Pipeline](/blog/a-false-green-is-the-most-dangerous-failure-class-in-any)
+
+# QA Is Only as Honest as Its Coverage
+
+A PR merged over a red CI test job while the dev-loop's own QA step reported green. Those two signals can't both be telling the truth — and only one of them was.
+
+## What Actually Happened
+
+The commit introduced a new agent definition. That definition violated an existing contract test. The dev-loop's eval-runner ran, found nothing wrong, and returned a passing status. CI's full pytest suite ran next, hit the contract violation, and went red. The merge-gate advisor saw its own conditions satisfied — eval-green was true — and reported all conditions met. The PR merged.
+
+This is not a human error story. Nobody bypassed a warning or clicked through a scary prompt. The gate was doing exactly what it was configured to do. The gate was just wrong about what "green" meant.
+
+## Root Cause: Two Gaps Working Together
+
+**QA scope:** the dev-loop's eval-runner ran only the curated eval subset, so a non-golden contract regression slipped past QA and reported pass. The runner was scoped to the eval suite, not the full test suite. From its perspective, nothing was broken. It was not lying — it was telling the truth about a smaller world than the one the codebase actually lives in.
+
+**Merge gate:** the advisor's readiness spec treated `eval-green` as a proxy for overall health. It had no awareness of `full_suite_green` as a separate, independent signal. So a spec reading "all conditions met" could be literally true — all *configured* conditions met — while CI was burning. The false-green was later caught by a different false-green (the merge_fn bug, #6). The fix for "QA scope" had to be paired with a fix for the gate's condition model, or the scope fix alone would have been fragile.
+
+Two gaps, not one. Each gap would have been survivable in isolation. Together they formed a clean path from "violation introduced" to "violation shipped."
+
+## Why Partial Greens Are Structurally Dangerous
+
+A partial green is not a weak green. It is a confident green about a smaller problem than the one you have. The signal is not attenuated — it is precise and wrong.
+
+This matters because agents act on signals, not on probability distributions over what the signal might be missing. If `eval-green: true` goes into the merge-gate advisor's context, the advisor does not automatically reason "but what about the tests that were not run?" It reasons from what it has. The scope gap is invisible to the downstream consumer of the signal unless the signal is explicitly labeled with its own coverage.
+
+The same failure mode appears in any system where one component validates a subset and hands a boolean to a component that treats it as a universal. The boolean loses its provenance the moment it leaves the component that produced it.
+
+## The Fix
+
+I added `full_suite_green` as a required, fail-closed merge-readiness condition in the merge-gate advisor, mirroring the existing `eval-green` condition. The readiness spec can no longer report "all conditions met" while the full pytest suite is red. Both signals must be true. Neither is a proxy for the other.
+
+The implementation is a conjunction, not a fallback chain. `eval-green AND full_suite_green` — not `eval-green OR (eval-green AND full_suite_green)`. Fail-closed means the gate defaults to blocked when any required condition is absent or unresolvable, not when all conditions are actively false.
+
+The cost is real: the gate now has a harder time reporting ready, and some fast-path dev-loop iterations will see a blocked state where they previously saw a pass. That is the correct behavior. A gate that is easy to pass is not a gate.
+
+### Why Not Just Expand the Eval Runner?
+
+The obvious alternative is to make the dev-loop's eval-runner run the full suite so there is only one signal to track. I considered this. The reason I kept them separate is that the eval suite and the full pytest suite serve different purposes on different time horizons. The eval suite gives fast, targeted feedback on agent behavior changes. The full suite gates safety and contract integrity across the whole codebase. Merging them into one runner would slow the inner loop and mix the feedback signals in ways that make triage harder. Keeping them separate and requiring both at the gate is more precise.
+
+### Why Fail-Closed and Not Fail-Open?
+
+Fail-open — where an unresolvable condition defaults to pass — is tempting because it preserves velocity. The problem is that the conditions most likely to be unresolvable are the ones that are broken. A gate that passes when it cannot evaluate a condition is a gate that passes preferentially when something is wrong. That is the opposite of what a gate is for.
+
+Fail-closed means the gate blocks when it cannot determine `full_suite_green`. This will occasionally block a PR that would have been fine. That is a recoverable false alarm. A false green that ships a contract violation into production is not recoverable in the same way.
+
+## The Broader Pattern in Agent Systems
+
+Agent fleets accumulate trust in their own tooling over time. An eval-runner that has been reliable for a long run starts to feel like ground truth rather than a partial view. The danger is not that the tool becomes less accurate — it is that the mental model of what the tool covers stops being interrogated.
+
+Every signal in an agent system has a coverage boundary. Eval suites cover what they were written to cover. Linters cover what linters cover. Contract tests cover the contracts that were written. None of them cover what was not anticipated when they were built. A new agent definition violating a contract is exactly the kind of thing that falls into the gap between an eval suite scoped to evals and a contract test suite scoped to contracts.
+
+The fix for this class of problem is not to make any single tool more comprehensive. It is to be explicit about scope at the gate. The gate is the only point in the pipeline where all signals converge. It is the only place where "are all the things I care about green?" can be asked as a single question. If the gate's condition set does not match the full set of things you care about, the gate is measuring something smaller than your actual risk surface.
+
+### What This Looks Like in Practice
+
+The merge-gate advisor now maintains a condition registry. Each condition has a name, a data source, a required value, and a failure mode (fail-closed or advisory). `eval-green` and `full_suite_green` are both in the registry as required, fail-closed conditions. Adding a new condition requires updating the registry and specifying its failure mode explicitly — there is no default that silently inherits the old behavior.
+
+This means the gate's coverage is auditable. At any point I can read the registry and know exactly what the gate is and is not checking. That auditability is what makes the gate trustworthy rather than just fast.
+
+## The Lesson
+
+Your QA is only as honest as its coverage. A green that only checks a subset is a *partial* green wearing a *full* green's label. The problem is not that partial greens exist — every check is partial in some dimension. The problem is when the label does not reflect the scope.
+
+Name the scope or the green lies. Not to the system — the system will act correctly on the signal it has. To you, when you are debugging a production incident and trying to understand how a red test shipped.
+
+The fix is not more coverage everywhere. It is making the gate's condition set explicit, fail-closed, and auditable so that "all conditions met" means something you can actually verify.
+
+---
+
+## FAQ
+
+**What is a false green in CI?** A false green is a passing status returned by a check that did not cover the failing condition. The check ran correctly and honestly — it simply did not check the thing that was broken. The result looks like a pass but does not represent overall system health.
+
+**What does fail-closed mean for a merge gate?** Fail-closed means the gate defaults to blocked when a required condition cannot be evaluated or returns anything other than the required value. The alternative, fail-open, defaults to passing when conditions are unresolvable. Fail-closed is safer because the conditions most likely to be unresolvable are the ones that are broken.
+
+**Why keep eval suites and full test suites separate instead of running everything together?** Eval suites and full test suites have different feedback characteristics. Eval suites are fast and targeted to agent behavior. Full suites cover contract integrity and system-wide safety properties. Merging them slows the inner development loop and mixes signals that are easier to triage when kept distinct. The gate requiring both is more precise than collapsing them into one.
+
+**How do you prevent new conditions from being silently ignored by the gate?** By maintaining an explicit condition registry where every condition has a named failure mode. Adding a new signal to the system requires adding it to the registry with an explicit fail-closed or advisory designation. There is no default inheritance from existing conditions.
+
+**Can a gate with fail-closed conditions block valid PRs?** Yes, and it will. A condition that cannot be resolved will block a PR that might have been fine. This is the correct tradeoff. A blocked PR is a recoverable state — it can be investigated and unblocked. A false green that ships a contract violation is not recoverable in the same way, and the cost of the investigation comes later when the blast radius is larger.
+
+## In this series
+
+- [Six False-Greens in a Self-Auditing Agent Pipeline](/blog/a-false-green-is-the-most-dangerous-failure-class-in-any)
+- [Permissive Parsing Is a False-Green Factory](/blog/permissive-parsing-is-a-false-green-factory)
+- [One-Sided Contracts Break Agent Pipelines](/blog/a-strict-contract-enforced-on-only-one-side-produces-false)
+- [The Arc Since the Six Were Caught](/blog/the-arc-since-the-six-were-caught)
+- [The Calibration Ledger: 58 Runs, 93% Pass, n Is Small](/blog/n-is-small-at-the-time-of-writing-the-calibration-ledger)
+- [False Greens: Three Structural Observations](/blog/three-structural-observations-the-essay-should-land-1)

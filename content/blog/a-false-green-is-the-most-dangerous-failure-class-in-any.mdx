@@ -1,0 +1,169 @@
+---
+title: "Six False-Greens in a Self-Auditing Agent Pipeline"
+slug: a-false-green-is-the-most-dangerous-failure-class-in-any
+description: "Six ways my autonomous dev-loop reported success when nothing had landed — and the fail-closed gates that caught each one before they corrupted the ledger."
+date: '2026-06-22'
+keywords:
+- false green detection
+- fail-closed gate
+- agent evals
+- autonomous dev loop
+- trust ledger
+- headless agent failure
+- pipeline observability
+category: architecture
+author: Vitalii Serbyn
+featured: false
+seo_keywords:
+- false green detection
+- fail-closed gate
+- agent evals
+- autonomous dev loop
+- trust ledger
+- headless agent failure
+- pipeline observability
+---
+
+A false-green is more dangerous than an outright failure because it is invisible by construction: the system tells you it succeeded, so you stop looking. Over roughly a week, my autonomous dev-loop caught **six distinct mechanisms** by which it reported success when nothing — or the wrong thing — had actually happened.
+
+## What the pipeline is and why false-greens matter here
+
+"DW" is a spec-driven dev-loop I run solo. A human dictates intent, a decomposer cuts it into machine-validated specs, a headless dev-lead agent implements each slice (research → plan → code → review → QA), and a walker parses the agent's structured result, asks a single y/N at the merge gate, merges, verifies, and records to an append-only calibration ledger. The whole design bet is *measured trust*: autonomy is earned against that ledger, never assumed. Auto-merge stays OFF until the false-green rate is proven low against real, append-only data.
+
+That last sentence is why false-greens are existential here, not just embarrassing. Every false-green that reaches the ledger poisons the only instrument I use to decide whether to expand agent autonomy. A system that lies about success and isn't caught is a system whose trust data is worthless.
+
+The through-line across all six mechanisms: **I did not try to make the agent reliable. I built a system that catches when it lies, and turned every caught lie into a test.**
+
+## The six mechanisms
+
+### Mechanism 1 — The "(None)" verdict blindness
+
+The walker dispatched the agent, the agent completed its work, and the walker recorded a pass — but the agent's actual verdict was never read. The result field came back effectively empty and the walker fell through to a default that looked like success.
+
+It was caught because a run that should have stopped didn't. Tracing the walker's result-parsing revealed it was reading a field that was sometimes absent and treating absent-as-fine. The contract between agent and walker (the "§5.3 result block") was parsed permissively. A missing or garbled result didn't fail closed.
+
+The fix: make the walker parse the last fenced JSON block in the agent's envelope as the authoritative result, and make every `None` path an explicit STOP. Absence of a verdict is now a refusal, not a pass. Permissive parsing is a false-green factory — the absence of a signal must never be interpreted as a positive signal.
+
+### Mechanism 2 — The false-positive MERGED (nothing landed)
+
+The walker printed `MERGED`, wrote a pass row to the ledger, added the spec to the merged-set — and `origin/main` received no implementation commit. The work sat uncommitted in the working tree. The ledger claimed a merge that never happened.
+
+It was caught by a later `git pull` that showed implementation files still dirty in the working tree for a spec the ledger said was done. The merged-set and reality had diverged. The root cause was two coupled bugs: the agent's seed never mandated branch-and-commit, so it implemented uncommitted; and the merge step reported success without verifying anything had actually landed.
+
+The fix was two-part. The dispatch seed now mandates: implement on a feature branch, commit every owned file before emitting the gate result, report the branch name. A post-merge landing verification step then confirms the change is actually on `origin/main`; on failure it prints `MERGE-VERIFY-FAILED`, does not print MERGED, does not touch the merged-set, and exits non-zero. The ledger row gained a `merge_verified` boolean. "The function returned" is not "the work landed" — verify the side effect against ground truth, not against the return value of the thing that was supposed to cause it.
+
+### Mechanism 3 — Golden-subset QA passing while the full suite was red
+
+A PR merged over a red CI test job. The dev-loop's own QA step reported green; CI's full pytest run was red on a contract test. A new agent definition and the contract test it violated shipped together in one PR, and the gate said go.
+
+It was caught while investigating how an earlier PR got merged over red CI: `gh pr checks` showed the test job had failed at merge time, on exactly the contract the same PR introduced. Two gaps caused it. First, QA scope: the dev-loop's eval-runner ran only the curated golden subset plus a metric floor — never the full pytest suite. So a non-golden contract regression slipped past QA and reported pass. Second, the merge gate wasn't blocking on the red full-suite job.
+
+The fix: `full_suite_green` added as a required, fail-closed merge-readiness condition in the merge-gate advisor, mirroring the existing eval-green condition. A spec reading "all conditions met" can no longer be true while the full suite is red. A green that only checks a subset is a *partial* green wearing a *full* green's clothes — name the scope or the green lies.
+
+One detail worth holding: the spec that fixed this gap was itself later caught by a different false-green (the merge_fn bug, mechanism 6). The fix for "QA isn't thorough enough" had to survive the pipeline's other holes to land.
+
+### Mechanism 4 — Outcome enum drift ("success" ≠ a recognized word)
+
+A genuinely clean run was rejected at the gate. The agent emitted `outcome: "success"` — a reasonable word — but the walker only accepts a fixed vocabulary (`ready_for_gate` / `ready_for_human_gate` / `complete`). Strict consumer, drifting producer.
+
+It was caught because fixing mechanism 1 made the refusal legible. The walker STOPped with a named reason. Progress notes showed a clean gate: reviewer approved, branch committed. The work was good; only the word was wrong.
+
+The root cause: the allowed outcome vocabulary was enforced on the consumer side but never pinned on the producer side. Nothing told the agent which exact words were recognized, so it paraphrased. A strict-but-unspecified contract is a false-red here — the mirror image of a false-green, same root disease: the contract wasn't made explicit to both parties.
+
+The fix: pin the allowed outcome words verbatim into the dispatch seed, derived from the canonical set, with a cross-check test asserting the seed's words match the consumer's accepted set. The contract is now stated to both sides from a single source of truth. A strict contract enforced on only one side produces false rejections as reliably as a loose contract produces false acceptances.
+
+### Mechanism 5 — The backgrounded check that never woke up
+
+A headless run implemented its slice, then exited without emitting its result. Its last message: *"running the full suite in the background — waiting for the completion notification now."* Nothing wakes a headless single-shot process. It waited, then exited, having emitted nothing. The walker got an envelope with no result block and STOPped.
+
+The root cause: the agent reached for an interactive/async habit — fire a long job in the background, get notified on completion — inside an execution mode where there is no event loop, no notification, no second turn. The check ran asynchronously in a synchronous world.
+
+The fix: the dev-lead contract now mandates that in headless mode all checks (review, QA, pytest) run synchronously to completion before the gate. Backgrounding a check ahead of the gate is an ESCALATE, not an option. Agents carry assumptions from the environment they were trained on. Headless execution silently removes affordances the agent assumes exist — make the constraint explicit in the contract, because the model won't infer it.
+
+### Mechanism 6 — merge_fn's success without merging (the big one)
+
+`MERGE-VERIFY-FAILED` — four times in a row, on four consecutive specs. Each time the merge step returned success; each time verification correctly reported the branch never landed; each time the human finished the merge by hand. The pattern, not the single instance, was the tell.
+
+Reading the merge path end-to-end exposed a three-way disagreement. The pre-merge check used the branch the agent actually created (`feat/<id>`). The merge step derived a different, convention-named branch (`dw/<id>`) and ran `gh pr merge` against a PR that never existed. The verify step checked the real branch and correctly said it didn't land. So the merge operated on a non-existent branch and PR — merged nothing, returned success.
+
+A second, latent bug surfaced in the same read: even with the branch fixed, the verify used `git merge-base --is-ancestor`, which false-negatives after a squash merge. Squash collapses the branch into a fresh commit, so the original branch tip is never an ancestor of main even on a real landing.
+
+The fix rewrote both functions. The merge step now pushes the agent's actual reported branch, opens a PR, and squash-merges it — the exact sequence a human runs by hand. Verification now checks the PR's MERGED state on the remote, not git ancestry, making it squash-safe.
+
+This is the platonic false-green: three components each locally "correct," globally incoherent because they disagreed about which branch was the subject. The verify step was the hero — it fail-closed every single time and refused to let a phantom merge reach the ledger. Without that independent check, the pipeline would have recorded four merges that never happened and quietly poisoned the trust data the whole system exists to accumulate. The cheapest insurance in the system was the component that trusted nothing and verified against ground truth.
+
+## The shape of all six
+
+Each mechanism is a different lie, caught by a different gate:
+
+- **Mechanism 1** told "verdict read" (it wasn't) — caught by a run that should've stopped.
+- **Mechanism 2** told "merged" (nothing landed) — caught by a dirty working tree after pull.
+- **Mechanism 3** told "tests pass" (subset only) — caught by red CI on a merged PR.
+- **Mechanism 4** told (false *red*) "not a clean run" — caught by a legible STOP on clean work.
+- **Mechanism 5** told "I'll finish async" (no async) — caught by an empty result envelope.
+- **Mechanism 6** told "merged" (wrong branch) — caught by 4× consecutive verify-fail.
+
+Three structural observations:
+
+**Fail-closed is what makes false-greens catchable.** Every catch above happened because something refused to interpret absence or ambiguity as success — the verify step, the strict parser, the explicit STOP. A permissive system would have swallowed all six silently. You cannot catch a false-green with optimism.
+
+**The seam is headless execution crossed with agent assumptions of interactivity.** Five of six live where the agent assumed an affordance that headless execution removed: a reliable stdout, an obvious success word, a future turn to be woken into, a human who'd notice. Name the seam and you know where to look next.
+
+**Every caught lie became a test.** The pipeline doesn't just survive its bugs — it converts each one into a permanent fixture, so the same false-green cannot recur. Incident → fixture, same day. That flywheel, not any single architecture decision, is the actual product.
+
+## UPDATE (2026-06-20) — the arc since the six were caught
+
+### Trajectory-level evaluation shipped — and that's the climax
+
+The "eval depth is unit-tier" caveat was true when the notes above were written. It no longer is. A feature (DW-TRAJ-EVAL) shipped that adds trajectory-level evaluation: alongside the outcome-only score, every run now gets a deterministic evaluator that reads the ordered stage trace and the per-stage `tool_uses` count, and flags runs that are green by the gates but broken on the path — review skipped, stages out of order, or a change ungrounded in anything actually read.
+
+The detail that makes this the climax: the grounding signal is not stage-presence ("was there a search stage?") but the per-stage tool_uses count. A search stage that *ran but read nothing* (`tool_uses == 0`) still fires the `ungrounded_change` rule. That is the exact failure a presence-check misses — and it's the line between real trajectory evaluation and theatre. After catching six ways the agent lied about the outcome, I built the thing that catches it lying about the path. The system graduated from "did it get the right answer" to "did it get there honestly."
+
+This feature was built *through the pipeline itself* — decomposed, walked, merged, verified, recorded — the same recursive image as the merge_fn fix, one tier up.
+
+### A seventh cluster: the worktree parallelism seam
+
+Building worktree-parallelism surfaced a new cluster of false-friction — not false-green, but the same family (the system lying about readiness, not success):
+
+- A linked worktree has no `.venv`, so subagents silently couldn't run pytest or ruff and every slice escalated `no_report_emitted`. The verification *looked* unavailable when really the interpreter was just absent.
+- `dw_approve` did a bare `git push` that failed on a fresh worktree branch with no upstream.
+- The walker refused a whole glob set if one spec in it was already merged.
+
+None of these is a false-green, but all share the same root disease as the six: a tool assuming an environment it doesn't have. The failures don't cluster around "the model is dumb." They cluster around the gap between what the agent or tool assumes and what the headless, worktree, parallel reality provides. Name that seam and you can predict where the next bug lives before it bites.
+
+### The recurring image: the pipeline generating its own next requirement
+
+Three times now, an incident in the loop became the next spec in the loop. The parallel-session stomp became the lock feature. The unit-tier eval ceiling became trajectory eval. The worktree friction became the worktree-walk feature. The pipeline doesn't just survive its own gaps — it names them, queues them, and builds them. That flywheel — incident → captured idea → spec → walked fix → regression test — is the actual product.
+
+## Honest limitations
+
+The calibration ledger holds ~58 ledger runs at ~93% autonomous pass, gate open (min 10 / 0.8, both cleared). That is a real, append-only, verified number — and it is far too small to make a statistical claim like "false-green rate < 5%." The honest framing is *early evidence with an honest ledger*, not *proven reliability*.
+
+No isolation or sandbox yet — runs happen on a live machine. The kit runs in a second codebase (Crest) with a real squash-merged smoke PR proving the loop end-to-end there, but the report-persistence hook in Crest emits a stub, so fully-autonomous parallel runs there still need an interactive hybrid. Eval depth has moved from unit-tier to trajectory-tier, but no calibrated LLM-as-judge yet.
+
+The strength of this story is not "look how reliable my agent is." It's "look how many ways an agent quietly lies about success, and what it takes to catch each one."
+
+## FAQ
+
+**What is a false-green in an agent pipeline?** A false-green is any case where the system reports success — a pass verdict, a merge confirmation, a green test status — when the underlying work did not actually complete correctly. It is more dangerous than an outright failure because no alert fires; the error is invisible until something downstream breaks.
+
+**Why is fail-closed the essential design choice against false-greens?** A fail-closed gate interprets ambiguity and absence as failure, not as success. In my pipeline, every catch above happened because a component refused to let a missing verdict, an unverified merge, or an empty result envelope pass through. A permissive gate that treats "no signal" as "green signal" would have swallowed all six mechanisms silently.
+
+**How do you distinguish a false-green from a flaky test?** A flaky test fails intermittently under the same conditions. A false-green consistently reports success regardless of whether the work landed. Mechanism 6 — four consecutive `MERGE-VERIFY-FAILED` events while the merge function returned success every time — is the clearest example: it was deterministically wrong, not randomly wrong. The pattern across consecutive runs was the diagnostic.
+
+**What is trajectory-level evaluation and why does it matter beyond outcome evals?** Outcome-only evaluation checks whether the final result is correct. Trajectory-level evaluation checks whether the agent reached that result by actually doing the work — reading sources, running stages in order, grounding its changes in real tool output. A search stage with `tool_uses == 0` passes an outcome check but fails a trajectory check, because the agent declared it searched without reading anything. That gap is where a capable model can produce correct-looking output via shortcut.
+
+**How do you keep the trust ledger honest if the pipeline is also recording its own results?** The ledger is append-only and written by the walker, not the agent. The agent emits a structured result envelope; the walker parses it, runs independent verification against ground truth (git state, PR status on the remote), and only then writes a row. The `merge_verified` boolean is set by the verify step, not by the merge function that was supposed to cause the merge. The independence of the writer from the actor is what keeps the ledger from being gamed by the agent's own optimism.
+
+## The transferable lesson
+
+The architecture that catches lies is not the same as the architecture that prevents lies. Prevention is hard — agents carry training-time assumptions into novel execution environments and you cannot enumerate all of them in advance. Catching is tractable: make every gate fail-closed, verify side effects against ground truth rather than return values, and convert each caught failure into a permanent fixture. The pipeline gets more honest by metabolizing its own dishonesty. That flywheel is the actual work.
+
+## In this series
+
+- [The Calibration Ledger: 58 Runs, 93% Pass, n Is Small](/blog/n-is-small-at-the-time-of-writing-the-calibration-ledger)
+- [Permissive Parsing Is a False-Green Factory](/blog/permissive-parsing-is-a-false-green-factory)
+- [One-Sided Contracts Break Agent Pipelines](/blog/a-strict-contract-enforced-on-only-one-side-produces-false)
+- [QA Is Only as Honest as Its Coverage](/blog/your-qa-is-only-as-honest-as-its-coverage)
+- [The Arc Since the Six Were Caught](/blog/the-arc-since-the-six-were-caught)
+- [False Greens: Three Structural Observations](/blog/three-structural-observations-the-essay-should-land-1)

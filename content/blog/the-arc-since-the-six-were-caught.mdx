@@ -1,0 +1,117 @@
+---
+title: "The Arc Since the Six Were Caught"
+slug: the-arc-since-the-six-were-caught
+description: "After fixing six agent failure modes, the system graduated from outcome checking to path checking. A field report on trajectory evals and generalization."
+date: '2026-06-22'
+keywords:
+- trajectory evaluation
+- false green agent failures
+- autonomous agent reliability
+- agent eval depth
+- fail-closed gate
+- tool_uses grounding signal
+- operational seams
+- agent trust gating
+category: architecture
+author: Vitalii Serbyn
+featured: false
+seo_keywords:
+- trajectory evaluation
+- false green agent failures
+- autonomous agent reliability
+- agent eval depth
+- fail-closed gate
+- tool_uses grounding signal
+- operational seams
+- agent trust gating
+---
+> Part of the series: [Six False-Greens: Field Notes from a Self-Auditing Agent Pipeline](/blog/a-false-green-is-the-most-dangerous-failure-class-in-any)
+
+# The Arc Since the Six Were Caught
+
+Six ways the agent lied about the outcome were caught and fixed. What I built the week after is where the story actually closes — because catching a lie about the *result* turns out to be the easier half.
+
+## The Eval-Depth Problem, Closed
+
+The earlier writeup carried an honest caveat: eval depth was unit-tier. I was scoring outcomes — did the run produce a valid artifact, did it pass the gates — but I was not scoring the *path* that produced them. A run could clear every threshold while the agent skipped a review stage, performed steps out of order, or proposed a change grounded in nothing it had actually read. The outcome score would be green. The trajectory would be fiction.
+
+That caveat no longer holds. The feature I'm calling DW-TRAJ-EVAL ships a deterministic evaluator that reads the ordered stage trace for every run alongside the per-stage `tool_uses` count. It does not ask whether a stage was present. It asks what the stage did. A search stage that *ran but read nothing* (`tool_uses == 0`) still fires the `ungrounded_change` rule. That is exactly the failure a presence-check misses — an agent that opens a tool call, gets a result count of zero, and proceeds anyway, all while the outer harness logs a clean stage name and moves on.
+
+This is the line between real trajectory evaluation and theatre. Presence-checking is theatre. `tool_uses == 0` is the tell.
+
+### Why This Is the Climax, Not a Footnote
+
+The recursive image matters here. The trajectory eval was not designed in isolation; it was decomposed, walked, merged, and verified *through the same pipeline it now evaluates*. The system that caught agents lying about outcomes was used to build the system that catches agents lying about paths. One tier up, same loop. That is not an accident of tooling — it is the design intention made visible. If the pipeline is sound enough to generate its own extensions reliably, then each extension is also a live test of the pipeline's soundness.
+
+The essay's seventh beat is this: after catching six ways the agent lied about what it produced, I built the thing that catches it lying about how it got there. The system graduated from *"did it get the right answer"* to *"did it get there honestly."* That graduation is also the strongest single move toward lab-grade eval practice that I have made, and it was made with the same toolset, not a new one.
+
+### The Numbers Behind the Claim
+
+~58 ledger runs, ~93% autonomous pass, gate open (min 10 / 0.8, both cleared). I will keep the "early evidence with an honest ledger" framing because that is what the data supports — still far too small for a statistical claim, and I am not making one. The point of this ledger is never the pass rate; it is the *catching*. A system that runs cleanly and never surfaces a bad trajectory has not proven reliability — it has proven it has not looked hard enough yet. The trajectory evaluator is the looking.
+
+## The Generalization Claim, Now Earned
+
+The earlier framing called the Crest port "the beginning of a generalization claim." That language was right for what was true then. It is not right for what is true now.
+
+The kit runs in a second repo. A real squash-merged smoke PR completed the full loop end-to-end. That moves the honest framing from "single-codebase" to "two codebases, second one proven by smoke" — which is a genuine second curve, not a projected one. I am not calling it battle-tested across many environments, because it is not. But the generalization claim has graduated from a promise to a proof of kind.
+
+### The Seam That Stays Honest
+
+One specific gap is worth naming exactly because the essay is *about* seams: the report-persistence hook in Crest emits a stub. Fully autonomous parallel runs there still require an interactive hybrid — I have to be present for the handoff that the stub does not yet close. This is not a failure of the architecture; it is the next seam waiting to become the next spec. Naming it precisely is the practice. Smoothing over it would be the failure.
+
+## A New Cluster: Operational Seams, Not False Greens
+
+Building the worktree-parallelism feature surfaced a cluster of failures that do not belong to the "false green" family but are the same disease with a different symptom. These are not cases where the agent reported success on a bad outcome. These are cases where the environment was not what the agent assumed, and the agent had no way to surface that gracefully.
+
+The specific failures, stated plainly:
+
+- A linked worktree carries no `.venv`, so subagents silently could not run pytest or ruff. Every slice escalated `no_report_emitted`. The verification *looked* unavailable when the interpreter was simply absent.
+- `dw_approve` issued a bare `git push` that failed on a fresh worktree branch with no upstream configured. The tool assumed an upstream that headless branch creation does not provide.
+- The walker refused an entire glob set when one spec in it was already merged. A single merged item blocked the rest from processing.
+
+None of these is a false green. All three are the same root failure as the original six: **a tool assuming an environment it does not have.** A venv, an upstream, an all-unmerged set — each assumption was reasonable in the environment the tool was originally written for. Each assumption was wrong in the headless, parallel, worktree reality it encountered.
+
+### The Predictive Value of Naming the Seam
+
+This is the part I want to be precise about, because it is the most transferable finding. Once you name the failure pattern — *the gap between what the agent assumes and what the headless reality provides* — you can predict where the next bug will live before it surfaces. The cluster is not random. It concentrates at environment transitions: the point where a component moves from the environment it was built in to a different one. Linked worktrees. Fresh branches. Parallel sessions. Codebase two.
+
+If I were instrumenting this as a reliability rule, it would read: every component that touches the filesystem, the git state, or the Python interpreter should declare its environment assumptions explicitly, and the harness should validate those assumptions before the component runs. That is not a novel insight in systems engineering. What is novel is building it at solo scale, through agents, with the same pipeline that runs everything else.
+
+## The Flywheel That Is Actually the Product
+
+Three times now, an incident inside the loop became the next spec inside the loop. The parallel-session stomp became the lock feature. The unit-tier eval ceiling became trajectory eval. The worktree friction became the worktree-walk feature. The pattern is not coincidence — it is what a self-closing loop looks like in practice.
+
+The flywheel: incident → captured idea → spec → walked fix → regression test → incident. Each incident is a signal. Each regression test is a memory. The pipeline does not just survive its own gaps; it names them, queues them, and builds the fix through itself. That recursive quality — the system generating its own next requirement — is the actual product. Not any one component. Not the pass rate on the ledger. The loop that closes on itself.
+
+This is also why the "solo, with agents instead of a team" framing is not a cost constraint I am working around. It is the architecture. A team would route incidents to humans. The pipeline routes them to specs. The difference is latency and auditability: a spec in the queue is traceable, versioned, and walkable. A conversation between two engineers is not.
+
+## What Did Not Work
+
+The worktree venv gap was not caught by any pre-flight check before it caused escalations. That is an instrumentation failure. The fix — symlinking or initializing the venv in the worktree setup step — was straightforward once diagnosed, but the diagnostic cost was real. A declarative environment manifest per worktree would have surfaced this before the first subagent ran. I do not have that yet. It is in the queue.
+
+The stub in the Crest report-persistence hook means the second codebase is not fully autonomous. I have a smoke PR that proves the loop closes, but I cannot walk away from a parallel Crest run the way I can from a pipeline run in the primary repo. The gap is known, bounded, and next. But "known and bounded" is not the same as "closed."
+
+## FAQ
+
+**What does `tool_uses == 0` actually catch that a stage presence check does not?** A stage presence check confirms that the agent opened a tool call and received a response. It does not confirm that the response contained anything. An agent that searches, gets zero results, and proceeds to write a change anyway will pass a presence check. It will fail the `tool_uses == 0` rule in trajectory evaluation because the search stage ran but read nothing — making any subsequent change ungrounded. That is the exact failure mode that makes an agent dangerous to trust at higher policy gates.
+
+**How do you keep the ledger honest when the sample size is small?** By not making claims the data cannot support. ~58 ledger runs with ~93% autonomous pass and gate open (min 10 / 0.8, both cleared) is early evidence, not a statistical proof. The ledger's value at this stage is not the rate — it is the catching. Each failure that surfaces and gets logged is a regression test in waiting. The rate will matter when the sample is large enough to say something. It is not there yet.
+
+**What separates an operational seam failure from a false green?** A false green is the agent reporting success on a bad outcome. An operational seam failure is the environment not matching the agent's assumptions, causing the agent to fail or escalate in a way that is technically honest but practically broken. The worktree missing a `.venv` is a seam failure — the agent did not lie, it just could not run. The distinction matters because the fix is different: false greens require better eval; seam failures require explicit environment contracts and pre-flight validation.
+
+**Why build trajectory eval through the same pipeline it evaluates?** Because the alternative is a separate, unaudited track that doesn't share the same trust gating and regression history. Building through the pipeline means the trajectory eval feature itself was decomposed, walked, merged, and verified with the same harness. If the pipeline had a flaw that trajectory eval would have caught, that flaw would have surfaced during the build. The recursive structure is a stress test, not just a workflow convenience.
+
+**What does "two codebases, second one proven by smoke" actually mean?** It means the second repo completed one full end-to-end loop — decompose, walk, merge, verify — on a real squash-merged PR. Smoke in this context means minimum viable proof of the critical path, not comprehensive coverage. The claim is: the kit generalizes beyond the primary repo. The honest boundary is: it has done so once, with one known gap (the stub). That is a genuine second curve, not a projection.
+
+## The Transferable Lesson
+
+Name the seam, and you can predict the next bug. Every failure in this fleet — false greens, operational mismatches, eval gaps — has concentrated at the boundary between what a component assumed and what the environment provided. That pattern is not specific to agent systems. It is specific to any system where components are composed across contexts they were not originally written for. The difference with autonomous agents is that the component doing the assuming is also the component reporting on itself. That is why external trajectory evaluation is not optional — it is the only way to know whether the path was real.
+
+## In this series
+
+- [Six False-Greens in a Self-Auditing Agent Pipeline](/blog/a-false-green-is-the-most-dangerous-failure-class-in-any)
+- [Permissive Parsing Is a False-Green Factory](/blog/permissive-parsing-is-a-false-green-factory)
+- [One-Sided Contracts Break Agent Pipelines](/blog/a-strict-contract-enforced-on-only-one-side-produces-false)
+- [QA Is Only as Honest as Its Coverage](/blog/your-qa-is-only-as-honest-as-its-coverage)
+- [The Calibration Ledger: 58 Runs, 93% Pass, n Is Small](/blog/n-is-small-at-the-time-of-writing-the-calibration-ledger)
+- [False Greens: Three Structural Observations](/blog/three-structural-observations-the-essay-should-land-1)

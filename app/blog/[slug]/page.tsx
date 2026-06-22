@@ -197,8 +197,13 @@ function inlineFormat(text: string): string {
     .replace(/\*(.*?)\*/g, '<em>$1</em>')
     .replace(/`(.*?)`/g, '<code>$1</code>')
     .replace(
-      /\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,
-      '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
+      // absolute (http/https) OR site-relative (/...) links. Internal links
+      // navigate within the site; external links open in a new tab.
+      /\[([^\]]+)\]\(((?:https?:\/\/|\/)[^)]+)\)/g,
+      (_m, label: string, href: string) =>
+        href.startsWith('/')
+          ? `<a href="${href}">${label}</a>`
+          : `<a href="${href}" target="_blank" rel="noopener noreferrer">${label}</a>`
     );
 }
 
@@ -260,6 +265,11 @@ function markdownToHtml(markdown: string): string {
       continue;
     }
 
+    if (trimmed.startsWith('#### ')) {
+      closeLists();
+      html.push(`<h4>${inlineFormat(trimmed.slice(5))}</h4>`);
+      continue;
+    }
     if (trimmed.startsWith('### ')) {
       closeLists();
       html.push(`<h3>${inlineFormat(trimmed.slice(4))}</h3>`);

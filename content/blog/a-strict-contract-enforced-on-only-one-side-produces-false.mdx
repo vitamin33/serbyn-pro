@@ -1,0 +1,123 @@
+---
+title: "One-Sided Contracts Break Agent Pipelines"
+slug: a-strict-contract-enforced-on-only-one-side-produces-false
+description: "A strict contract enforced on only one side produces false rejections as reliably as a loose one produces false acceptances. A field report from my fleet."
+date: '2026-06-22'
+keywords:
+- agent contract drift
+- false green rejection
+- fail-closed gate
+- agent output schema
+- dispatch seed pinning
+- single source of truth schema
+- agentic pipeline validation
+category: architecture
+author: Vitalii Serbyn
+featured: false
+seo_keywords:
+- agent contract drift
+- false green rejection
+- fail-closed gate
+- agent output schema
+- dispatch seed pinning
+- single source of truth schema
+- agentic pipeline validation
+---
+> Part of the series: [Six False-Greens: Field Notes from a Self-Auditing Agent Pipeline](/blog/a-false-green-is-the-most-dangerous-failure-class-in-any)
+
+A genuinely clean agent run hit the gate and was rejected — not because anything went wrong, but because the contract was only enforced on one side. That asymmetry is exactly as dangerous as having no contract at all, and it took a concrete false rejection in my own fleet to make the failure mode undeniable.
+
+## The failure mode nobody names
+
+There is a well-understood failure mode in agentic systems where the producer is too loose: the agent emits whatever it feels like, the consumer accepts anything, and garbage propagates. The solution everyone reaches for is a stricter consumer — add a schema, add a gate, add a validator. That instinct is correct but incomplete.
+
+The failure mode that bit me is the mirror image: **the consumer is strict and the producer is unaware of that strictness.** The agent emitted `outcome: "success"` — a perfectly reasonable English word, semantically accurate, and in any normal reading an acceptable signal that work was done. The gate walker, however, only accepts a fixed vocabulary: `ready_for_gate`, `ready_for_human_gate`, or `complete`. The agent was never told this. The gate was never told the agent didn't know.
+
+The result was a false rejection. A clean run, correctly executed, thrown out at the gate because the producer and consumer were each working from different, privately-held assumptions about what the contract said.
+
+This is not a bug in either component individually. The gate is behaving correctly. The agent is behaving correctly given what it was told. The bug is architectural: the contract exists in only one place, is enforced in only one direction, and has no mechanism to detect when the two sides have drifted apart.
+
+## Why this is harder to see than it looks
+
+False acceptances are loud. When a loose contract lets bad output through, something downstream breaks — a tool call fails, a state machine hits an invalid transition, a human reviewer flags the artifact. The feedback loop, however delayed, eventually closes. You see the garbage output and you know where to look.
+
+False rejections from an overly strict consumer are quiet in a different way. The run terminates cleanly. The gate logs show a policy violation. Everything looks like it's working — the safety system caught something. But what it caught was a clean run with the wrong vocabulary, not a genuinely bad output. If you're not carefully auditing rejection reasons, you will interpret the gate doing its job correctly as evidence the gate is working, when the actual story is that the producer was never given the vocabulary it needed to succeed.
+
+In my dev-loop, the false rejection was *legible* — the progress notes showed a clean trace. The agent's reasoning was sound. The gate's rejection was technically valid. Both were right. The contract was broken.
+
+That legibility is actually what made the diagnosis tractable. The rejection reason was not ambiguous: vocabulary mismatch, specific field, specific value. A less legible gate — one that emitted a generic validation failure — would have been much harder to debug. This is a secondary argument for structured, machine-readable rejection reasons, but the primary problem remains: a legible false rejection is still a false rejection.
+
+## The architecture that caused this
+
+To understand why this happened, you have to look at how the dispatch seed and the gate validator were built — separately, by different parts of the system, at different times, with no shared reference.
+
+The dispatch seed is the instruction block injected into the agent's context at the start of a run. It tells the agent what to do, what tools to use, and — critically — what to emit when it's done. In the version that caused this failure, the dispatch seed described the outcome field in natural language: something like "emit a success outcome when the task is complete." Natural language is ambiguous. The agent resolved that ambiguity by choosing the word `success`, which is correct English and wrong protocol.
+
+The gate validator, on the other hand, was built against a canonical enum defined in a schema file. It knew exactly which strings were acceptable. It had been built correctly, by the book. The problem was that it was the only part of the system that knew.
+
+When you build the producer's instructions separately from the consumer's validator, you create a coordination gap. That gap is fine when the system is small and the same person holds both sides in their head. It becomes a latent bug the moment the system grows, the instructions and validator are updated independently, or someone new touches either side without knowing the other exists.
+
+## The fix: state the contract to both sides from a single source
+
+The solution is not to make the gate looser. Loosening the gate to accept `success` alongside `ready_for_gate` and `complete` would fix this specific instance and introduce a new version of the original problem — a loose consumer that accepts semantic approximations instead of protocol-exact values.
+
+The solution is to make the dispatch seed derive its vocabulary **directly from the same canonical set the gate validator uses.** Concretely:
+
+- The allowed outcome strings live in exactly one place: a schema definition that is the authoritative source for both the gate and the seed generator.
+- The dispatch seed generation step reads from that schema and pins the allowed vocabulary verbatim into the instructions the agent receives. Not a paraphrase. Not a description. The exact strings, quoted, in the exact format the agent must emit.
+- A cross-check test asserts, at build time, that every string in the dispatch seed's vocabulary is present in the gate validator's accepted set, and every string in the gate validator's accepted set is present in the dispatch seed's vocabulary. Additions to either side that aren't mirrored in the other fail the build.
+
+The cross-check test is the critical piece. Without it, the single source of truth is a convention, and conventions drift. The test makes the contract machine-enforced on both sides: the producer cannot be given a vocabulary the consumer rejects, and the consumer cannot be given a vocabulary the producer was never taught.
+
+## What this looks like in practice
+
+The dispatch seed now includes a block that looks approximately like this:
+
+```
+When your task is complete, set the `outcome` field to one of exactly these
+strings — copy the value verbatim:
+  - ready_for_gate
+  - ready_for_human_gate
+  - complete
+
+Do not paraphrase. Do not use synonyms. The gate parser is exact-match only.
+```
+
+That block is not written by hand. It is generated from the canonical schema at seed-construction time, so it cannot fall out of sync unless the schema changes — and if the schema changes, the cross-check test fails until the other side is updated to match.
+
+The agent, given this instruction block, has no ambiguity to resolve. It cannot invent `success` because `success` is not on the list it was given. The gate receives values from the exact vocabulary it was built to accept. The contract is now symmetric.
+
+## The deeper principle
+
+This is an instance of a more general problem in any system where a producer and consumer share an implicit contract: **contracts that are implicit on one side and explicit on the other will drift until the implicit side violates the explicit side's expectations.**
+
+The fix is always the same shape: make the contract explicit on both sides, derive both from a single authoritative definition, and add a mechanical check that catches divergence before it reaches runtime. The specific technology doesn't matter — this applies whether you're coordinating LLM agents, microservices, data pipelines, or any other producer-consumer pair where one side has formal schema enforcement and the other has informal documentation.
+
+What makes the agentic case particularly sharp is that the producer is a language model. Language models are extraordinarily good at resolving ambiguity by choosing the most plausible interpretation of underspecified instructions. That capability is useful in many contexts and harmful in protocol contexts. When the protocol requires an exact string, the model's tendency to choose a reasonable synonym is a liability. You eliminate that liability not by making the model less capable of inference, but by removing the ambiguity that triggers inference in the first place.
+
+A dispatch seed that says "emit a success outcome" is an invitation for inference. A dispatch seed that says "emit exactly `ready_for_gate` — the gate parser is exact-match only" is a specification. Specifications are what you want at protocol boundaries.
+
+## FAQ
+
+**Why not just make the gate accept synonyms like `success` and `done`?** Loosening the consumer trades one failure mode for another. A gate that accepts semantic approximations will eventually accept outputs that are semantically close but contextually wrong — an agent that completes the wrong task and emits `success` will pass. Exact-match on a controlled vocabulary is the right posture for a gate; the fix belongs on the producer side, in the instructions.
+
+**Doesn't this make the dispatch seed brittle — any vocabulary change breaks things?** Yes, intentionally. Brittleness at the schema boundary is a feature: it forces coordinated updates. The cross-check test makes the failure explicit and early (build time, not runtime), which is exactly where you want it. A system that silently tolerates vocabulary drift is fragile in a much harder-to-detect way.
+
+**What if the agent ignores the exact strings and paraphrases anyway?** That's a real failure mode, and it's separate from the contract architecture problem. The immediate fix is to make the gate's exact-match requirement explicit in the seed — models are much less likely to paraphrase when told explicitly that paraphrase will fail. If paraphrasing persists, it's an eval signal: add a test case that checks the agent emits the correct vocabulary under the correct conditions, and treat failures as regressions.
+
+**How do you handle vocabulary evolution — adding a new outcome type?** You add it to the canonical schema. The seed generator picks it up automatically on next build. The cross-check test passes because both sides derive from the same source. The gate accepts it because the gate reads from the same schema. There is no manual coordination step, which is the point.
+
+**Is this specific to LLM agents or does it generalize?** It generalizes completely. Any system where a producer and consumer share an implicit contract — microservices, event-driven pipelines, data schemas — has the same failure mode. The agentic case is sharper because language models are unusually good at producing plausible-but-wrong outputs when instructions are underspecified. But the architectural fix is identical: one source of truth, both sides derived from it, mechanical cross-check enforcing the invariant.
+
+## The transferable lesson
+
+A strict contract enforced on only one side produces false rejections as reliably as a loose contract produces false acceptances. State the contract to both parties, from a single source of truth, and add a test that makes divergence a build failure rather than a runtime mystery. The gate should be strict. The producer should be told exactly what that strictness requires. These are not competing goals — they are the same goal, and they require the same shared definition to achieve.
+
+## In this series
+
+- [Six False-Greens in a Self-Auditing Agent Pipeline](/blog/a-false-green-is-the-most-dangerous-failure-class-in-any)
+- [Permissive Parsing Is a False-Green Factory](/blog/permissive-parsing-is-a-false-green-factory)
+- [The Arc Since the Six Were Caught](/blog/the-arc-since-the-six-were-caught)
+- [QA Is Only as Honest as Its Coverage](/blog/your-qa-is-only-as-honest-as-its-coverage)
+- [The Calibration Ledger: 58 Runs, 93% Pass, n Is Small](/blog/n-is-small-at-the-time-of-writing-the-calibration-ledger)
+- [False Greens: Three Structural Observations](/blog/three-structural-observations-the-essay-should-land-1)
