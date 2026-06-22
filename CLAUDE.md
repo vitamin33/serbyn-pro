@@ -1,4 +1,4 @@
-# Professional Portfolio Website | serbyn.pro
+# Professional Portfolio Website | serbyn.io
 
 Next.js 14 + TypeScript + Tailwind + shadcn/ui | AI Platform / MLOps Engineer Portfolio
 

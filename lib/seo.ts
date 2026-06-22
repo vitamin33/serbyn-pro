@@ -4,8 +4,8 @@ export const siteConfig = {
   name: 'Vitalii Serbyn — AI Systems Architect',
   description:
     'I design autonomous agent systems, trust-layered orchestration, and production AI infrastructure.',
-  url: 'https://serbyn.pro',
-  ogImage: 'https://serbyn.pro/logo.png',
+  url: 'https://serbyn.io',
+  ogImage: 'https://serbyn.io/logo.png',
   creator: 'Vitalii Serbyn',
   keywords: [
     'Agent Orchestration',
@@ -169,7 +169,7 @@ export function generatePersonSchema() {
     jobTitle: 'AI Systems Architect',
     description: siteConfig.description,
     url: siteConfig.url,
-    image: 'https://serbyn.pro/logo.png',
+    image: 'https://serbyn.io/logo.png',
     sameAs: [
       'https://www.linkedin.com/in/vitalii-serbyn-b517a083',
       'https://github.com/vitamin33',
@@ -204,7 +204,7 @@ export function generateOrganizationSchema() {
     '@type': 'Organization',
     name: 'Easelect LTD',
     url: siteConfig.url,
-    logo: 'https://serbyn.pro/logo.png',
+    logo: 'https://serbyn.io/logo.png',
     description:
       'AI systems architecture consulting. Autonomous agent orchestration, trust layers, and production AI infrastructure.',
     address: {

@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: PageProps) {
     title: study.title,
     description: study.summary,
     image: null, // use the dynamic opengraph-image.tsx card
-    canonicalUrl: `https://serbyn.pro/work/${study.slug}`,
+    canonicalUrl: `https://serbyn.io/work/${study.slug}`,
   });
 }
 

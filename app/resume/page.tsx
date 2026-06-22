@@ -42,7 +42,7 @@ export default function ResumePage() {
               </span>
               <span className="flex items-center gap-1">
                 <Globe className="h-4 w-4" />
-                serbyn.pro
+                serbyn.io
               </span>
             </div>
           </header>

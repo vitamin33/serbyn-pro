@@ -269,3 +269,6 @@ PRIVATE.md
 SECRETS.md
 .vercel
 .env*.local
+
+# local database dump (never commit)
+dump.sql
