@@ -43,7 +43,7 @@ False acceptances are loud. When a loose contract lets bad output through, somet
 
 False rejections from an overly strict consumer are quiet in a different way. The run terminates cleanly. The gate logs show a policy violation. Everything looks like it's working — the safety system caught something. But what it caught was a clean run with the wrong vocabulary, not a genuinely bad output. If you're not carefully auditing rejection reasons, you will interpret the gate doing its job correctly as evidence the gate is working, when the actual story is that the producer was never given the vocabulary it needed to succeed.
 
-In my fleet, fixing Mechanism 1 — the refusal was *legible* — progress notes showed a clean trace. The agent's reasoning was sound. The gate's rejection was technically valid. Both were right. The contract was broken.
+In my dev-loop, the false rejection was *legible* — the progress notes showed a clean trace. The agent's reasoning was sound. The gate's rejection was technically valid. Both were right. The contract was broken.
 
 That legibility is actually what made the diagnosis tractable. The rejection reason was not ambiguous: vocabulary mismatch, specific field, specific value. A less legible gate — one that emitted a generic validation failure — would have been much harder to debug. This is a secondary argument for structured, machine-readable rejection reasons, but the primary problem remains: a legible false rejection is still a false rejection.
 
