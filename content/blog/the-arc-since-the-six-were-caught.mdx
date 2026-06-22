@@ -1,7 +1,7 @@
 ---
 title: "The Arc Since the Six Were Caught"
 slug: the-arc-since-the-six-were-caught
-description: "After fixing six agent failure modes, the system graduated from outcome checking to path checking. A field report on trajectory evals, generalization, and operational seams."
+description: "After fixing six agent failure modes, the system graduated from outcome checking to path checking. A field report on trajectory evals and generalization."
 date: '2026-06-22'
 keywords:
 - trajectory evaluation
@@ -106,3 +106,12 @@ The stub in the Crest report-persistence hook means the second codebase is not f
 ## The Transferable Lesson
 
 Name the seam, and you can predict the next bug. Every failure in this fleet — false greens, operational mismatches, eval gaps — has concentrated at the boundary between what a component assumed and what the environment provided. That pattern is not specific to agent systems. It is specific to any system where components are composed across contexts they were not originally written for. The difference with autonomous agents is that the component doing the assuming is also the component reporting on itself. That is why external trajectory evaluation is not optional — it is the only way to know whether the path was real.
+
+## In this series
+
+- [Six False-Greens in a Self-Auditing Agent Pipeline](/blog/a-false-green-is-the-most-dangerous-failure-class-in-any)
+- [Permissive Parsing Is a False-Green Factory](/blog/permissive-parsing-is-a-false-green-factory)
+- [One-Sided Contracts Break Agent Pipelines](/blog/a-strict-contract-enforced-on-only-one-side-produces-false)
+- [QA Is Only as Honest as Its Coverage](/blog/your-qa-is-only-as-honest-as-its-coverage)
+- [The Calibration Ledger: 58 Runs, 93% Pass, n Is Small](/blog/n-is-small-at-the-time-of-writing-the-calibration-ledger)
+- [False Greens: Three Structural Observations](/blog/three-structural-observations-the-essay-should-land-1)

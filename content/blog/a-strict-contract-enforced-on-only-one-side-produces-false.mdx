@@ -1,7 +1,7 @@
 ---
 title: "One-Sided Contracts Break Agent Pipelines"
 slug: a-strict-contract-enforced-on-only-one-side-produces-false
-description: "A strict contract enforced on only one side produces false rejections as reliably as a loose contract produces false acceptances. A field report from my agent fleet."
+description: "A strict contract enforced on only one side produces false rejections as reliably as a loose one produces false acceptances. A field report from my fleet."
 date: '2026-06-22'
 keywords:
 - agent contract drift
@@ -112,3 +112,12 @@ A dispatch seed that says "emit a success outcome" is an invitation for inferenc
 ## The transferable lesson
 
 A strict contract enforced on only one side produces false rejections as reliably as a loose contract produces false acceptances. State the contract to both parties, from a single source of truth, and add a test that makes divergence a build failure rather than a runtime mystery. The gate should be strict. The producer should be told exactly what that strictness requires. These are not competing goals — they are the same goal, and they require the same shared definition to achieve.
+
+## In this series
+
+- [Six False-Greens in a Self-Auditing Agent Pipeline](/blog/a-false-green-is-the-most-dangerous-failure-class-in-any)
+- [Permissive Parsing Is a False-Green Factory](/blog/permissive-parsing-is-a-false-green-factory)
+- [The Arc Since the Six Were Caught](/blog/the-arc-since-the-six-were-caught)
+- [QA Is Only as Honest as Its Coverage](/blog/your-qa-is-only-as-honest-as-its-coverage)
+- [The Calibration Ledger: 58 Runs, 93% Pass, n Is Small](/blog/n-is-small-at-the-time-of-writing-the-calibration-ledger)
+- [False Greens: Three Structural Observations](/blog/three-structural-observations-the-essay-should-land-1)

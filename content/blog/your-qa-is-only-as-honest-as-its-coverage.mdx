@@ -1,7 +1,7 @@
 ---
 title: "QA Is Only as Honest as Its Coverage"
 slug: your-qa-is-only-as-honest-as-its-coverage
-description: "A PR merged over a red CI job while dev-loop QA said green. Here is the root cause, the fix, and why partial greens are the most dangerous lies in agent systems."
+description: "A PR merged over a red CI job while dev-loop QA said green. Here's the root cause, the fix, and why partial greens are the most dangerous lies in agent systems."
 date: '2026-06-22'
 keywords:
 - false green CI
@@ -104,3 +104,12 @@ The fix is not more coverage everywhere. It is making the gate's condition set e
 **How do you prevent new conditions from being silently ignored by the gate?** By maintaining an explicit condition registry where every condition has a named failure mode. Adding a new signal to the system requires adding it to the registry with an explicit fail-closed or advisory designation. There is no default inheritance from existing conditions.
 
 **Can a gate with fail-closed conditions block valid PRs?** Yes, and it will. A condition that cannot be resolved will block a PR that might have been fine. This is the correct tradeoff. A blocked PR is a recoverable state — it can be investigated and unblocked. A false green that ships a contract violation is not recoverable in the same way, and the cost of the investigation comes later when the blast radius is larger.
+
+## In this series
+
+- [Six False-Greens in a Self-Auditing Agent Pipeline](/blog/a-false-green-is-the-most-dangerous-failure-class-in-any)
+- [Permissive Parsing Is a False-Green Factory](/blog/permissive-parsing-is-a-false-green-factory)
+- [One-Sided Contracts Break Agent Pipelines](/blog/a-strict-contract-enforced-on-only-one-side-produces-false)
+- [The Arc Since the Six Were Caught](/blog/the-arc-since-the-six-were-caught)
+- [The Calibration Ledger: 58 Runs, 93% Pass, n Is Small](/blog/n-is-small-at-the-time-of-writing-the-calibration-ledger)
+- [False Greens: Three Structural Observations](/blog/three-structural-observations-the-essay-should-land-1)

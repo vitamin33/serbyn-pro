@@ -1,7 +1,7 @@
 ---
-title: "The Calibration Ledger: 52 Runs, 94% Pass, n Is Small"
+title: "The Calibration Ledger: 58 Runs, 93% Pass, n Is Small"
 slug: n-is-small-at-the-time-of-writing-the-calibration-ledger
-description: "52 runs, ~94% autonomous pass, and why that number is honest evidence — not a reliability proof. A field report on agent evals at solo scale."
+description: "58 runs, ~93% autonomous pass, and why that number is honest evidence — not a reliability proof. A field report on agent evals at solo scale."
 date: '2026-06-22'
 keywords:
 - agent calibration ledger
@@ -27,9 +27,9 @@ featured: false
 ---
 > Part of the series: [Six False-Greens: Field Notes from a Self-Auditing Agent Pipeline](/blog/a-false-green-is-the-most-dangerous-failure-class-in-any)
 
-# The Calibration Ledger: 52 Runs, 94% Pass, n Is Small
+# The Calibration Ledger: 58 Runs, 93% Pass, n Is Small
 
-The calibration ledger holds ~52 runs at ~94% autonomous pass — and the most important thing I can tell you about that number is what it does not prove.
+The calibration ledger holds ~58 runs at ~93% autonomous pass — and the most important thing I can tell you about that number is what it does not prove.
 
 Most agent benchmarks collapse the moment you ask "how do you know the eval didn't lie?" I built an append-only ledger specifically to keep that question alive, and what I learned while building it is more useful than the number itself.
 
@@ -39,7 +39,7 @@ An agent that reports its own success is an agent you cannot trust. The failure 
 
 The calibration ledger is an append-only record of every autonomous run, the verdict it produced, and the judgment criteria that produced it. "Append-only" is not a buzzword here — it is a design constraint. A mutable log lets you quietly fix a bad run entry after the fact. An append-only log forces you to record corrections as new rows, which means the error rate is always visible in the history, not hidden by an edit.
 
-At ~52 runs and ~94% autonomous pass, the ledger is real. It is also far too small to make a statistical claim like "false-green rate < 5%." The honest framing is *early evidence with an honest ledger*, not *proven reliability*. I want to be precise about that distinction because the entire value of keeping a ledger is that it does not let you cheat the framing.
+At ~58 runs and ~93% autonomous pass, the ledger is real. It is also far too small to make a statistical claim like "false-green rate < 5%." The honest framing is *early evidence with an honest ledger*, not *proven reliability*. I want to be precise about that distinction because the entire value of keeping a ledger is that it does not let you cheat the framing.
 
 ## The Four Gaps I Know About
 
@@ -63,7 +63,7 @@ The eval kit was just ported to a second repository. A smoke test proved the loo
 
 Generalization in the eval sense means: does the calibration framework hold its properties when the underlying codebase, the agent topology, and the task distribution all change? One smoke test on one second repo answers: *it did not immediately break*. That is a meaningful data point. It is nowhere near sufficient evidence that the kit generalizes cleanly across arbitrary agent architectures.
 
-I will keep porting it and keep running it. The ledger will accumulate. At some threshold of runs across multiple repos, the generalization claim becomes defensible. That threshold is not ~52.
+I will keep porting it and keep running it. The ledger will accumulate. At some threshold of runs across multiple repos, the generalization claim becomes defensible. That threshold is not ~58.
 
 ### The Judge Problem
 
@@ -73,7 +73,7 @@ This is not a reason to stop keeping the ledger. It is a reason to treat the led
 
 ## What the Ledger Actually Catches
 
-Despite all of the above, the ledger earns its existence several times over, even at ~52 runs.
+Despite all of the above, the ledger earns its existence several times over, even at ~58 runs.
 
 It caught a verdict function that was silently passing on empty output. The golden-set match short-circuited when the output string was empty because the match function returned true on a vacuous comparison. Without the append-only record and a manual audit of the verdict distribution, that bug would have accumulated false greens invisibly. The fix was one line of guard logic; finding it required the ledger.
 
@@ -85,13 +85,13 @@ It keeps me honest in writing. I cannot claim "high reliability" in a post witho
 
 The design choice I am most confident about is the separation between the *run record* and the *verdict record*. Each run generates a structured artifact — inputs, outputs, tool calls, token counts, latency. The verdict is a separate record that references the run artifact and records which judgment function fired, what threshold it used, and what it returned.
 
-This separation means I can re-judge historical runs when I upgrade a judgment function. If I deploy a calibrated LLM-as-judge tomorrow, I can run it against the existing ~52 run artifacts and see how its verdicts compare to the original verdicts. That is how I will eventually build the calibration curve for the judge itself — by accumulating disagreements between old and new judgment functions on the same underlying runs.
+This separation means I can re-judge historical runs when I upgrade a judgment function. If I deploy a calibrated LLM-as-judge tomorrow, I can run it against the existing ~58 run artifacts and see how its verdicts compare to the original verdicts. That is how I will eventually build the calibration curve for the judge itself — by accumulating disagreements between old and new judgment functions on the same underlying runs.
 
 Without that separation, upgrading a judge destroys the historical comparison. You restart from zero. That is a compounding tax on every future improvement.
 
 ## The Honest Summary
 
-~52 runs. ~94% autonomous pass. An append-only ledger. No isolation sandbox. Unit-tier evals without trajectory scoring. One successful smoke test on a second repo. A bypass flag that is one mistake from an incident. A judge calibration problem I have named but not solved.
+~58 runs. ~93% autonomous pass. An append-only ledger. No isolation sandbox. Unit-tier evals without trajectory scoring. One successful smoke test on a second repo. A bypass flag that is one mistake from an incident. A judge calibration problem I have named but not solved.
 
 That is the actual state. The strength of keeping a calibration ledger is not that it proves reliability — it is that it makes it structurally difficult to pretend reliability exists before it has been earned. Every false green the ledger catches is a failure that would otherwise have compounded silently. Every gap I name here is a gap I am not hiding behind a rounded-up metric.
 
@@ -103,7 +103,7 @@ The rarer, more useful story in agent engineering is not "look how reliable my a
 
 **What does "false green" mean in agent evals?** A false green is a pass verdict issued when the agent's output or trajectory was actually incorrect or incomplete. It happens when the judgment function measures the wrong signal — a vacuous string match, a metric that does not cover the failure mode, or a golden set that does not include the relevant edge case. False greens are dangerous because they accumulate silently and give a misleading picture of reliability.
 
-**Why is ~52 runs not enough to claim a false-green rate below a given threshold?** Statistical claims about tail rates require large samples. At ~52 runs, the confidence intervals around any observed rate are wide enough that the true rate could be substantially higher than the observed rate. The honest framing at this sample size is "early evidence" — the ledger is accumulating signal, but it is not yet sufficient for a certified reliability claim.
+**Why is ~58 runs not enough to claim a false-green rate below a given threshold?** Statistical claims about tail rates require large samples. At ~58 runs, the confidence intervals around any observed rate are wide enough that the true rate could be substantially higher than the observed rate. The honest framing at this sample size is "early evidence" — the ledger is accumulating signal, but it is not yet sufficient for a certified reliability claim.
 
 **What is a fail-closed gate in an agent trust system?** A fail-closed gate is a policy checkpoint that defaults to blocking execution when the trust evaluation is ambiguous or fails. In my fleet, actions above a certain blast-radius threshold require an explicit human-in-the-loop approval; if that approval is not present, the action does not execute. This is the opposite of fail-open, where an ambiguous evaluation defaults to allowing execution.
 
@@ -111,4 +111,13 @@ The rarer, more useful story in agent engineering is not "look how reliable my a
 
 ## The Transferable Lesson
 
-Keep the ledger before you need it. The calibration instrument has to predate the reliability claim — not follow it. If you build the ledger after you have already been telling people the agent is reliable, you have reversed the epistemic order and the ledger is now rationalization rather than evidence. Start append-only, name every gap explicitly, and let the number be whatever it actually is. ~52 runs at ~94% pass is an honest number. An honest number is the only kind worth keeping.
+Keep the ledger before you need it. The calibration instrument has to predate the reliability claim — not follow it. If you build the ledger after you have already been telling people the agent is reliable, you have reversed the epistemic order and the ledger is now rationalization rather than evidence. Start append-only, name every gap explicitly, and let the number be whatever it actually is. ~58 runs at ~93% pass is an honest number. An honest number is the only kind worth keeping.
+
+## In this series
+
+- [Six False-Greens in a Self-Auditing Agent Pipeline](/blog/a-false-green-is-the-most-dangerous-failure-class-in-any)
+- [Permissive Parsing Is a False-Green Factory](/blog/permissive-parsing-is-a-false-green-factory)
+- [One-Sided Contracts Break Agent Pipelines](/blog/a-strict-contract-enforced-on-only-one-side-produces-false)
+- [The Arc Since the Six Were Caught](/blog/the-arc-since-the-six-were-caught)
+- [QA Is Only as Honest as Its Coverage](/blog/your-qa-is-only-as-honest-as-its-coverage)
+- [False Greens: Three Structural Observations](/blog/three-structural-observations-the-essay-should-land-1)

@@ -104,3 +104,12 @@ There's also a latency consideration. Extracting and deserializing the last fenc
 ## The Transferable Lesson
 
 The absence of a signal must never be interpreted as a positive signal. This principle applies wherever you have a structured contract between two components and one of them can fail to produce output — which is every component boundary in every pipeline you will ever build. Permissive parsing feels like resilience. It is actually a systematic mechanism for converting failures into false passes. Make your contract boundaries fail-closed, treat None as a refusal, and accept the short-term noise of surfaced errors in exchange for the long-term accuracy of a trustworthy eval suite.
+
+## In this series
+
+- [Six False-Greens in a Self-Auditing Agent Pipeline](/blog/a-false-green-is-the-most-dangerous-failure-class-in-any)
+- [One-Sided Contracts Break Agent Pipelines](/blog/a-strict-contract-enforced-on-only-one-side-produces-false)
+- [The Arc Since the Six Were Caught](/blog/the-arc-since-the-six-were-caught)
+- [QA Is Only as Honest as Its Coverage](/blog/your-qa-is-only-as-honest-as-its-coverage)
+- [The Calibration Ledger: 58 Runs, 93% Pass, n Is Small](/blog/n-is-small-at-the-time-of-writing-the-calibration-ledger)
+- [False Greens: Three Structural Observations](/blog/three-structural-observations-the-essay-should-land-1)
