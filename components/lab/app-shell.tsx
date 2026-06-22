@@ -27,7 +27,7 @@ function Wordmark({ className }: { className?: string }) {
     <Link
       href={'/' as any}
       className={cn('flex items-center gap-2', className)}
-      aria-label="serbyn.pro — home"
+      aria-label="serbyn.io — home"
     >
       <span className="h-2 w-2 rounded-full bg-success" />
       <span className="font-mono text-sm font-semibold tracking-tight">

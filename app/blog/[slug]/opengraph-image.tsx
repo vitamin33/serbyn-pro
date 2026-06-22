@@ -62,7 +62,7 @@ export default async function Image({ params }: { params: { slug: string } }) {
             color: '#8B93A1',
           }}
         >
-          <div style={{ display: 'flex' }}>serbyn.pro/blog</div>
+          <div style={{ display: 'flex' }}>serbyn.io/blog</div>
           <div style={{ display: 'flex', color: '#E6E9EF' }}>
             Vitalii Serbyn · AI Systems Architect
           </div>
