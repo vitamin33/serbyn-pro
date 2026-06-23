@@ -4,6 +4,7 @@ import { ArrowLeft, ExternalLink } from 'lucide-react';
 import { getAllBlogPosts, getBlogPostBySlug } from '@/lib/blog-posts';
 import { createMetadata, siteConfig } from '@/lib/seo';
 import { getAllCaseStudies } from '@/lib/case-studies';
+import { ContentEnhancers } from '@/components/blog/content-enhancers';
 
 interface PageProps {
   params: { slug: string };
@@ -116,6 +117,7 @@ export default function BlogPostPage({ params }: PageProps) {
           <div
             dangerouslySetInnerHTML={{ __html: markdownToHtml(post.content) }}
           />
+          <ContentEnhancers />
         </article>
 
         {/* Related case studies */}
@@ -207,11 +209,23 @@ function inlineFormat(text: string): string {
     );
 }
 
+function renderCodeFence(lang: string, code: string): string {
+  // ```mermaid -> a diagram block the client enhancer renders to SVG (the source
+  // is HTML-escaped, which textContent decodes back to raw mermaid syntax).
+  if (lang === 'mermaid') {
+    return `<pre class="mermaid">${code}</pre>`;
+  }
+  // a language-* class lets the client highlighter (highlight.js) colorize it.
+  const cls = /^[a-z0-9+#-]+$/.test(lang) ? ` class="language-${lang}"` : '';
+  return `<pre><code${cls}>${code}</code></pre>`;
+}
+
 function markdownToHtml(markdown: string): string {
   const lines = markdown.split('\n');
   const html: string[] = [];
   let inCodeBlock = false;
   let codeBuffer: string[] = [];
+  let codeLang = '';
   let inUnorderedList = false;
   let inOrderedList = false;
 
@@ -234,9 +248,11 @@ function markdownToHtml(markdown: string): string {
         closeLists();
         inCodeBlock = true;
         codeBuffer = [];
+        codeLang = trimmed.slice(3).trim().toLowerCase();
       } else {
-        html.push(`<pre><code>${codeBuffer.join('\n')}</code></pre>`);
+        html.push(renderCodeFence(codeLang, codeBuffer.join('\n')));
         inCodeBlock = false;
+        codeLang = '';
       }
       continue;
     }
@@ -286,6 +302,22 @@ function markdownToHtml(markdown: string): string {
       continue;
     }
 
+    // standalone image: ![alt](src "optional caption") -> figure (relative or http)
+    const imageMatch = trimmed.match(
+      /^!\[([^\]]*)\]\((\/[^)\s]+|https?:\/\/[^)\s]+)(?:\s+"([^"]*)")?\)$/
+    );
+    if (imageMatch) {
+      closeLists();
+      const [, alt, src, caption] = imageMatch;
+      const cap = caption || alt;
+      html.push(
+        `<figure class="blog-figure"><img src="${src}" alt="${escapeHtml(alt)}" loading="lazy" />` +
+          (cap ? `<figcaption>${inlineFormat(cap)}</figcaption>` : '') +
+          `</figure>`
+      );
+      continue;
+    }
+
     if (trimmed.startsWith('- ')) {
       if (inOrderedList) {
         html.push('</ol>');
@@ -319,7 +351,7 @@ function markdownToHtml(markdown: string): string {
 
   closeLists();
   if (inCodeBlock) {
-    html.push(`<pre><code>${codeBuffer.join('\n')}</code></pre>`);
+    html.push(renderCodeFence(codeLang, codeBuffer.join('\n')));
   }
 
   return html.join('\n');

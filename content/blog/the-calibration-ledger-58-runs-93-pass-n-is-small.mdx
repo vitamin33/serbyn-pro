@@ -85,6 +85,17 @@ It keeps me honest in writing. I cannot claim "high reliability" in a post witho
 
 The design choice I am most confident about is the separation between the *run record* and the *verdict record*. Each run generates a structured artifact — inputs, outputs, tool calls, token counts, latency. The verdict is a separate record that references the run artifact and records which judgment function fired, what threshold it used, and what it returned.
 
+```mermaid
+flowchart TD
+ A[Agent Run] --> B[Run Artifact: inputs, outputs, tool calls, token counts, latency]
+ B --> C[Verdict Record: judgment function, threshold, result]
+ C --> D{Pass or Fail}
+ B --> E[Re-judgment on upgrade]
+ F[New Judgment Function] --> E
+ E --> G[Calibration Curve: disagreements between old and new verdicts]
+```
+
+
 This separation means I can re-judge historical runs when I upgrade a judgment function. If I deploy a calibrated LLM-as-judge tomorrow, I can run it against the existing ~58 run artifacts and see how its verdicts compare to the original verdicts. That is how I will eventually build the calibration curve for the judge itself — by accumulating disagreements between old and new judgment functions on the same underlying runs.
 
 Without that separation, upgrading a judge destroys the historical comparison. You restart from zero. That is a compounding tax on every future improvement.

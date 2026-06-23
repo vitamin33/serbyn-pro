@@ -39,6 +39,20 @@ This is not a human error story. Nobody bypassed a warning or clicked through a 
 
 **QA scope:** the dev-loop's eval-runner ran only the curated eval subset, so a non-golden contract regression slipped past QA and reported pass. The runner was scoped to the eval suite, not the full test suite. From its perspective, nothing was broken. It was not lying — it was telling the truth about a smaller world than the one the codebase actually lives in.
 
+```mermaid
+flowchart TD
+ A[Commit: new agent definition] --> B[Dev-loop eval-runner]
+ B --> C{Eval suite only}
+ C --> D[eval-green: true]
+ D --> E[Merge-gate advisor]
+ E --> F{Conditions met?}
+ F --> |eval-green checked, full_suite_green not in spec| G[All conditions met — MERGE]
+ A --> H[CI full pytest suite]
+ H --> I[Contract violation found]
+ I --> J[CI red]
+```
+
+
 **Merge gate:** the advisor's readiness spec treated `eval-green` as a proxy for overall health. It had no awareness of `full_suite_green` as a separate, independent signal. So a spec reading "all conditions met" could be literally true — all *configured* conditions met — while CI was burning. The false-green was later caught by a different false-green (the merge_fn bug, #6). The fix for "QA scope" had to be paired with a fix for the gate's condition model, or the scope fix alone would have been fragile.
 
 Two gaps, not one. Each gap would have been survivable in isolation. Together they formed a clean path from "violation introduced" to "violation shipped."

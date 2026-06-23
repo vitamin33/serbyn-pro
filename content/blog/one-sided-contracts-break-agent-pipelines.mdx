@@ -51,6 +51,18 @@ That legibility is actually what made the diagnosis tractable. The rejection rea
 
 To understand why this happened, you have to look at how the dispatch seed and the gate validator were built — separately, by different parts of the system, at different times, with no shared reference.
 
+```mermaid
+flowchart TD
+ A[Canonical Outcome Schema] -->|derives vocabulary| B[Seed Generator]
+ A -->|defines accepted set| C[Gate Validator]
+ B -->|injects exact strings into| D[Dispatch Seed]
+ D -->|instructs| E[Agent]
+ E -->|emits outcome value| F[Gate]
+ F -->|validates against| C
+ G[Cross-Check Test] -->|asserts seed vocab == gate vocab| A
+```
+
+
 The dispatch seed is the instruction block injected into the agent's context at the start of a run. It tells the agent what to do, what tools to use, and — critically — what to emit when it's done. In the version that caused this failure, the dispatch seed described the outcome field in natural language: something like "emit a success outcome when the task is complete." Natural language is ambiguous. The agent resolved that ambiguity by choosing the word `success`, which is correct English and wrong protocol.
 
 The gate validator, on the other hand, was built against a canonical enum defined in a schema file. It knew exactly which strings were acceptable. It had been built correctly, by the book. The problem was that it was the only part of the system that knew.
