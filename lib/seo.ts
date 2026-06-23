@@ -31,6 +31,12 @@ interface SEOProps {
   image?: string | null;
   noIndex?: boolean;
   canonicalUrl?: string;
+  // when set, the page is an Open Graph `article` (blog posts) with publish/author/tags
+  article?: {
+    publishedTime?: string;
+    modifiedTime?: string;
+    tags?: string[];
+  };
 }
 
 export function createMetadata({
@@ -39,6 +45,7 @@ export function createMetadata({
   image = siteConfig.ogImage,
   noIndex = false,
   canonicalUrl,
+  article,
 }: SEOProps = {}): Metadata {
   const metaTitle = title ? `${title} | ${siteConfig.name}` : siteConfig.name;
   const metaDescription = description;
@@ -64,12 +71,20 @@ export function createMetadata({
       },
     },
     openGraph: {
-      type: 'website',
+      type: article ? 'article' : 'website',
       locale: 'en_US',
       url: canonicalUrl || siteConfig.url,
       siteName: siteConfig.name,
       title: metaTitle,
       description: metaDescription,
+      ...(article
+        ? {
+            publishedTime: article.publishedTime,
+            modifiedTime: article.modifiedTime || article.publishedTime,
+            authors: [siteConfig.creator],
+            tags: article.tags,
+          }
+        : {}),
       ...(includeImage
         ? {
             images: [
