@@ -284,6 +284,65 @@ a:hover {
   margin: 2rem 0;
 }
 
+/* --- Blog visual enrichment: figures, mermaid diagrams, highlighted code --- */
+.case-study-content figure.blog-figure {
+  margin: 2rem 0;
+  text-align: center;
+}
+.case-study-content figure.blog-figure img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  border: 1px solid hsl(var(--border));
+}
+.case-study-content figure.blog-figure figcaption {
+  margin-top: 0.5rem;
+  font-size: 0.8125rem;
+  font-style: italic;
+  color: hsl(var(--muted-foreground));
+}
+/* code blocks get a dark surface so the highlight.js (github-dark) palette reads */
+.case-study-content pre:not(.mermaid) {
+  background: #0d1117;
+  border-color: #30363d;
+}
+.case-study-content pre:not(.mermaid) code {
+  color: #e6edf3;
+}
+/* mermaid: framed as a site card; client renders the raw source into an SVG */
+.case-study-content pre.mermaid {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.75rem;
+  padding: 1.5rem 1rem;
+  margin: 2rem 0;
+  text-align: center;
+  line-height: 0; /* hide raw-source flash before the SVG renders */
+  overflow-x: auto;
+}
+.case-study-content pre.mermaid svg {
+  max-width: 100%;
+  height: auto;
+}
+/* round node corners to match the UI's rounded cards */
+.case-study-content pre.mermaid .node rect {
+  rx: 8px;
+  ry: 8px;
+}
+/* edge labels (yes / no / …) blend into the dark canvas instead of white boxes.
+   Scoped to .edgeLabels ONLY so node fills/borders are untouched. */
+.case-study-content pre.mermaid .edgeLabel,
+.case-study-content pre.mermaid .edgeLabel p,
+.case-study-content pre.mermaid .edgeLabel foreignObject div {
+  background: hsl(var(--card)) !important;
+  color: hsl(var(--muted-foreground)) !important;
+  font-size: 12px;
+}
+.case-study-content pre.mermaid .edgeLabels rect,
+.case-study-content pre.mermaid .edgeLabel rect {
+  fill: hsl(var(--card)) !important;
+}
+
 /* Print Styles */
 @media print {
   /* Hide non-essential elements */

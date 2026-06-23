@@ -30,6 +30,18 @@ A false-green is more dangerous than an outright failure because it is invisible
 
 "DW" is a spec-driven dev-loop I run solo. A human dictates intent, a decomposer cuts it into machine-validated specs, a headless dev-lead agent implements each slice (research → plan → code → review → QA), and a walker parses the agent's structured result, asks a single y/N at the merge gate, merges, verifies, and records to an append-only calibration ledger. The whole design bet is *measured trust*: autonomy is earned against that ledger, never assumed. Auto-merge stays OFF until the false-green rate is proven low against real, append-only data.
 
+```mermaid
+flowchart TD
+    H["Human — dictates intent"] --> D["Decomposer — machine-validated specs"]
+    D --> A["Dev-lead agent: research, plan, code, review, QA"]
+    A --> W["Walker — parses the structured result"]
+    W --> G{"Merge gate — single y/N"}
+    G -- yes --> M["Merge, then verify it landed on main"]
+    G -- no --> S["STOP — nothing merges"]
+    M --> L[("Append-only calibration ledger")]
+    L -. "measured trust: auto-merge stays OFF until false-green rate is proven low" .-> G
+```
+
 That last sentence is why false-greens are existential here, not just embarrassing. Every false-green that reaches the ledger poisons the only instrument I use to decide whether to expand agent autonomy. A system that lies about success and isn't caught is a system whose trust data is worthless.
 
 The through-line across all six mechanisms: **I did not try to make the agent reliable. I built a system that catches when it lies, and turned every caught lie into a test.**
@@ -42,7 +54,20 @@ The walker dispatched the agent, the agent completed its work, and the walker re
 
 It was caught because a run that should have stopped didn't. Tracing the walker's result-parsing revealed it was reading a field that was sometimes absent and treating absent-as-fine. The contract between agent and walker (the "§5.3 result block") was parsed permissively. A missing or garbled result didn't fail closed.
 
-The fix: make the walker parse the last fenced JSON block in the agent's envelope as the authoritative result, and make every `None` path an explicit STOP. Absence of a verdict is now a refusal, not a pass. Permissive parsing is a false-green factory — the absence of a signal must never be interpreted as a positive signal.
+The fix: make the walker parse the last fenced JSON block in the agent's envelope as the authoritative result, and make every `None` path an explicit STOP. Absence of a verdict is now a refusal, not a pass.
+
+```python
+def parse_verdict(envelope: str) -> Verdict:
+    block = last_fenced_json(envelope)          # authoritative result = the LAST fenced JSON block
+    if block is None:
+        raise VerdictAbsent("no result block")  # absence is a refusal, never a pass
+    outcome = json.loads(block).get("outcome")
+    if outcome not in ALLOWED_OUTCOMES:         # any unrecognized / None outcome...
+        return Verdict.STOP                      # ...is an explicit STOP, not a default-pass
+    return Verdict.from_outcome(outcome)
+```
+
+Permissive parsing is a false-green factory — the absence of a signal must never be interpreted as a positive signal.
 
 ### Mechanism 2 — The false-positive MERGED (nothing landed)
 
