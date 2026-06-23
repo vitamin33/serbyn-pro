@@ -41,6 +41,20 @@ This is what I mean by a false-green factory: infrastructure that converts absen
 
 In my fleet, the walker is the component that dispatches agents, collects their envelopes, and decides what to do with the result. It sits between policy gating and downstream execution. When an agent finishes, it returns a structured envelope — a block of JSON that contains the verdict, the reasoning trace, confidence metadata, and any structured outputs the agent produced. The walker reads that envelope and either propagates the result, escalates, or stops.
 
+```mermaid
+flowchart TD
+ A[Agent Run Completes] --> B[Agent Envelope Returned]
+ B --> C[Walker: Extract Last Fenced JSON Block]
+ C --> D{Valid Result Block?}
+ D -- Yes --> E[Read Verdict Field]
+ E --> F{Verdict}
+ F -- Pass --> G[Propagate Result Downstream]
+ F -- Fail --> H[Escalate]
+ F -- Refused --> I[Stop]
+ D -- No / None --> J[STOP and Raise — fail-closed]
+```
+
+
 The critical section is what I call the §5.3 result block: the authoritative verdict field that tells the walker whether the agent passed, failed, or refused to decide. Everything downstream depends on reading that field correctly.
 
 The contract between agent and walker (the "§5.3 result block") was the root cause. Specifically: the walker was not extracting the result block from the *last* fenced JSON block in the agent's envelope. It was scanning for a result key in the full output string, finding the first match — which in some cases was a JSON fragment in the agent's reasoning trace, not the final structured verdict — and using that. When no match was found, it returned None. And None, by default, was not a STOP condition. It was treated as a pass.

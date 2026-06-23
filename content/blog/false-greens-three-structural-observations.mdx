@@ -67,11 +67,47 @@ The agents that failed weren't misconfigured or misaligned in any deep sense. Th
 
 The corollary is that tool design matters enormously. A tool that returns `{"status": "ok"}` regardless of whether the underlying operation succeeded is a false green factory. A tool that raises an exception on failure but swallows the exception in the wrapper is worse. I've instrumented every tool in my fleet to return structured result objects that include not just status but a post-condition proof: the artifact path plus its hash, the API response body plus a re-query of the modified resource, the database write plus a read-back confirmation. The tool's contract is not "I ran without error" but "I produced this verifiable outcome."
 
+```python
+python
+from dataclasses import dataclass
+from pathlib import Path
+import hashlib
+
+@dataclass
+class ToolResult:
+    status: str          # "ok" | "failed"
+    artifact_path: str
+    artifact_hash: str
+    post_condition_proof: dict
+
+def write_artifact_tool(content: str, dest: Path) -> ToolResult:
+    dest.write_text(content)
+    digest = hashlib.sha256(dest.read_bytes()).hexdigest()
+    if not dest.exists() or dest.stat().st_size == 0:
+        return ToolResult("failed", str(dest), "", {})
+    return ToolResult("ok", str(dest), digest, {"size": dest.stat().st_size})
+```
+
+
 This adds latency. Every consequential tool call now takes longer because it includes a verification round-trip. That's a tradeoff I've made deliberately, because the cost of a false green propagating through a multi-step pipeline is always higher than the cost of an extra verification call at the point of action.
 
 ## Observation Three: Every Caught Lie Became a Test
 
 This is the compounding move. The pipeline doesn't just survive its bugs — it converts each one into a permanent fixture, so the same false-green cannot recur. Incident → fixture, same day. That flywheel, not any single architecture decision, is the actual product.
+
+```mermaid
+flowchart TD
+ A[Agent executes tool call] --> B[Verification layer checks post-condition]
+ B --> C{Affirmative evidence found?}
+ C -- No --> D[Fail-closed: surface false green]
+ C -- Yes --> E[Step marked complete]
+ D --> F[Extract reproduction input from logs]
+ F --> G[Parameterize as regression fixture]
+ G --> H[Add to eval suite same day]
+ H --> I[Eval suite runs on every deployment]
+ I --> A
+```
+
 
 This is the observation that separates a maturing pipeline from one that stays fragile. Most incident response in software looks like this: something breaks, you fix the proximate cause, you write a postmortem, you move on. The next time a similar failure occurs, you might catch it faster because of the postmortem — but you might not, because postmortems are prose and prose doesn't run.
 

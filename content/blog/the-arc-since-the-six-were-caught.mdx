@@ -37,6 +37,22 @@ The earlier writeup carried an honest caveat: eval depth was unit-tier. I was sc
 
 That caveat no longer holds. The feature I'm calling DW-TRAJ-EVAL ships a deterministic evaluator that reads the ordered stage trace for every run alongside the per-stage `tool_uses` count. It does not ask whether a stage was present. It asks what the stage did. A search stage that *ran but read nothing* (`tool_uses == 0`) still fires the `ungrounded_change` rule. That is exactly the failure a presence-check misses — an agent that opens a tool call, gets a result count of zero, and proceeds anyway, all while the outer harness logs a clean stage name and moves on.
 
+```
+python
+def evaluate_stage(stage: dict) -> list[str]:
+    violations = []
+    if stage["type"] == "search" and stage.get("tool_uses", 0) == 0:
+        violations.append("ungrounded_change")
+    return violations
+
+def evaluate_trajectory(stages: list[dict]) -> dict:
+    all_violations = []
+    for stage in stages:
+        all_violations.extend(evaluate_stage(stage))
+    return {"violations": all_violations, "passed": len(all_violations) == 0}
+```
+
+
 This is the line between real trajectory evaluation and theatre. Presence-checking is theatre. `tool_uses == 0` is the tell.
 
 ### Why This Is the Climax, Not a Footnote
@@ -82,6 +98,16 @@ If I were instrumenting this as a reliability rule, it would read: every compone
 Three times now, an incident inside the loop became the next spec inside the loop. The parallel-session stomp became the lock feature. The unit-tier eval ceiling became trajectory eval. The worktree friction became the worktree-walk feature. The pattern is not coincidence — it is what a self-closing loop looks like in practice.
 
 The flywheel: incident → captured idea → spec → walked fix → regression test → incident. Each incident is a signal. Each regression test is a memory. The pipeline does not just survive its own gaps; it names them, queues them, and builds the fix through itself. That recursive quality — the system generating its own next requirement — is the actual product. Not any one component. Not the pass rate on the ledger. The loop that closes on itself.
+
+```mermaid
+flowchart TD
+ A[Incident surfaces in loop] --> B[Captured as idea]
+ B --> C[Spec written]
+ C --> D[Fix walked through pipeline]
+ D --> E[Regression test added]
+ E --> A
+```
+
 
 This is also why the "solo, with agents instead of a team" framing is not a cost constraint I am working around. It is the architecture. A team would route incidents to humans. The pipeline routes them to specs. The difference is latency and auditability: a spec in the queue is traceable, versioned, and walkable. A conversation between two engineers is not.
 
