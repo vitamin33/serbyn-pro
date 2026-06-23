@@ -65,6 +65,16 @@ export function ContentEnhancers() {
           });
           return mermaid.run({ nodes: diagrams });
         })
+        .then(() => {
+          // accessibility / image SEO: the rendered SVG is meaningful content
+          diagrams.forEach(pre => {
+            const svg = pre.querySelector('svg');
+            if (svg && !svg.getAttribute('aria-label')) {
+              svg.setAttribute('role', 'img');
+              svg.setAttribute('aria-label', 'Architecture diagram');
+            }
+          });
+        })
         .catch(() => {});
     }
   }, []);

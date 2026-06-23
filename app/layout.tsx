@@ -1,7 +1,10 @@
 import type { Metadata } from 'next';
 import { Inter, JetBrains_Mono } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import '../styles/globals.css';
 import { AppShell } from '@/components/lab/app-shell';
+import { PostHogProvider } from '@/components/analytics/posthog-provider';
 import {
   pageMetadata,
   generatePersonSchema,
@@ -57,6 +60,9 @@ export default function RootLayout({
           Skip to content
         </a>
         <AppShell>{children}</AppShell>
+        <PostHogProvider />
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

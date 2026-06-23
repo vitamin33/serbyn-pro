@@ -5,6 +5,8 @@ import { getAllBlogPosts, getBlogPostBySlug } from '@/lib/blog-posts';
 import { createMetadata, siteConfig } from '@/lib/seo';
 import { getAllCaseStudies } from '@/lib/case-studies';
 import { ContentEnhancers } from '@/components/blog/content-enhancers';
+import { EngagementTracker } from '@/components/blog/engagement-tracker';
+import { extractFaqs } from '@/lib/blog-faq';
 
 interface PageProps {
   params: { slug: string };
@@ -24,6 +26,7 @@ export async function generateMetadata({ params }: PageProps) {
     description: post.description,
     image: null, // use the dynamic opengraph-image.tsx card
     canonicalUrl: `${siteConfig.url}/blog/${post.slug}`,
+    article: { publishedTime: post.date, tags: post.keywords },
   });
 }
 
@@ -62,12 +65,34 @@ export default function BlogPostPage({ params }: PageProps) {
     timeRequired: `PT${post.readingTime}M`,
   };
 
+  // FAQPage structured data from the post's `## FAQ` section (rich results + AEO)
+  const faqs = extractFaqs(post.content);
+  const faqJsonLd =
+    faqs.length > 0
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: faqs.map(f => ({
+            '@type': 'Question',
+            name: f.question,
+            acceptedAnswer: { '@type': 'Answer', text: f.answer },
+          })),
+        }
+      : null;
+
   return (
     <div className="py-16">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      {faqJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        />
+      )}
+      <EngagementTracker slug={post.slug} />
       <div className="container max-w-3xl">
         <Link
           href={'/blog' as any}
