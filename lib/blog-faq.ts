@@ -10,7 +10,10 @@ export interface FaqItem {
  * (rich results + answer-engine optimization).
  */
 export function extractFaqs(content: string): FaqItem[] {
-  const m = content.match(/(?:^|\n)##\s+FAQ\s*\n([\s\S]*?)(?:\n##\s|\s*$)/i);
+  // Accept FAQ heading variants (kept in sync with ascend scripts/blog_seo.py).
+  const m = content.match(
+    /(?:^|\n)##\s+(?:FAQ|Frequently Asked Questions|Common Questions)\s*\n([\s\S]*?)(?:\n##\s|\s*$)/i
+  );
   if (!m) return [];
   const items: FaqItem[] = [];
   for (const para of m[1].split(/\n\s*\n/)) {
