@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-24T13:00:41.052366+00:00",
+  "generated_at": "2026-06-24T21:06:04.113705+00:00",
   "availability": {
     "open": true,
     "label": "AVAILABLE FOR NEW ENGAGEMENTS"
@@ -11,9 +11,9 @@
       "sub": "72/78 spec runs, no human edits"
     },
     {
-      "label": "LLM SPEND",
-      "value": "$131",
-      "sub": "19.4M tokens \u00b7 ~$2/spec"
+      "label": "COMPUTE",
+      "value": "10.2B",
+      "sub": "tokens \u00b7 $9.8K at model rates"
     },
     {
       "label": "TESTS",
