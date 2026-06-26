@@ -3,15 +3,16 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { Layers, Newspaper, User, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Navbar } from '@/components/navbar';
 import { FooterLegal } from '@/components/footer-legal';
 
 const NAV = [
-  { name: 'WORK', href: '/work' },
-  { name: 'BLOG', href: '/blog' },
-  { name: 'ABOUT', href: '/about' },
-  { name: 'RESUME', href: '/resume' },
+  { name: 'WORK', href: '/work', icon: Layers },
+  { name: 'BLOG', href: '/blog', icon: Newspaper },
+  { name: 'ABOUT', href: '/about', icon: User },
+  { name: 'RESUME', href: '/resume', icon: FileText },
 ] as const;
 
 const CONTACT = 'https://calendly.com/serbyn-vitalii/30min';
@@ -32,7 +33,7 @@ function Wordmark({ className }: { className?: string }) {
       <span className="h-2 w-2 rounded-full bg-success" />
       <span className="font-mono text-sm font-semibold tracking-tight">
         <span className="text-foreground">serbyn</span>
-        <span className="text-primary">.pro</span>
+        <span className="text-primary">.io</span>
       </span>
     </Link>
   );
@@ -60,18 +61,28 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <div className="lg:pl-64">
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-border bg-card lg:flex">
         <Wordmark className="border-b border-border px-5 py-[18px]" />
-        <nav className="flex-1 space-y-1 px-3 py-6" aria-label="Primary">
+        <div className="border-b border-border px-5 py-4">
+          <p className="font-mono text-xs font-semibold tracking-tight text-foreground">
+            VITALII_SERBYN
+          </p>
+          <p className="label-caps mt-1 text-muted-foreground">
+            AI_SYSTEMS_ARCHITECT
+          </p>
+        </div>
+        <nav className="flex-1 space-y-0.5 py-5" aria-label="Primary">
           {NAV.map(item => (
             <Link
               key={item.href}
               href={item.href as any}
+              aria-current={isActive(item.href) ? 'page' : undefined}
               className={cn(
-                'block rounded-md px-3 py-2 font-mono text-xs tracking-wide transition-colors',
+                'flex items-center gap-2.5 border-l-2 py-2 pl-[18px] pr-4 font-mono text-xs tracking-wide transition-colors',
                 isActive(item.href)
-                  ? 'bg-secondary text-foreground'
-                  : 'text-muted-foreground hover:bg-secondary/50 hover:text-foreground'
+                  ? 'border-primary bg-primary/10 text-primary'
+                  : 'border-transparent text-muted-foreground hover:bg-secondary/50 hover:text-foreground'
               )}
             >
+              <item.icon className="h-3.5 w-3.5 shrink-0" strokeWidth={1.75} />
               {item.name}
             </Link>
           ))}
