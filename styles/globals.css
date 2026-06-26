@@ -29,8 +29,11 @@
   --border: 220 23% 15%;
   --input: 220 23% 13%;
   --ring: 210 100% 52%;
-  --radius: 0.75rem;
-  --radius-sm: 0.5rem;
+  /* Kinetic Lab is a blueprint/terminal system — square corners (matches the
+     Stitch reference, whose buttons/badges/cards are sharp). One unified radius
+     drives every rounded-lg/md/sm in the app; status dots stay rounded-full. */
+  --radius: 0px;
+  --radius-sm: 0px;
 }
 
 * {
@@ -103,7 +106,10 @@ a {
   transition: all 0.2s ease;
 }
 
-a:hover {
+/* Text links tint to the accent on hover — but NOT links that are styled as
+   filled buttons (any `bg-*`), whose own text color must win or the label would
+   turn accent-on-accent and vanish on hover. */
+a:not([class*='bg-']):hover {
   color: hsl(var(--primary));
 }
 
@@ -272,7 +278,10 @@ a:hover {
   font-style: italic;
 }
 
-.case-study-content a {
+/* Prose links only (rendered markdown has no class) — never the styled buttons
+   that also live inside the content wrapper (footer CTA, GitHub link), whose own
+   text color must win. */
+.case-study-content a:not([class]) {
   color: hsl(var(--primary));
   text-decoration: underline;
   text-underline-offset: 2px;

@@ -50,10 +50,14 @@ const config: Config = {
           foreground: "hsl(var(--card-foreground))",
         },
       },
+      // Unified square radius — every named step resolves to --radius (0px) so
+      // `rounded`, `rounded-sm/md/lg` are all sharp. `rounded-full` (dots) is
+      // untouched. Bump --radius in globals.css to soften the whole UI at once.
       borderRadius: {
+        DEFAULT: "var(--radius)",
         lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        md: "var(--radius)",
+        sm: "var(--radius)",
       },
     },
   },
