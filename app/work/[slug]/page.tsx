@@ -89,7 +89,11 @@ export default function CaseStudyPage({ params }: PageProps) {
           )}
         </header>
 
-        <div className="grid gap-10 lg:grid-cols-[180px_1fr] xl:grid-cols-[180px_1fr_340px]">
+        <div
+          className={`grid gap-10 lg:grid-cols-[180px_1fr]${
+            code ? ' xl:grid-cols-[180px_1fr_340px]' : ''
+          }`}
+        >
           <aside className="hidden lg:block">
             <div className="sticky top-8">
               <EssayMap items={toc} />
