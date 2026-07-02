@@ -115,7 +115,7 @@ export default function AboutPage() {
             Download Resume
           </Link>
           <a
-            href="https://calendly.com/serbyn-vitalii/30min"
+            href="https://calendly.com/serbyn-vitalii/consulting"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 rounded-lg border border-border px-6 py-3 text-sm font-medium text-foreground transition-colors hover:bg-accent"

@@ -15,7 +15,7 @@ const NAV = [
   { name: 'RESUME', href: '/resume', icon: FileText },
 ] as const;
 
-const CONTACT = 'https://calendly.com/serbyn-vitalii/30min';
+const CONTACT = 'https://calendly.com/serbyn-vitalii/consulting';
 
 // Routes that keep the simple top-nav layout (resume is print-optimized; legal
 // is plain). Everything else gets the persistent lab sidebar shell.

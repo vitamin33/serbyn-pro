@@ -36,7 +36,7 @@ export function CaseStudyFooter({ caseStudy }: CaseStudyFooterProps) {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" className="flex items-center gap-2" asChild>
               <a
-                href="https://calendly.com/serbyn-vitalii/30min"
+                href="https://calendly.com/serbyn-vitalii/consulting"
                 target="_blank"
                 rel="noopener noreferrer"
               >

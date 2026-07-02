@@ -17,7 +17,7 @@ export function CTASection() {
 
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <a
-              href="https://calendly.com/serbyn-vitalii/30min"
+              href="https://calendly.com/serbyn-vitalii/consulting"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
