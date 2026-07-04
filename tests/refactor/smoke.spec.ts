@@ -5,6 +5,7 @@ import { test, expect } from '@playwright/test';
 const PAGES: { path: string; h1?: RegExp }[] = [
   { path: '/', h1: /reliable enough to run in production/i },
   { path: '/audit', h1: /where your agents will fail/i },
+  { path: '/llm-cost-teardown', h1: /cut your llm bill/i },
 ];
 
 test.describe('T1 — pages return 200 + render an H1', () => {

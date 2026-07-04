@@ -152,3 +152,127 @@ export const AUDIT_CONTENT: OfferPageContent = {
     },
   ],
 };
+
+export const TEARDOWN_CONTENT: OfferPageContent = {
+  offerId: 'llm-cost-teardown',
+  kicker: 'llm cost teardown',
+  h1: 'Cut your LLM bill with six levers — without lowering output quality.',
+  promise:
+    'A one-week teardown of where your LLM spend actually goes, which of six levers move it, and how much each is worth against your own traffic and quality bar — no guesswork, no quality regressions.',
+  deliverablesHeading: 'What you get',
+  deliverables: [
+    {
+      title: 'Spend map',
+      detail:
+        'Your LLM cost broken down by service, model, and route, so the expensive paths stop hiding inside one monthly total.',
+    },
+    {
+      title: 'Per-lever opportunity assessment',
+      detail:
+        'Each of the six levers modeled against your actual traffic — what it would save you, not a headline number from someone else’s workload.',
+    },
+    {
+      title: 'Quality-guardrail plan',
+      detail:
+        'The evals and checks that keep output quality fixed while cost comes down, so savings don’t quietly cost you accuracy.',
+    },
+    {
+      title: 'Routing & caching recommendations',
+      detail:
+        'Concrete model-routing and semantic-caching changes, sequenced by savings-per-effort.',
+    },
+    {
+      title: 'Prioritized savings roadmap',
+      detail:
+        'A ranked plan you can hand to your team — highest-impact, lowest-risk levers first.',
+    },
+    {
+      title: 'Readout call',
+      detail:
+        'A live walkthrough of the findings and roadmap, plus the written teardown.',
+    },
+  ],
+  methodHeading: 'The six levers',
+  methodIntro:
+    'Public benchmarks put each lever’s savings in a broad range — but the only number that matters is yours, so I model each one against your real traffic and quality bar instead of quoting a headline percentage.',
+  method: [
+    {
+      name: '1 · Model routing',
+      detail:
+        'Send each call to the cheapest model that clears the quality bar for that step; reserve frontier models for the hard hops.',
+    },
+    {
+      name: '2 · Semantic caching',
+      detail:
+        'Cache on meaning, not exact strings, so near-duplicate requests never hit the model twice.',
+    },
+    {
+      name: '3 · Prompt compression',
+      detail:
+        'Trim system prompts, context, and few-shot bloat that silently inflate every single call.',
+    },
+    {
+      name: '4 · Batch / async pricing',
+      detail:
+        'Move latency-tolerant work onto batch and async tiers that price well below interactive rates.',
+    },
+    {
+      name: '5 · Provider arbitrage',
+      detail:
+        'Price the same capability across providers and route by current cost, not by habit.',
+    },
+    {
+      name: '6 · Fallback chains',
+      detail:
+        'Degrade gracefully to cheaper providers on error or overload instead of paying a premium to retry.',
+    },
+  ],
+  timeline: [
+    {
+      phase: 'Phase 0 — Instrument spend',
+      when: 'Days 1–2',
+      detail:
+        'Read-only access to billing and logs; build the spend map by service, model, and route.',
+    },
+    {
+      phase: 'Phase 1 — Model the levers',
+      when: 'Days 3–4',
+      detail:
+        'Estimate each lever against your real traffic and define the quality guardrails that protect output.',
+    },
+    {
+      phase: 'Phase 2 — Roadmap & readout',
+      when: 'Day 5',
+      detail:
+        'Deliver the prioritized savings roadmap and walk through it live.',
+    },
+  ],
+  forYou: [
+    'Your monthly LLM bill is large enough that a week of engineering pays for itself.',
+    'You need savings that don’t come at the cost of output quality.',
+    'You want a concrete roadmap, not a vendor pitch.',
+  ],
+  notForYou: [
+    'Your spend is trivial and not worth optimizing yet.',
+    'You want someone to implement every change for you this week — the teardown is analysis and a roadmap.',
+    'You’re unwilling to define a quality bar to protect.',
+  ],
+  faq: [
+    {
+      q: 'Will cutting cost hurt quality?',
+      a: 'No — that’s the whole point of doing it as engineering rather than blunt downgrades. Every lever is modeled against a quality bar you define, and the guardrail plan keeps output fixed while cost moves.',
+    },
+    {
+      q: 'How much can I actually save?',
+      a: 'It depends entirely on your traffic mix, so I won’t quote a made-up percentage. Published ranges for these levers are wide; the teardown replaces them with a number modeled on your own usage. See the own-platform example above for how the levers compound.',
+    },
+    {
+      q: 'What access do you need?',
+      a: 'Read-only: your billing/usage export and enough logs or traces to see the cost distribution across models and routes.',
+    },
+    {
+      q: 'What’s the deliverable?',
+      a: 'A written teardown — spend map, per-lever assessment, quality-guardrail plan, and a prioritized roadmap — plus a live readout.',
+    },
+  ],
+};

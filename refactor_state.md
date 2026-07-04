@@ -19,7 +19,7 @@ Canonical source of truth for numbers/labels: `lib/facts.ts` (created T01).
 - [x] **T04** Home §6 HOW I WORK (operator protocol) + §7 PROOF OF METHOD (VS-TODO placeholders) + §8 WHAT COLLEAGUES SAY (VS-TODO) + §9 CONTINUITY & TRUST. Evidence: verify.sh green (lint+build+serve); smoke green; static HTML has "How I work" / "See the method, not just claims" / "What colleagues say" / "How engagements are run"; §7/§8 render clean "Available on request"/"Coming soon" placeholders (no fabricated quotes).
 - [x] **T05** Home §10 WRITING (from blog system) + §11 FINAL CTA. Assemble final home; remove TechStack / Capabilities / AboutSnippet / old CTASection from home. Add home tests T1/T2/T5. Evidence: home now §1–§11; `home.spec.ts` T1/T2/T5 + smoke all green (4 passed). Legacy home components orphaned (deleted in T11).
 - [x] **T06** `/audit` page (AI Agent Production-Readiness Audit — $3,500). Evidence: shared `OfferPage` renderer + `AUDIT_CONTENT`; supported-stack scoping note included; `/audit` T1 + T8 ($3,500 once) green (6 passed).
-- [ ] **T07** `/llm-cost-teardown` page (from $2,000, six levers).
+- [x] **T07** `/llm-cost-teardown` page (from $2,000, six levers). Evidence: `TEARDOWN_CONTENT` + six levers (qualitative, no invented %); own-platform $82→$34 (−58%) case with honest label via `CostCase`; T1 + T8 (from $2,000 once) green (8 passed).
 - [ ] **T08** `/fractional` page (from $4,000/mo). Include Advisory $200/hr option.
 - [ ] **T09** `/writing` page (reuse blog system) + `/methodology` DW note + nav updates (vendor nav). Add T6 (blog still works), T1 for offer/writing/methodology pages.
 - [ ] **T10** Measurement: CTA/outbound-click analytics events (existing PostHog), per-page meta/OG, README UTM convention.

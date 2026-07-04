@@ -4,6 +4,7 @@ import { test, expect } from '@playwright/test';
 // canonical value. The list grows as offer pages land (T07/T08).
 const OFFER_PAGES: { path: string; price: string }[] = [
   { path: '/audit', price: '$3,500' },
+  { path: '/llm-cost-teardown', price: 'from $2,000' },
 ];
 
 test.describe('T8 — pricing appears exactly once per offer page', () => {
