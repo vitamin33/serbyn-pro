@@ -31,10 +31,40 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1.0,
     },
     {
+      url: `${baseUrl}/audit`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly' as const,
+      priority: 0.95,
+    },
+    {
+      url: `${baseUrl}/llm-cost-teardown`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly' as const,
+      priority: 0.95,
+    },
+    {
+      url: `${baseUrl}/fractional`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly' as const,
+      priority: 0.95,
+    },
+    {
       url: `${baseUrl}/work`,
       lastModified: currentDate,
       changeFrequency: 'weekly' as const,
       priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/writing`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/methodology`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly' as const,
+      priority: 0.5,
     },
     {
       url: `${baseUrl}/about`,
