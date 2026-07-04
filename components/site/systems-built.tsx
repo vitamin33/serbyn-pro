@@ -1,4 +1,5 @@
-import { Github } from 'lucide-react';
+import Link from 'next/link';
+import { Github, ArrowRight } from 'lucide-react';
 import { Stat } from '@/components/site/stat';
 import { OutboundLink } from '@/components/site/cta';
 import { SYSTEMS } from '@/lib/facts';
@@ -33,6 +34,15 @@ export function SystemsBuilt() {
                 {sys.tagline}
               </p>
               <Stat claim={sys.metric} className="mb-5" />
+              {sys.id === 'dw' && (
+                <Link
+                  href={'/methodology' as any}
+                  className="mb-3 inline-flex items-center gap-1.5 font-mono text-xs text-primary hover:underline"
+                >
+                  How runs &amp; passes are counted
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              )}
               {sys.repo ? (
                 <OutboundLink
                   href={sys.repo}

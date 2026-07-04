@@ -7,6 +7,8 @@ const PAGES: { path: string; h1?: RegExp }[] = [
   { path: '/audit', h1: /where your agents will fail/i },
   { path: '/llm-cost-teardown', h1: /cut your llm bill/i },
   { path: '/fractional', h1: /reliable and cheap as it scales/i },
+  { path: '/writing', h1: /writing on agent reliability/i },
+  { path: '/methodology', h1: /how dw runs and passes are counted/i },
 ];
 
 test.describe('T1 — pages return 200 + render an H1', () => {

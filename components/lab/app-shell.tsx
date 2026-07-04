@@ -3,16 +3,17 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Layers, Newspaper, User, FileText } from 'lucide-react';
+import { ShieldCheck, Gauge, Layers, Newspaper, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Navbar } from '@/components/navbar';
 import { FooterLegal } from '@/components/footer-legal';
 
 const NAV = [
-  { name: 'WORK', href: '/work', icon: Layers },
-  { name: 'BLOG', href: '/blog', icon: Newspaper },
+  { name: 'AUDIT', href: '/audit', icon: ShieldCheck },
+  { name: 'COST_TEARDOWN', href: '/llm-cost-teardown', icon: Gauge },
+  { name: 'FRACTIONAL', href: '/fractional', icon: Layers },
+  { name: 'WRITING', href: '/writing', icon: Newspaper },
   { name: 'ABOUT', href: '/about', icon: User },
-  { name: 'RESUME', href: '/resume', icon: FileText },
 ] as const;
 
 const CONTACT = 'https://calendly.com/serbyn-vitalii/consulting';
@@ -66,7 +67,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             VITALII_SERBYN
           </p>
           <p className="label-caps mt-1 text-muted-foreground">
-            AI_SYSTEMS_ARCHITECT
+            AGENTIC_SYSTEMS_ARCHITECT
           </p>
         </div>
         <nav className="flex-1 space-y-0.5 py-5" aria-label="Primary">
