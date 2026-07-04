@@ -7,7 +7,8 @@ import { HowIWork } from '@/components/site/how-i-work';
 import { ProofOfMethod } from '@/components/site/proof-of-method';
 import { Colleagues } from '@/components/site/colleagues';
 import { Continuity } from '@/components/site/continuity';
-import { CTASection } from '@/components/cta-section';
+import { WritingTeaser } from '@/components/site/writing-teaser';
+import { FinalCTA } from '@/components/site/final-cta';
 
 export default function HomePage() {
   return (
@@ -21,8 +22,8 @@ export default function HomePage() {
       <ProofOfMethod />
       <Colleagues />
       <Continuity />
-      {/* §10 Writing + §11 Final CTA land in T05; legacy CTA kept until then. */}
-      <CTASection />
+      <WritingTeaser />
+      <FinalCTA />
     </>
   );
 }
