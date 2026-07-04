@@ -1,25 +1,25 @@
 import type { Metadata } from 'next';
 
 export const siteConfig = {
-  name: 'Vitalii Serbyn — AI Systems Architect',
+  name: 'Vitalii Serbyn — Agentic Systems Architect',
   description:
-    'I design autonomous agent systems, trust-layered orchestration, and production AI infrastructure.',
+    'I make AI agents reliable enough to run in production. Agent reliability engineering and LLM cost engineering for US, UK, and EU teams — fixed-scope audits, teardowns, and fractional architecture.',
   url: 'https://serbyn.io',
   ogImage: 'https://serbyn.io/logo.png',
   creator: 'Vitalii Serbyn',
   keywords: [
-    'Agent Orchestration',
-    'Autonomous Agents',
-    'Trust Layers',
-    'AI Infrastructure',
-    'AI Systems Architect',
-    'LLM Systems',
-    'MLOps',
+    'Agent Reliability',
+    'AI Agent Audit',
+    'Agentic Systems Architect',
+    'LLM Cost Engineering',
+    'Trajectory Evals',
     'Multi-Agent Systems',
     'Production AI',
-    'Cost Optimization',
-    'AI Platform Engineering',
-    'Remote Consultant',
+    'LLM Cost Optimization',
+    'Fractional AI Architect',
+    'AI Consulting',
+    'Trust-Tiered Execution',
+    'Remote AI Consultant',
   ],
 };
 
@@ -124,6 +124,8 @@ export function createMetadata({
 export const pageMetadata = {
   home: () =>
     createMetadata({
+      description:
+        'Agentic Systems Architect. I make AI agents reliable enough to run in production — agent reliability engineering (trajectory evals, false-green metering, evidence-binding, trust-tiered execution) and LLM cost engineering. Fixed-scope audits from $3,500.',
       canonicalUrl: siteConfig.url,
     }),
 
@@ -181,7 +183,7 @@ export function generatePersonSchema() {
     '@context': 'https://schema.org',
     '@type': 'Person',
     name: 'Vitalii Serbyn',
-    jobTitle: 'AI Systems Architect',
+    jobTitle: 'Agentic Systems Architect',
     description: siteConfig.description,
     url: siteConfig.url,
     image: 'https://serbyn.io/logo.png',
