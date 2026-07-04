@@ -52,18 +52,18 @@ export function Navbar() {
             <Link
               href={'/' as any}
               className="flex items-center space-x-3 hover:opacity-80 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-md p-1"
-              aria-label="Serbyn.pro - Home"
+              aria-label="serbyn.io — home"
             >
               <Image
                 src="/logo.svg"
-                alt="Serbyn.pro Logo"
+                alt="serbyn.io logo"
                 width={32}
                 height={32}
                 className="h-8 w-8"
               />
               <div className="flex items-center space-x-1">
                 <span className="font-bold text-xl">serbyn</span>
-                <span className="font-mono text-primary">.pro</span>
+                <span className="font-mono text-primary">.io</span>
               </div>
             </Link>
           </div>

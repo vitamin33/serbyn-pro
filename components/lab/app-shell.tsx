@@ -18,10 +18,11 @@ const NAV = [
 
 const CONTACT = 'https://calendly.com/serbyn-vitalii/consulting';
 
-// Routes that keep the simple top-nav layout (resume is print-optimized; legal
-// is plain). Everything else gets the persistent lab sidebar shell.
+// Only the resume keeps the simple top-nav layout (it's print-optimized).
+// Everything else — including the legal pages — gets the persistent lab sidebar
+// shell so branding and navigation stay consistent.
 function isMinimal(path: string): boolean {
-  return path.startsWith('/resume') || path.startsWith('/legal');
+  return path.startsWith('/resume');
 }
 
 function Wordmark({ className }: { className?: string }) {

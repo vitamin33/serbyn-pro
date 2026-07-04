@@ -4,7 +4,7 @@ import { pageMetadata } from '@/lib/seo';
 export const metadata = pageMetadata.terms();
 
 export default function TermsPage() {
-  const lastUpdated = 'January 15, 2025';
+  const lastUpdated = 'July 4, 2026';
 
   return (
     <div className="min-h-screen py-16">
@@ -26,18 +26,17 @@ export default function TermsPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <p>
-                  These terms govern the provision of AI/ML engineering services
-                  by Easelect LTD, a company incorporated in England and Wales
-                  (Company Number: 15983917).
+                  These terms govern the provision of AI agent reliability and
+                  LLM cost engineering services by Easelect LTD, a company
+                  incorporated in England and Wales (Company Number: 15983917).
                 </p>
                 <div className="bg-muted/50 p-4 rounded-lg">
                   <h3 className="font-semibold mb-2">Services Provided</h3>
                   <ul className="text-sm space-y-1">
-                    <li>• AI/ML system design and implementation</li>
-                    <li>• Large Language Model deployment and optimization</li>
-                    <li>• MLOps pipeline development and maintenance</li>
-                    <li>• Technical consulting and code review</li>
-                    <li>• Performance optimization and cost reduction</li>
+                    <li>• AI Agent Production-Readiness Audits</li>
+                    <li>• LLM Cost Teardowns and cost engineering</li>
+                    <li>• Fractional AI architecture (retainer)</li>
+                    <li>• Advisory and technical consulting</li>
                   </ul>
                 </div>
               </CardContent>
@@ -158,9 +157,11 @@ export default function TermsPage() {
                 <CardTitle>Limitation of Liability</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-lg">
-                  <h3 className="font-semibold mb-2">Important Notice</h3>
-                  <p className="text-sm">
+                <div className="rounded-lg border border-warning/40 bg-warning/10 p-4">
+                  <h3 className="mb-2 font-semibold text-warning">
+                    Important Notice
+                  </h3>
+                  <p className="text-sm text-foreground">
                     Our total liability for any claims arising from our services
                     is limited to the total amount paid for the specific project
                     or service period in question.

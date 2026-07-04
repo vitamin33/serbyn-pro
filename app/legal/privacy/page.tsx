@@ -4,7 +4,7 @@ import { pageMetadata } from '@/lib/seo';
 export const metadata = pageMetadata.privacy();
 
 export default function PrivacyPage() {
-  const lastUpdated = 'January 15, 2025';
+  const lastUpdated = 'July 4, 2026';
 
   return (
     <div className="min-h-screen py-16">
@@ -18,7 +18,7 @@ export default function PrivacyPage() {
             <p className="text-muted-foreground">Last updated: {lastUpdated}</p>
           </div>
 
-          <div className="prose prose-sm max-w-none space-y-6">
+          <div className="max-w-none space-y-6">
             {/* Overview */}
             <Card>
               <CardHeader>
@@ -61,16 +61,18 @@ export default function PrivacyPage() {
                 <div>
                   <h3 className="font-semibold mb-2">Website Analytics</h3>
                   <ul className="text-sm space-y-1 ml-4">
-                    <li>• Page views and navigation patterns (anonymized)</li>
+                    <li>• Page views and navigation patterns</li>
                     <li>• Browser type and device information</li>
                     <li>• Referral sources (how you found our site)</li>
                   </ul>
                 </div>
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <p className="text-sm">
-                    <strong>Note:</strong> We use privacy-focused analytics
-                    (Plausible) that doesn&apos;t require cookies or track
-                    personal information.
+                <div className="rounded-lg border border-primary/30 bg-primary/10 p-4">
+                  <p className="text-sm text-foreground">
+                    <strong>Note:</strong> We use PostHog for product analytics,
+                    which sets first-party cookies to measure usage. If you
+                    visit via a campaign link, we also store the referral (UTM)
+                    parameters in a first-party cookie for up to 30 days. We do
+                    not sell your data or use it to build advertising profiles.
                   </p>
                 </div>
               </CardContent>
@@ -100,7 +102,7 @@ export default function PrivacyPage() {
                   <li className="flex items-start gap-2">
                     <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></span>
                     <span>
-                      Improve our website and services (anonymized analytics)
+                      Improve our website and services (product analytics)
                     </span>
                   </li>
                   <li className="flex items-start gap-2">
