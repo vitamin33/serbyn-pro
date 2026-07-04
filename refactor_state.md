@@ -25,7 +25,7 @@ Canonical source of truth for numbers/labels: `lib/facts.ts` (created T01).
 - [x] **T10** Measurement: CTA/outbound-click analytics events (existing PostHog), per-page meta/OG, README UTM convention. Evidence: `cta_click`/`outbound_click` events on all CTAs (cta.tsx); vendor site meta in `lib/seo.ts` (name/description/keywords/Person schema); `README.md` UTM convention + middleware cookie note; `meta.spec.ts` (title/desc/OG/canonical on 6 pages) green (20 passed).
 - [x] **T11** Repo-wide number reconciliation to canonical set (about page, case studies, achievements.json, metrics.json); remove unused counter component; strip candidate/"available"/"hire" framing. Evidence: deleted 5 orphaned home components + dead `lib/site-metrics.ts` & `data/site/metrics.json` (removed 92%/13-54/10.2B conflicts); Ascend counts 19→27 / 12→18 in about + case study + achievements.json; repo-wide scan shows no `19 agents`/`12 mature`/`59x`/rendered `lorem`; no `open to work`/`hire me`. 20 passed.
 - [x] **T12** Complete Playwright suite T1–T8 (JS-disabled numbers, forbidden strings, link crawl, labels, pricing-once, responsive screenshots). Green cumulatively. Evidence: T3 (forbidden.spec), T4 (links.spec crawl depth-2), T7 (responsive.spec, 390/1440, no overflow) added; full suite 32 passed; screenshots in `.playwright-artifacts/{home,audit}-{390,1440}.png`.
-- [ ] **T13** FINAL: single clean run of lint + build + full Playwright suite; write FINAL REPORT; leave committed-clean, unpushed.
+- [x] **T13** FINAL: single clean run of lint + build + full Playwright suite; write FINAL REPORT; leave committed-clean, unpushed. Evidence: lint ✓ + build ✓ + 32 Playwright passed in one final run; FINAL REPORT below; branch committed-clean, unpushed.
 
 ---
 
@@ -48,16 +48,77 @@ Canonical source of truth for numbers/labels: `lib/facts.ts` (created T01).
 
 Format: `[VS-TODO:<id>]` — what to provide · where it plugs in · expected format.
 
-- **[VS-TODO:loom]** — 2–3 min Loom walkthrough of a real audit/method. Plugs into Home §7 Proof of Method card. Expected: a public Loom URL. (Placeholder: "Walkthrough — coming soon".)
-- **[VS-TODO:sample-report]** — Sanitized sample audit report PDF. Plugs into Home §7 Proof of Method + `/audit` deliverables. Expected: a PDF in `/public` + link. (Placeholder: "Sample report — available on request".)
-- **[VS-TODO:linkedin-recs]** — 2–3 colleague quotes for Home §8. Vitalii supplies EXACT quote text + name + role + LinkedIn URL. Do NOT auto-write quotes. (Placeholder: "References shared privately on request".)
-- **[VS-TODO:dw-github]** — Public GitHub URL for DW (autonomous spec-driven dev pipeline). Plugs into Home §4 DW card. Expected: repo URL. (Placeholder: link hidden until supplied.)
-- **[VS-TODO:continuity-details]** — Specifics for §9 Continuity (backup power/connectivity setup in Kyiv, DPA availability). Expected: 1–2 sentences of fact. (Placeholder: honest general statement only.)
-- **[VS-TODO:company-spelling]** — Confirm legal spelling "Easelect LTD" vs "EASELECT LTD" and that company no. 15983917 / Manchester office are correct to publish.
-- **[VS-TODO:dw-methodology-numbers]** — Confirm DW "101 logged runs, 0.94 pass rate" is current; methodology note at `/methodology` defines run/pass generically from repo content.
+- **[VS-TODO:loom]** — 2–3 min Loom walkthrough of a real audit/method. Plugs in at `components/site/proof-of-method.tsx:18` (PROOFS[1]). Expected: a public Loom URL → turn the card into a link. Placeholder now: "Coming soon".
+- **[VS-TODO:sample-report]** — Sanitized sample audit report PDF. Plugs in at `components/site/proof-of-method.tsx:11` (PROOFS[0]) + the `/audit` "written report" deliverable. Expected: a PDF in `/public` + link. Placeholder now: "Available on request".
+- **[VS-TODO:linkedin-recs]** — 2–3 colleague quotes for Home §8. Plugs in at `components/site/colleagues.tsx:32` (replace the placeholder cards). Vitalii supplies EXACT quote text + name + role + LinkedIn URL. Do NOT auto-write quotes. Format: `{ quote, name, role, url }[]`.
+- **[VS-TODO:dw-github]** — Public GitHub URL for DW. Plugs in at `lib/facts.ts:109` (SYSTEMS `dw.repo`, currently `undefined`); once set, `components/site/systems-built.tsx:58` "Repository — coming soon" auto-swaps to a GitHub link. Expected: repo URL string.
+- **[VS-TODO:continuity-details]** — Specifics for §9 Continuity. Plugs in at `components/site/continuity.tsx:25` (Continuity TERMS). Expected: 1–2 sentences on Kyiv backup power/connectivity + DPA availability. Placeholder now: honest general statement.
+- **[VS-TODO:company-spelling]** — Confirm legal spelling "Easelect LTD" vs "EASELECT LTD" and company no. 15983917 / Manchester office. Plugs in at `lib/facts.ts:21` (CONTACT.company) + `components/footer-legal.tsx` (office block). Expected: confirmed string.
+- **[VS-TODO:dw-methodology-numbers]** — Confirm DW "101 logged runs, 0.94 pass rate" current. Plugs in at `lib/facts.ts:55` (RESULTS) + `lib/facts.ts:105` (SYSTEMS `dw.metric`) + `app/methodology/page.tsx`. Expected: confirmed integers, else updated values.
 
 ---
 
 ## FINAL REPORT
 
-_(appended in T13)_
+**Status: COMPLETE.** All checklist tasks T00–T13 done. Final single run:
+`npm run lint` ✓ · `npm run build` ✓ (all routes prerendered) · Playwright
+**32 passed** (T1–T8 + meta). Branch committed-clean, unpushed.
+
+### Before → After — home section map
+
+| Before (candidate/portfolio)                          | After (vendor/consulting)                                             |
+| ----------------------------------------------------- | -------------------------------------------------------------------- |
+| HeroArchitect + animated count-up MetricStrip         | §1 Hero — "I make AI agents reliable enough to run in production."    |
+| FeaturedWork (case-study cards)                       | §2 Credibility stack · §3 Quantified results (labeled)               |
+| Capabilities (CV bullets, "19 agents", 70% kill…)     | §4 Systems I designed and built (Ascend/DW/Crest, labeled metrics)   |
+| TechStack (skills grid)                               | §5 Fixed-scope offers → §6 How I work → §7 Proof → §8 Colleagues     |
+| AboutSnippet (photo placeholder + bio)                | §9 Continuity & trust                                                 |
+| CTASection (newsletter + "Book an Architecture Review")| §10 Writing (from blog) · §11 Final CTA (booking + email)            |
+
+**New pages:** `/audit` · `/llm-cost-teardown` · `/fractional` · `/writing` ·
+`/methodology`. **Nav:** WORK/BLOG/ABOUT/RESUME → AUDIT/COST_TEARDOWN/FRACTIONAL/
+WRITING/ABOUT. **Kept intact (R5):** `/blog` + posts, RSS `/feed.xml`, `/work` +
+case studies, `/about` (numbers reconciled), `/resume`, `/legal/*`, sitemap.
+
+### Removed / changed claims & numbers (and why)
+
+- **Animated count-up counters** (`MetricStrip`, `hero-architect.tsx`) — deleted. Rendered "0" before animating and was wrong with JS off (R3). Now all metrics are plain server text.
+- **`data/site/metrics.json` + `lib/site-metrics.ts`** — deleted. Carried unlabeled/uncanonical figures: AUTONOMY 92% (72/78), COMPUTE 10.2B tokens/$9.8K, TRUST 13/54, plus a FALLBACK "30 agents / 1,375 tests". Not in APPROVED FACTS, no importers after the counter died.
+- **"19 agents (12 mature)" / "19 agents managing 4 live projects"** → **"27 agents (18 mature)"** in `app/about`, `content/case-studies/ascend-autonomous-agents.mdx`, `data/achievements.json`. Matches APPROVED FACTS ("18+ mature, 27 total"). Ascend "1,178 tests" added to the about line.
+- **CV-style sections** (Capabilities, TechStack) removed from home — candidate framing (skills grids, "70% intake kill rate", "150+ personas", "26K→3K RPC", "24 services"). Project-specific descriptive numbers remain only inside `/work` case studies, employment-labeled.
+- **"59x ROI"** — grep-clean across repo before and after; verified absent by T3. Never published.
+- **LLM cost** presented only as own-platform **$82→$34 (−58%)** with the honest label "on my own platform — small bill, same levers scale with spend"; never as a client result. Per-lever impact stated qualitatively (no invented percentages).
+- **Booking** — kept the existing Calendly link (Cal.com absent from repo, R6).
+
+### Every published number now carries a source-label (R2)
+
+18+ mature / 27 total agents · 1,178 tests → "on Ascend, a system I designed and
+built". 101 runs / 0.94 pass → "on DW…". −58% ($82→$34) → "on my own platform".
+10,000+ users · 80–90% RPC → "as engineer, in an employed role". Enforced by the
+`Stat` component + test T5.
+
+### Diff stats
+
+`eb25b20..HEAD`: **53 files changed, +2,416 / −591**. 14 task commits (T00–T13)
+plus 1 sitemap follow-up. Never pushed, never merged.
+
+### Screenshot index (regenerate via `npm run test:e2e`; dir is gitignored)
+
+- `.playwright-artifacts/home-390.png` · `.playwright-artifacts/home-1440.png`
+- `.playwright-artifacts/audit-390.png` · `.playwright-artifacts/audit-1440.png`
+
+### Test suite — `tests/refactor/` (32 passed)
+
+T1 pages 200 + H1 (smoke.spec) · T2 JS-disabled canonical numbers + no bare-0
+(home.spec) · T3 forbidden strings (forbidden.spec) · T4 internal-link crawl
+depth-2 (links.spec) · T5 every claim labeled (home.spec) · T6 blog still works
+(blog.spec) · T7 responsive 390/1440 no overflow (responsive.spec) · T8 pricing
+once per offer page (offers.spec) · meta/OG on every page (meta.spec).
+
+### Suggested 5-step manual QA for Vitalii
+
+1. **Booking + email:** on `/`, `/audit`, `/llm-cost-teardown`, `/fractional`, click "Book a 30-min systems call" → confirm Calendly opens the right event; click the email CTA → confirm it drafts to serbyn.vitalii@gmail.com.
+2. **Fact-check the numbers:** confirm every APPROVED FACT is still current (18+ mature/27 total, 1,178 tests, DW 101/0.94, $82→$34). Anything drifted → edit `lib/facts.ts` (single source).
+3. **Fill the VS-TODOs:** supply Loom, sample-report PDF, LinkedIn recs, DW GitHub, Kyiv continuity specifics, and confirm company spelling — each has a clean placeholder and a file:line anchor in the VS-TODO section above.
+4. **Analytics:** with `NEXT_PUBLIC_POSTHOG_KEY` set, click a few CTAs → confirm `cta_click` / `outbound_click` events arrive in PostHog; open a `?utm_source=linkedin…` link and confirm the UTM cookie is set (see README).
+5. **Cross-device pass:** open `/` and `/audit` on a phone and a wide monitor (no horizontal scroll); open `/blog`, one post, and `/writing` to confirm the blog system is untouched.
