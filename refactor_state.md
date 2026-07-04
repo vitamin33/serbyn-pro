@@ -94,7 +94,8 @@ case studies, `/about` (numbers reconciled), `/resume`, `/legal/*`, sitemap.
 
 18+ mature / 27 total agents · 1,178 tests → "on Ascend, a system I designed and
 built". 101 runs / 0.94 pass → "on DW…". −58% ($82→$34) → "on my own platform".
-10,000+ users · 80–90% RPC → "as engineer, in an employed role". Enforced by the
+100M+ downloads / Google Play Editor’s Choice · 80–90% RPC → "as engineer, in an
+employed role". Enforced by the
 `Stat` component + test T5.
 
 ### Diff stats

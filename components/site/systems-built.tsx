@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Github, ArrowRight } from 'lucide-react';
+import { Github, ArrowRight, ExternalLink } from 'lucide-react';
 import { Stat } from '@/components/site/stat';
 import { OutboundLink } from '@/components/site/cta';
 import { SYSTEMS } from '@/lib/facts';
@@ -49,8 +49,12 @@ export function SystemsBuilt() {
                   location={`systems_${sys.id}`}
                   className="inline-flex items-center gap-1.5 font-mono text-xs text-primary hover:underline"
                 >
-                  <Github className="h-3.5 w-3.5" />
-                  View on GitHub
+                  {sys.repo.includes('github.com') ? (
+                    <Github className="h-3.5 w-3.5" />
+                  ) : (
+                    <ExternalLink className="h-3.5 w-3.5" />
+                  )}
+                  {sys.linkLabel ?? 'View on GitHub'}
                 </OutboundLink>
               ) : (
                 <span className="inline-flex items-center gap-1.5 font-mono text-xs text-muted-foreground/60">

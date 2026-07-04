@@ -19,7 +19,7 @@ const PILLARS = [
   {
     icon: Layers,
     title: `${YEARS_EXPERIENCE} years of production systems`,
-    body: 'Long before agents: shipping software people depend on — including a healthcare app serving 10,000+ users and an 80–90% RPC cost reduction on a Web3 platform, both as an engineer in employed roles.',
+    body: 'Long before agents: shipping software people depend on — including a consumer app with 100M+ downloads and a Google Play Editor’s Choice award, and an 80–90% RPC cost reduction on a Web3 platform, both as an engineer in employed roles.',
   },
 ];
 

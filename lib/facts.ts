@@ -62,8 +62,8 @@ export const RESULTS: Claim[] = [
     label: 'on my own platform — small bill, same levers scale with spend',
   },
   {
-    value: '10,000+',
-    caption: 'users on a healthcare app I shipped',
+    value: '100M+',
+    caption: 'app downloads · Google Play Editor’s Choice (Top 100)',
     label: 'as engineer, in an employed role',
   },
   {
@@ -81,6 +81,7 @@ export interface BuiltSystem {
   metric: Claim; // one hard metric, labeled
   repo?: string; // undefined → VS-TODO placeholder
   repoTodo?: string;
+  linkLabel?: string; // overrides the default "View on GitHub" link text
 }
 
 export const SYSTEMS: BuiltSystem[] = [
@@ -119,7 +120,8 @@ export const SYSTEMS: BuiltSystem[] = [
       caption: 'multi-stage content engine',
       label: 'a system I designed and built',
     },
-    repo: 'https://github.com/vitamin33/threads-agent',
+    repo: 'https://usecrest.io',
+    linkLabel: 'Visit usecrest.io',
   },
 ];
 
