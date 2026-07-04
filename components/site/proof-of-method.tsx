@@ -2,7 +2,7 @@ import { FileText, PlayCircle } from 'lucide-react';
 
 // Home §7 — PROOF OF METHOD. Layout is built now; the two artifacts are
 // human-supplied (VS-TODO). Placeholders are styled as "on request / coming
-// soon" — clean, never lorem, never a broken link.
+// soon" — clean placeholder copy, never a broken link.
 const PROOFS = [
   {
     icon: FileText,

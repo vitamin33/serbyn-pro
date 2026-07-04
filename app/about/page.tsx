@@ -43,14 +43,14 @@ export default function AboutPage() {
             discipline that I now apply to AI systems.
           </p>
           <p>
-            Since 2024, I&apos;ve designed and shipped 6 production AI systems
+            Since 2024, I&apos;ve designed and shipped production AI systems
             through my UK company (Easelect LTD). Ascend is an orchestration
-            daemon with 19 agents managing 4 live projects — code review,
-            deployments, monitoring, and client reports, all trust-gated with
-            L0-L4 policy enforcement. Crest is an AI content platform with a
-            6-stage LangGraph pipeline, Thompson Sampling for variant
-            optimization, multi-model routing, and multi-platform publishing —
-            deployed live with 91+ tests.
+            daemon with 27 agents (18 mature) and 1,178 automated tests,
+            managing code review, deployments, monitoring, and client reports —
+            all trust-gated with L0-L4 policy enforcement. Crest is an AI
+            content platform with a 6-stage LangGraph pipeline, Thompson
+            Sampling for variant optimization, multi-model routing, and
+            multi-platform publishing — deployed live with 91+ tests.
           </p>
           <p>
             On the client side, I solo-architected a Web3 token launchpad on

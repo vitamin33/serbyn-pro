@@ -23,7 +23,7 @@ Canonical source of truth for numbers/labels: `lib/facts.ts` (created T01).
 - [x] **T08** `/fractional` page (from $4,000/mo). Include Advisory $200/hr option. Evidence: `FRACTIONAL_CONTENT` + `AdvisoryNote` ($200/hr, 10-hr min); audit→retainer upsell (fee credited within 60 days) in FAQ; T1 + T8 (from $4,000/mo once) green (10 passed).
 - [x] **T09** `/writing` page (reuse blog system) + `/methodology` DW note + nav updates (vendor nav). Add T6 (blog still works), T1 for offer/writing/methodology pages. Evidence: `/writing` + `/methodology` (DW run/pass definitions, linked from DW home card); sidebar nav → AUDIT/COST_TEARDOWN/FRACTIONAL/WRITING/ABOUT; T6 + T1 for all pages green (14 passed).
 - [x] **T10** Measurement: CTA/outbound-click analytics events (existing PostHog), per-page meta/OG, README UTM convention. Evidence: `cta_click`/`outbound_click` events on all CTAs (cta.tsx); vendor site meta in `lib/seo.ts` (name/description/keywords/Person schema); `README.md` UTM convention + middleware cookie note; `meta.spec.ts` (title/desc/OG/canonical on 6 pages) green (20 passed).
-- [ ] **T11** Repo-wide number reconciliation to canonical set (about page, case studies, achievements.json, metrics.json); remove unused counter component; strip candidate/"available"/"hire" framing.
+- [x] **T11** Repo-wide number reconciliation to canonical set (about page, case studies, achievements.json, metrics.json); remove unused counter component; strip candidate/"available"/"hire" framing. Evidence: deleted 5 orphaned home components + dead `lib/site-metrics.ts` & `data/site/metrics.json` (removed 92%/13-54/10.2B conflicts); Ascend counts 19→27 / 12→18 in about + case study + achievements.json; repo-wide scan shows no `19 agents`/`12 mature`/`59x`/rendered `lorem`; no `open to work`/`hire me`. 20 passed.
 - [ ] **T12** Complete Playwright suite T1–T8 (JS-disabled numbers, forbidden strings, link crawl, labels, pricing-once, responsive screenshots). Green cumulatively.
 - [ ] **T13** FINAL: single clean run of lint + build + full Playwright suite; write FINAL REPORT; leave committed-clean, unpushed.
 
@@ -39,6 +39,7 @@ Canonical source of truth for numbers/labels: `lib/facts.ts` (created T01).
 - **T00 — Animated counter located.** `components/lab/metric-strip.tsx` is the count-up counter (starts display at "0"); used only by `hero-architect.tsx`. Both retired in T02/T11 (R3).
 - **T00 — No "59x" anywhere in repo** (grep clean). No "lorem". Good baseline for T3.
 - **T00 — GitHub repo URLs in content:** Ascend → `https://github.com/vitamin33`; Crest → `https://github.com/vitamin33/threads-agent`. DW has no repo URL → VS-TODO for GitHub link.
+- **T11 — Dead metric files deleted.** `getSiteMetrics`/`lib/site-metrics.ts`/`data/site/metrics.json` had no importers after the counter was killed and carried conflicting numbers (92% / 13-54 / 10.2B / FALLBACK 30-agents). Deleted rather than updated. `data/achievements.json` is also unrendered; updated its `12 mature`→`18 mature` for consistency but left in place (possible external consumer).
 - **T00 — Existing conflicting numbers to reconcile (T11):** `capabilities.tsx` "19 agents / 4 projects", case study "19 agents (12 mature)", `metrics.json` "TRUST 13/54", "AUTONOMY 92% 72/78", `achievements.json` "27 agents 12 mature". Canonical: **18+ mature agents (27 total)**, **1,178 tests**.
 
 ---

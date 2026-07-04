@@ -1,12 +1,12 @@
 ---
 title: 'Ascend: Agent Orchestration Daemon'
 slug: ascend-autonomous-agents
-summary: 'Self-hosted orchestration daemon with trust-gated execution (L0-L4), policy engine, and audit logging. 19 agents managing 4 live projects.'
-description: 'Autonomous agent orchestration daemon with trust-layered L0-L4 execution, YAML policy engine, budget guards, and audit logging. 19 agents manage code review, deployments, monitoring, and client reports across 4 production projects.'
+summary: 'Self-hosted orchestration daemon with trust-gated execution (L0-L4), policy engine, and audit logging. 27 agents (18 mature) managing live projects.'
+description: 'Autonomous agent orchestration daemon with trust-layered L0-L4 execution, YAML policy engine, budget guards, and audit logging. 27 agents manage code review, deployments, monitoring, and client reports across 4 production projects.'
 category: platform
 project_type: primary
 highlight_metrics:
-  - '19 agents (12 mature)'
+  - '27 agents (18 mature)'
   - 'L0-L4 trust gating'
   - '4 live projects managed'
   - '~2h/day automated'
@@ -19,7 +19,7 @@ tech:
   - OpenClaw gateway
   - GitHub Actions
 outcomes:
-  - '19 agents built, 12 operating at mature trust levels (L2+)'
+  - '27 agents built, 18 operating at mature trust levels (L2+)'
   - '~2 hours of daily work automated across 4 projects'
   - 'Trust-gated execution prevents unauthorized agent actions'
   - 'Budget guards enforce per-agent cost limits with auto-demotion'
@@ -79,7 +79,7 @@ Every agent action has a cost estimate. The system tracks cumulative daily/weekl
 
 After iterative development across 12+ sprints:
 
-- **19 agents built**, 12 operating at mature trust levels (L2+)
+- **27 agents built**, 18 operating at mature trust levels (L2+)
 - **4 production projects managed**: code review, deployments, monitoring, client reports
 - **~2 hours/day of manual work automated**: cross-project status checks, PR screening, dependency merges, client report generation, deployment monitoring
 - **Zero unauthorized actions**: the trust/policy system catches and blocks every out-of-bounds request

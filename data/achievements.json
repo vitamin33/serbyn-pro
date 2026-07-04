@@ -10,11 +10,11 @@
       "id": "ascend-autonomous-agents",
       "date": "2024-12",
       "title": "Ascend: 27-Agent Autonomous Orchestration System",
-      "description": "Trust-gated L0-L4 orchestration across 4 production projects. 27 agents built, 12 mature, 506 tests, 3 CLI engines, with policy engine and cost controls.",
+      "description": "Trust-gated L0-L4 orchestration across 4 production projects. 27 agents built, 18 mature, 506 tests, 3 CLI engines, with policy engine and cost controls.",
       "impact_score": 96,
       "source": "personal_rd",
       "highlight_metrics": [
-        "27 agents, 12 mature",
+        "27 agents, 18 mature",
         "L0-L4 trust levels",
         "3 CLI engines ($0/run script engine)",
         "506 tests, ruff + mypy clean"
