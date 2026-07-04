@@ -1,18 +1,17 @@
-import { HeroArchitect } from '@/components/hero-architect';
+import { Hero } from '@/components/site/hero';
+import { CredibilityStack } from '@/components/site/credibility-stack';
+import { ResultsStrip } from '@/components/site/results-strip';
 import { FeaturedWork } from '@/components/featured-work';
-import { Capabilities } from '@/components/capabilities';
-import { TechStack } from '@/components/tech-stack';
-import { AboutSnippet } from '@/components/about-snippet';
 import { CTASection } from '@/components/cta-section';
 
 export default function HomePage() {
   return (
     <>
-      <HeroArchitect />
+      <Hero />
+      <CredibilityStack />
+      <ResultsStrip />
+      {/* Remaining legacy sections are replaced in T03–T05. */}
       <FeaturedWork />
-      <Capabilities />
-      <TechStack />
-      <AboutSnippet />
       <CTASection />
     </>
   );

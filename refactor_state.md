@@ -13,8 +13,8 @@ Canonical source of truth for numbers/labels: `lib/facts.ts` (created T01).
 ## TASK CHECKLIST
 
 - [x] **T00** Recon repo + create this state file. Evidence: baseline `npm run build` exit 0; recon notes in Decisions log.
-- [ ] **T01** Foundation: `lib/facts.ts` (canonical numbers + labels + contact + pricing), `components/site/stat.tsx` (labeled-claim component for T5), Playwright harness (`playwright.config.ts`, install chromium, `tests/refactor/` smoke test T1-home).
-- [ ] **T02** Home §1 HERO (new copy) + §2 rare-mixture credibility + §3 quantified results strip. Kill the animated MetricStrip counter. Wire into home; remove old HeroArchitect.
+- [x] **T01** Foundation: `lib/facts.ts` (canonical numbers + labels + contact + pricing), `components/site/stat.tsx` (labeled-claim component for T5), Playwright harness (`playwright.config.ts`, install chromium, `tests/refactor/` smoke test T1-home). Evidence: `npm run lint` clean; `tests/refactor/smoke.spec.ts` green (1 passed).
+- [x] **T02** Home §1 HERO (new copy) + §2 rare-mixture credibility + §3 quantified results strip. Kill the animated MetricStrip counter. Wire into home; remove old HeroArchitect. Evidence: deleted `hero-architect.tsx` + `metric-strip.tsx` (only counter); lint clean; smoke green (build+serve OK). New H1 "I make AI agents reliable enough to run in production." live.
 - [ ] **T03** Home §4 SYSTEMS I'VE BUILT (Ascend / DW / Crest cards) + §5 OFFERS (3 priced cards linking to offer pages).
 - [ ] **T04** Home §6 HOW I WORK (operator protocol) + §7 PROOF OF METHOD (VS-TODO placeholders) + §8 WHAT COLLEAGUES SAY (VS-TODO) + §9 CONTINUITY & TRUST.
 - [ ] **T05** Home §10 WRITING (from blog system) + §11 FINAL CTA. Assemble final home; remove TechStack / Capabilities / AboutSnippet / old CTASection from home. Add home tests T1/T2/T5.
