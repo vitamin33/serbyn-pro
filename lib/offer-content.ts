@@ -276,3 +276,117 @@ export const TEARDOWN_CONTENT: OfferPageContent = {
     },
   ],
 };
+
+export const FRACTIONAL_CONTENT: OfferPageContent = {
+  offerId: 'fractional',
+  kicker: 'fractional ai architect',
+  h1: 'Keep your agent platform reliable and cheap as it scales — with an architect on the hook.',
+  promise:
+    'Ongoing architectural ownership of your agent platform, about one day a week: I hold the reliability and cost lines so quality and spend stay in control while your team keeps shipping.',
+  deliverablesHeading: 'What you get',
+  deliverables: [
+    {
+      title: 'Standing reliability & cost ownership',
+      detail:
+        'A named architect accountable for whether your agents stay trustworthy and affordable — not a one-off report.',
+    },
+    {
+      title: 'Evals & guardrails, maintained',
+      detail:
+        'The trajectory and false-green evals stay current as your agents change, so regressions surface before users find them.',
+    },
+    {
+      title: 'Pre-ship architecture review',
+      detail:
+        'New agents and major changes get reviewed against the trust and cost model before they reach production.',
+    },
+    {
+      title: 'Gated-rollout discipline',
+      detail:
+        'Changes promote through trust tiers and budget guards with a fast path back — the same protocol, applied continuously.',
+    },
+    {
+      title: 'Monthly reliability & cost report',
+      detail:
+        'A short written read on where reliability and spend stand, and what to do next.',
+    },
+    {
+      title: 'Direct async access',
+      detail:
+        'A direct line for architectural questions between sessions — not a ticket queue.',
+    },
+  ],
+  methodHeading: 'What ongoing ownership looks like',
+  methodIntro:
+    'A predictable weekly cadence built on the same operator protocol as the audit.',
+  method: [
+    {
+      name: 'Weekly cadence',
+      detail:
+        'About one focused day a week on your platform — reviewing, measuring, and moving the reliability and cost work forward.',
+    },
+    {
+      name: 'Evidence-gated changes',
+      detail:
+        'Every change I recommend or make is gated on evals and cost metrics, promoted only when they hold.',
+    },
+    {
+      name: 'Cost tracking',
+      detail:
+        'Per-service cost stays instrumented so spend never drifts quietly upward as traffic grows.',
+    },
+    {
+      name: 'Escalation & handover',
+      detail:
+        'Clear escalation for incidents and clean documentation so your team is never dependent on me being online.',
+    },
+  ],
+  timeline: [
+    {
+      phase: 'Month 1 — Baseline',
+      when: 'Weeks 1–2',
+      detail:
+        'Establish the reliability and cost baseline, stand up (or adopt) the evals, and agree the rollout gates.',
+    },
+    {
+      phase: 'Ongoing — Weekly cadence',
+      when: 'Every week',
+      detail:
+        'Roughly one day a week owning the reliability and cost work; monthly written report.',
+    },
+    {
+      phase: 'Quarterly — Direction',
+      when: 'Each quarter',
+      detail:
+        'Step back on architecture direction, scaling risks, and where to invest next.',
+    },
+  ],
+  forYou: [
+    'You’re running agents in production and need someone accountable for reliability and cost over time.',
+    'You want senior architectural judgment without a full-time hire.',
+    'You can commit to at least three months so the work compounds.',
+  ],
+  notForYou: [
+    'You need a full-time engineer or an implementation team — this is ~one day a week of architecture.',
+    'You want a one-off deliverable — start with an audit or teardown instead.',
+    'You’re not ready to gate changes on evidence.',
+  ],
+  faq: [
+    {
+      q: 'What’s the time commitment?',
+      a: 'About one day a week, with a three-month minimum so the reliability and cost work has time to compound. Scope can flex up by agreement.',
+    },
+    {
+      q: 'Can it start from an audit?',
+      a: 'Yes — that’s the usual path. The Production-Readiness Audit gives us a shared baseline, and its fee is credited against a retainer started within 60 days.',
+    },
+    {
+      q: 'Do you take write access to our systems?',
+      a: 'Read-only by default. Write access is scoped to agreed changes and everything ships through the same gated rollout.',
+    },
+    {
+      q: 'What if we need less than a full engagement?',
+      a: 'Then advisory is the better fit — direct architectural advice booked in a 10-hour block, without the ongoing commitment.',
+    },
+  ],
+};

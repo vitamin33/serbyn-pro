@@ -5,6 +5,7 @@ import { test, expect } from '@playwright/test';
 const OFFER_PAGES: { path: string; price: string }[] = [
   { path: '/audit', price: '$3,500' },
   { path: '/llm-cost-teardown', price: 'from $2,000' },
+  { path: '/fractional', price: 'from $4,000/mo' },
 ];
 
 test.describe('T8 — pricing appears exactly once per offer page', () => {
