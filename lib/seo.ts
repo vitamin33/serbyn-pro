@@ -42,7 +42,9 @@ interface SEOProps {
 export function createMetadata({
   title,
   description = siteConfig.description,
-  image = siteConfig.ogImage,
+  // Default to null: every route now carries a file-based opengraph-image.tsx
+  // (1200×630 dark card). Pass an explicit URL only to override that.
+  image = null,
   noIndex = false,
   canonicalUrl,
   article,
@@ -125,7 +127,7 @@ export const pageMetadata = {
   home: () =>
     createMetadata({
       description:
-        'Agentic Systems Architect. I make AI agents reliable enough to run in production — agent reliability engineering (trajectory evals, false-green metering, evidence-binding, trust-tiered execution) and LLM cost engineering. Fixed-scope audits from $3,500.',
+        'Fixed-scope AI agent audits from $3,500. I make AI agents reliable enough to run in production — agent reliability engineering (trajectory evals, false-green metering, evidence-binding) and LLM cost engineering, for US/UK/EU teams.',
       canonicalUrl: siteConfig.url,
     }),
 

@@ -17,11 +17,11 @@ Protocol: re-read this file → topmost unchecked task → implement → verify 
 - [x] 1.6 F30 — removed "SYSTEM STATUS: ONLINE" static block from app-shell.tsx sidebar (green dot + label). CONTACT const string noted for Wave 3.1 routing.
 - [x] T9 (v1) — tests/refactor/truth.spec.ts source-grep guard: 15-agent/15 agent/XX XXX/stale resume title/total_business_value all absent. EXTEND in Wave 2 with coming-soon + available-on-request once colleagues/proof-of-method cleaned.
 
-### WAVE 2 — TRUST LAYER
+### WAVE 2 — TRUST LAYER ✅ (boundary: 44/44 green)
 - [x] 2.1 F1/D3 — deleted colleagues.tsx (3 empty "Reference available on request" cards) + home usage; upgraded continuity References row to D3 line ("Named recommendations… shared on the fit call with links to the originals").
 - [x] 2.2 F2 — proof-of-method.tsx now gated: sample-report card renders only if public/sample-audit-report.pdf exists (build-time fs check); walkthrough only if PROOF_LOOM_URL set (facts.ts, undefined). Section omitted entirely when neither exists. No placeholder copy. T9 extended (coming soon / available on request / reference available, scoped to components/).
-- [ ] 2.3 F5 — OG cards per money page (1200×630 dark); price in first 150 chars of / and /audit meta
-- [ ] T10 — Playwright: og:image of 4 money pages = 200, image, 1200×630, non-transparent
+- [x] 2.3 F5 — added lib/og-card.tsx + 5 opengraph-image.tsx routes (root default, home, 3 offers), all 1200×630 dark cards w/ price line. createMetadata default image→null (no more square logo.png og:image anywhere). Front-loaded price in / and /audit meta descriptions. Deleted stale public/og.png.svg.
+- [x] T10 — tests/refactor/og.spec.ts: 4 money pages, og:image 200 + image/* + 1200×630 + opaque dark corner. PASS.
 
 ### WAVE 3 — FUNNEL PLUMBING
 - [ ] 3.1 F8 — BookingButton appends utm_* cookies; route all 6 hardcoded Calendly links through it
