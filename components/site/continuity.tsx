@@ -26,7 +26,7 @@ const TERMS = [
   },
   {
     k: 'References',
-    v: 'Client references handled privately, shared on request with permission.',
+    v: 'Named recommendations from engineers and leads I’ve worked with, shared on the fit call with links to the originals.',
   },
 ];
 

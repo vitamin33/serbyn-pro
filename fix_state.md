@@ -18,7 +18,7 @@ Protocol: re-read this file → topmost unchecked task → implement → verify 
 - [x] T9 (v1) — tests/refactor/truth.spec.ts source-grep guard: 15-agent/15 agent/XX XXX/stale resume title/total_business_value all absent. EXTEND in Wave 2 with coming-soon + available-on-request once colleagues/proof-of-method cleaned.
 
 ### WAVE 2 — TRUST LAYER
-- [ ] 2.1 F1/D3 — delete colleagues.tsx + usage; add continuity references line
+- [x] 2.1 F1/D3 — deleted colleagues.tsx (3 empty "Reference available on request" cards) + home usage; upgraded continuity References row to D3 line ("Named recommendations… shared on the fit call with links to the originals").
 - [ ] 2.2 F2 — gated sample-report block (renders only if public/sample-audit-report.pdf exists)
 - [ ] 2.3 F5 — OG cards per money page (1200×630 dark); price in first 150 chars of / and /audit meta
 - [ ] T10 — Playwright: og:image of 4 money pages = 200, image, 1200×630, non-transparent

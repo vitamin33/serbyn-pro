@@ -5,7 +5,6 @@ import { SystemsBuilt } from '@/components/site/systems-built';
 import { Offers } from '@/components/site/offers';
 import { HowIWork } from '@/components/site/how-i-work';
 import { ProofOfMethod } from '@/components/site/proof-of-method';
-import { Colleagues } from '@/components/site/colleagues';
 import { Continuity } from '@/components/site/continuity';
 import { WritingTeaser } from '@/components/site/writing-teaser';
 import { FinalCTA } from '@/components/site/final-cta';
@@ -20,7 +19,6 @@ export default function HomePage() {
       <Offers />
       <HowIWork />
       <ProofOfMethod />
-      <Colleagues />
       <Continuity />
       <WritingTeaser />
       <FinalCTA />
