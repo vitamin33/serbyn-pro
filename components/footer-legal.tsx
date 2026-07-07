@@ -44,7 +44,7 @@ export function FooterLegal() {
                 <p>
                   <a
                     href="mailto:serbyn.vitalii@gmail.com"
-                    className="hover:text-primary transition-colors"
+                    className="inline-flex min-h-[44px] items-center hover:text-primary transition-colors"
                   >
                     serbyn.vitalii@gmail.com
                   </a>
@@ -62,13 +62,13 @@ export function FooterLegal() {
               <nav className="space-y-2 text-sm" aria-label="Legal pages">
                 <Link
                   href={'/legal/privacy' as any}
-                  className="block text-muted-foreground hover:text-primary transition-colors"
+                  className="flex min-h-[44px] items-center text-muted-foreground hover:text-primary transition-colors"
                 >
                   Privacy Policy
                 </Link>
                 <Link
                   href={'/legal/terms' as any}
-                  className="block text-muted-foreground hover:text-primary transition-colors"
+                  className="flex min-h-[44px] items-center text-muted-foreground hover:text-primary transition-colors"
                 >
                   Terms of Service
                 </Link>
@@ -93,7 +93,7 @@ export function FooterLegal() {
                 href="https://github.com/vitamin33"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="transition-colors hover:text-primary"
+                className="inline-flex min-h-[44px] items-center transition-colors hover:text-primary"
               >
                 GITHUB
               </a>
@@ -101,13 +101,13 @@ export function FooterLegal() {
                 href="https://www.linkedin.com/in/vitalii-serbyn-b517a083"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="transition-colors hover:text-primary"
+                className="inline-flex min-h-[44px] items-center transition-colors hover:text-primary"
               >
                 LINKEDIN
               </a>
               <a
                 href="/feed.xml"
-                className="transition-colors hover:text-primary"
+                className="inline-flex min-h-[44px] items-center transition-colors hover:text-primary"
               >
                 RSS_FEED
               </a>

@@ -37,7 +37,7 @@ export function SystemsBuilt() {
               {sys.id === 'dw' && (
                 <Link
                   href={'/methodology' as any}
-                  className="mb-3 inline-flex items-center gap-1.5 font-mono text-xs text-primary hover:underline"
+                  className="mb-3 inline-flex min-h-[44px] items-center gap-1.5 font-mono text-xs text-primary hover:underline"
                 >
                   How runs &amp; passes are counted
                   <ArrowRight className="h-3.5 w-3.5" />
@@ -47,7 +47,7 @@ export function SystemsBuilt() {
                 <OutboundLink
                   href={sys.repo}
                   location={`systems_${sys.id}`}
-                  className="inline-flex items-center gap-1.5 font-mono text-xs text-primary hover:underline"
+                  className="inline-flex min-h-[44px] items-center gap-1.5 font-mono text-xs text-primary hover:underline"
                 >
                   {sys.repo.includes('github.com') ? (
                     <Github className="h-3.5 w-3.5" />
