@@ -29,7 +29,7 @@ export default function ResumePage() {
           <header className="text-center mb-8">
             <h1 className="text-3xl font-bold mb-2">Vitalii Serbyn</h1>
             <h2 className="text-xl text-muted-foreground mb-4">
-              AI Systems Architect
+              Agentic Systems Architect
             </h2>
             <div className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground">
               <span className="flex items-center gap-1">
@@ -152,7 +152,7 @@ export default function ResumePage() {
             <div className="mb-6 page-break-inside-avoid">
               <div className="flex justify-between items-start mb-2">
                 <div>
-                  <h4 className="font-medium">AI Systems Architect</h4>
+                  <h4 className="font-medium">Agentic Systems Architect</h4>
                   <p className="text-sm text-muted-foreground">
                     Easelect LTD • Remote
                   </p>

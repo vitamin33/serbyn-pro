@@ -14,7 +14,7 @@ export function FooterLegal() {
                 Easelect LTD
               </h3>
               <p className="text-sm text-muted-foreground">
-                AI Systems Architecture
+                Agentic Systems Architecture
               </p>
               <p className="text-sm text-muted-foreground">
                 Company Number: 15983917

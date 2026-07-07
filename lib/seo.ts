@@ -173,7 +173,7 @@ export const pageMetadata = {
     createMetadata({
       title: 'Resume',
       description:
-        'AI Systems Architect resume. 12+ years production systems, autonomous agent orchestration, MLOps. Download PDF or view online.',
+        'Agentic Systems Architect resume. 12+ years production systems, autonomous agent orchestration, MLOps. Download PDF or view online.',
       canonicalUrl: `${siteConfig.url}/resume`,
     }),
 };
