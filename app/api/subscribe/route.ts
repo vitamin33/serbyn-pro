@@ -5,9 +5,11 @@ export const dynamic = 'force-dynamic';
 
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
-// Newsletter capture → Resend Audiences. Until RESEND_API_KEY +
-// RESEND_AUDIENCE_ID are set, runs in stub mode (accepts + no-ops) so the UI
-// works in preview. See docs/redesign/03_PUBLISHING_PIPELINE.md §5.
+// Newsletter / lead capture → Resend Audiences. Until RESEND_API_KEY +
+// RESEND_AUDIENCE_ID are set, runs in stub mode. Stub mode FAILS CLOSED
+// (ok:false) and logs — a silent ok:true would drop every real signup on a
+// misconfigured production deploy. [VS-TODO:resend-keys] verify in Vercel env.
+// See docs/redesign/03_PUBLISHING_PIPELINE.md §5.
 export async function POST(req: Request) {
   let email = '';
   try {
@@ -30,7 +32,11 @@ export async function POST(req: Request) {
   const key = process.env.RESEND_API_KEY;
   const audience = process.env.RESEND_AUDIENCE_ID;
   if (!key || !audience) {
-    return NextResponse.json({ ok: true, stub: true });
+    // Fail closed: the caller must not believe the address was captured.
+    console.warn(
+      '[subscribe] RESEND_API_KEY / RESEND_AUDIENCE_ID not set — dropping signup (stub mode).'
+    );
+    return NextResponse.json({ ok: false, stub: true }, { status: 503 });
   }
 
   const res = await fetch(

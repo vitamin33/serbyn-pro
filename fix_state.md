@@ -27,7 +27,7 @@ Protocol: re-read this file → topmost unchecked task → implement → verify 
 - [x] 3.1 F8 — lib/booking.ts appendUtmParams; BookingButton appends utm_* cookies via useEffect. Routed all 5 hardcoded Calendly LINKS through BookingButton (about, blog/[slug], work/[slug], case-study-footer, app-shell ×2 sidebar+mobile) — now UTM-tagged AND fire cta_click. Remaining calendly.com refs: facts.ts:18 canonical, engagement-tracker detector, calendly-widget (dead, removed 5.8).
 - [x] 3.2 F8b — no embed → built app/api/calendly-webhook/route.ts (invitee.created → server-side PostHog booking_completed, HMAC-verified, fails closed w/o key). [VS-TODO:calendly-webhook] to configure.
 - [x] 3.3 F9/F10 — 301(308) /blog→/writing in next.config (kept /blog/[slug]); removed /blog from sitemap; TerminalSignup now on /writing + every blog-post footer; gated SampleReportCTA (email→subscribe→reveal download) on /audit via lib/assets.sampleAuditReportExists(). T11 added.
-- [ ] 3.4 F27 — subscribe stub → {ok:false, stub:true} + log; [VS-TODO:resend-keys]
+- [x] 3.4 F27 — subscribe stub now fails closed: {ok:false,stub:true} 503 + console.warn (was silent {ok:true}). app/api/subscribe/route.ts:32-38.
 - [ ] 3.5 F18 — /audit "Method, demonstrated" strip → 2 posts + /methodology
 - [x] T11 — tests/refactor/funnel.spec.ts: /blog→308→/writing, /blog/<slug> 200. (T12 added in 3.5)
 
@@ -71,3 +71,5 @@ Protocol: re-read this file → topmost unchecked task → implement → verify 
 - [VS-TODO:loom] Set PROOF_LOOM_URL in lib/facts.ts to a real Loom/video URL. Auto: the "Method walkthrough" card appears on home §04 on next build.
 
 - [VS-TODO:calendly-webhook] app/api/calendly-webhook/route.ts is built and inert. Activate: (1) Calendly (Pro+) → create webhook subscription for `invitee.created` → https://serbyn.io/api/calendly-webhook; (2) set CALENDLY_WEBHOOK_SIGNING_KEY and NEXT_PUBLIC_POSTHOG_KEY in Vercel env. Auto: fires server-side PostHog `booking_completed` per booking, closing the funnel past cta_click. Fails closed (401) until signing key set.
+
+- [VS-TODO:resend-keys] Set RESEND_API_KEY + RESEND_AUDIENCE_ID in Vercel env. Until then /api/subscribe fails closed (503 {ok:false,stub:true}) and the signup forms show their error state — honest, no silent drops. Auto: once set, real captures flow to Resend Audiences.
