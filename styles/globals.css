@@ -2,8 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
+/* Fonts are self-hosted via next/font (app/layout.tsx). The Google Fonts
+   @imports that used to live here were redundant and render-blocking (F16). */
 
 :root {
   /* Kinetic Lab palette (see docs/redesign/01_DESIGN_SYSTEM.md) — dark only.
@@ -90,7 +90,9 @@ p {
 
 /* Focus Management */
 :focus-visible {
-  outline: 2px solid var(--ring);
+  /* --ring is a raw HSL triplet; it must be wrapped in hsl() or the outline
+     color is invalid and the ring never renders (F15). */
+  outline: 2px solid hsl(var(--ring));
   outline-offset: 2px;
   border-radius: 0.375rem;
 }

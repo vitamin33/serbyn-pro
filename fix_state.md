@@ -42,8 +42,8 @@ Protocol: re-read this file → topmost unchecked task → implement → verify 
 
 ### WAVE 5 — FRONTEND POLISH
 - [x] 5.1 F14 — app/not-found.tsx: branded dark 404 inside AppShell, cards linking /audit + /writing + home. (was stock white Next.js block)
-- [ ] 5.2 F15 — globals.css focus-visible: hsl(var(--ring))
-- [ ] 5.3 F16 — delete 2 Google Fonts @import lines
+- [x] 5.2 F15 — globals.css:93 outline now hsl(var(--ring)) (was invalid raw triplet → ring never rendered).
+- [x] 5.3 F16 — deleted 2 render-blocking Google Fonts @import lines from globals.css (next/font already self-hosts).
 - [ ] 5.4 F21 — tap targets min 44px on mono text links
 - [ ] 5.5 F22 — navbar drop menu roles; inert closed mobile menu
 - [ ] 5.6 F23 — hero UPDATED chip remove alpha (≥4.5:1)
