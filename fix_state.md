@@ -41,7 +41,7 @@ Protocol: re-read this file → topmost unchecked task → implement → verify 
 - [x] T13 — schema.spec.ts: each offer page = exactly 1 Service (price matches 3500/2000/4000) + 1 FAQPage. (T14 in 4.4)
 
 ### WAVE 5 — FRONTEND POLISH
-- [ ] 5.1 F14 — branded app/not-found.tsx (dark, links /audit + /writing)
+- [x] 5.1 F14 — app/not-found.tsx: branded dark 404 inside AppShell, cards linking /audit + /writing + home. (was stock white Next.js block)
 - [ ] 5.2 F15 — globals.css focus-visible: hsl(var(--ring))
 - [ ] 5.3 F16 — delete 2 Google Fonts @import lines
 - [ ] 5.4 F21 — tap targets min 44px on mono text links
