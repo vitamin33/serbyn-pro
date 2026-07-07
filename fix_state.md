@@ -8,7 +8,7 @@ Protocol: re-read this file → topmost unchecked task → implement → verify 
 
 ## WAVE CHECKLIST
 
-### WAVE 1 — TRUTH FIXES
+### WAVE 1 — TRUTH FIXES ✅ (boundary: 37/37 green)
 - [x] 1.1 F3 — "15-agent" → "27 agents (18 mature)" — resume/page.tsx:166, seo.ts:144; grep now CLEAN
 - [x] 1.2 F4 — data/resume.json rewritten to canonical-only: phone removed, achievements_summary (fabricated) removed, fake AdTech + 404 project URLs replaced with real Ascend/DW from facts.ts, title→Agentic Systems Architect. grep CLEAN.
 - [x] 1.3 F19 — title unified to "Agentic Systems Architect": resume h2:32 + work:155, blog+work OG images, resume meta seo.ts:176, footer discipline line. grep for title-form "AI Systems Architect" now empty.
