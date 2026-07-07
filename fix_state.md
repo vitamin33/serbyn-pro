@@ -13,7 +13,7 @@ Protocol: re-read this file → topmost unchecked task → implement → verify 
 - [x] 1.2 F4 — data/resume.json rewritten to canonical-only: phone removed, achievements_summary (fabricated) removed, fake AdTech + 404 project URLs replaced with real Ascend/DW from facts.ts, title→Agentic Systems Architect. grep CLEAN.
 - [x] 1.3 F19 — title unified to "Agentic Systems Architect": resume h2:32 + work:155, blog+work OG images, resume meta seo.ts:176, footer discipline line. grep for title-form "AI Systems Architect" now empty.
 - [x] 1.4 F13 — Ascend repo → github.com/vitamin33/ascend-core (verified 200); DW placeholder removed, card keeps /methodology link; systems-built.tsx else-branch dropped.
-- [ ] 1.5 F26 — delete public/favicon-16x16.png (11-byte text placeholder)
+- [x] 1.5 F26 — deleted public/favicon-16x16.png (11-byte "placeholder" text, unreferenced); also fixed site.webmanifest 4th stale title + light theme_color→dark #0A0C10.
 - [ ] 1.6 F30 — remove "SYSTEM STATUS: ONLINE" (app-shell.tsx:96)
 - [ ] T9 — regression test: no "15-agent"/"XX XXX"/"coming soon"/"available on request" in rendered output
 

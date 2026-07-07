@@ -1,7 +1,7 @@
 {
-  "name": "Vitalii Serbyn — AI Engineer & MLOps Specialist",
-  "short_name": "Serbyn.pro",
-  "description": "AI Platform / MLOps Engineer specializing in LLM systems and production infrastructure",
+  "name": "Vitalii Serbyn — Agentic Systems Architect",
+  "short_name": "serbyn.io",
+  "description": "I make AI agents reliable enough to run in production — agent reliability engineering and LLM cost engineering.",
   "icons": [
     {
       "src": "/favicon.ico",
@@ -24,8 +24,8 @@
       "type": "image/png"
     }
   ],
-  "theme_color": "#2563eb",
-  "background_color": "#ffffff",
+  "theme_color": "#0A0C10",
+  "background_color": "#0A0C10",
   "display": "standalone",
   "start_url": "/",
   "scope": "/"
