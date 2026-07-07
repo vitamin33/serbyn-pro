@@ -48,7 +48,7 @@ Protocol: re-read this file → topmost unchecked task → implement → verify 
 - [x] 5.5 F22 — navbar.tsx: removed role=menubar/menu/menuitem/none (plain nav>ul>li>Link); added inert to collapsed mobile menu so hidden links leave the tab order.
 - [x] 5.6 F23 — hero "Updated" chip: dropped /70 alpha → full muted-foreground (~6.3:1, meets AA).
 - [x] 5.7 F29 — markdownToHtml strips a leading "# …" body H1 that duplicated the page title (blog/[slug]/page.tsx:243).
-- [ ] 5.8 F25 — remove react-calendly, swr, calendly-widget.tsx (verify unused)
+- [x] 5.8 F25 — removed unused deps react-calendly + swr (0 live imports) and dead components/calendly-widget.tsx; lockfile synced.
 - [ ] 5.9 F20 — (time-permitting) pre-render mermaid→SVG; scope hljs CSS
 - [ ] 5.10 F17 — PostHog cookieless (persistence:'memory')
 - [ ] 5.11 D1 — /resume cleanup (noindex, drop sitemap, remove (Learning) + Education, demote Download Resume)
