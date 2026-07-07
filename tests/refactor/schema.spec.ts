@@ -47,3 +47,13 @@ test.describe('T13 — offer pages carry Service + FAQPage JSON-LD', () => {
     });
   }
 });
+
+// T14 — /llms.txt is served as markdown with the canonical identity + pricing.
+test('T14 — /llms.txt is 200 text/markdown', async ({ page }) => {
+  const resp = await page.request.get('/llms.txt');
+  expect(resp.status()).toBe(200);
+  expect(resp.headers()['content-type'] || '').toContain('markdown');
+  const body = await resp.text();
+  expect(body).toContain('serbyn.io');
+  expect(body).toContain('$3,500');
+});
