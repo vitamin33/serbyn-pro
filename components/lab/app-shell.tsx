@@ -90,12 +90,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           ))}
         </nav>
         <div className="space-y-3 border-t border-border px-4 py-4">
-          <div className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-success" />
-            <span className="label-caps text-muted-foreground">
-              SYSTEM STATUS: ONLINE
-            </span>
-          </div>
           <a
             href={CONTACT}
             target="_blank"
