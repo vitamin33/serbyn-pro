@@ -18,3 +18,12 @@ test.describe('T11 — blog index redirects, posts preserved', () => {
     expect(resp.status()).toBe(200);
   });
 });
+
+// T12 — the /audit page links the evidence corpus (F18): at least two links to
+// /blog/ field reports, so the buyer (and an LLM summarizing /audit) can reach
+// the proof behind the method.
+test('T12 — /audit links ≥2 blog posts', async ({ page }) => {
+  await page.goto('/audit');
+  const postLinks = page.locator('a[href^="/blog/"]');
+  expect(await postLinks.count()).toBeGreaterThanOrEqual(2);
+});

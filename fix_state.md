@@ -28,7 +28,7 @@ Protocol: re-read this file → topmost unchecked task → implement → verify 
 - [x] 3.2 F8b — no embed → built app/api/calendly-webhook/route.ts (invitee.created → server-side PostHog booking_completed, HMAC-verified, fails closed w/o key). [VS-TODO:calendly-webhook] to configure.
 - [x] 3.3 F9/F10 — 301(308) /blog→/writing in next.config (kept /blog/[slug]); removed /blog from sitemap; TerminalSignup now on /writing + every blog-post footer; gated SampleReportCTA (email→subscribe→reveal download) on /audit via lib/assets.sampleAuditReportExists(). T11 added.
 - [x] 3.4 F27 — subscribe stub now fails closed: {ok:false,stub:true} 503 + console.warn (was silent {ok:true}). app/api/subscribe/route.ts:32-38.
-- [ ] 3.5 F18 — /audit "Method, demonstrated" strip → 2 posts + /methodology
+- [x] 3.5 F18 — components/site/method-demonstrated.tsx on /audit: links six-false-greens + calibration-ledger posts + /methodology. T12 added.
 - [x] T11 — tests/refactor/funnel.spec.ts: /blog→308→/writing, /blog/<slug> 200. (T12 added in 3.5)
 
 ### WAVE 4 — AEO

@@ -2,6 +2,7 @@ import { createMetadata } from '@/lib/seo';
 import { OfferPage } from '@/components/site/offer-page';
 import { AUDIT_CONTENT } from '@/lib/offer-content';
 import { SampleReportCTA } from '@/components/site/sample-report-cta';
+import { MethodDemonstrated } from '@/components/site/method-demonstrated';
 import { SAMPLE_REPORT_HREF, sampleAuditReportExists } from '@/lib/assets';
 
 export const metadata = createMetadata({
@@ -15,6 +16,7 @@ export default function AuditPage() {
   return (
     <>
       <OfferPage content={AUDIT_CONTENT} />
+      <MethodDemonstrated />
       {sampleAuditReportExists() && (
         <SampleReportCTA href={SAMPLE_REPORT_HREF} />
       )}
