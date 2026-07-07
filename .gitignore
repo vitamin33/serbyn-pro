@@ -275,3 +275,6 @@ SECRETS.md
 
 # local database dump (never commit)
 dump.sql
+
+# Audit working artifacts (screenshots, harvest scripts) — kept on disk, not in VCS
+.fable_audit/
