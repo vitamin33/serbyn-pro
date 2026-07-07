@@ -7,6 +7,7 @@ import { getAllCaseStudies } from '@/lib/case-studies';
 import { ContentEnhancers } from '@/components/blog/content-enhancers';
 import { EngagementTracker } from '@/components/blog/engagement-tracker';
 import { BookingButton } from '@/components/site/cta';
+import { TerminalSignup } from '@/components/lab/terminal-signup';
 import { extractFaqs } from '@/lib/blog-faq';
 
 interface PageProps {
@@ -202,6 +203,11 @@ export default function BlogPostPage({ params }: PageProps) {
             label="Book Architecture Review"
           />
         </div>
+
+        <TerminalSignup
+          blurb="Field notes on agent reliability and LLM cost — new posts, no fluff."
+          className="mt-8"
+        />
       </div>
     </div>
   );

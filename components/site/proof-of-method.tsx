@@ -1,5 +1,3 @@
-import fs from 'node:fs';
-import path from 'node:path';
 import {
   FileText,
   PlayCircle,
@@ -7,23 +5,13 @@ import {
   ArrowUpRight,
 } from 'lucide-react';
 import { PROOF_LOOM_URL } from '@/lib/facts';
+import { SAMPLE_REPORT_HREF, sampleAuditReportExists } from '@/lib/assets';
 
 // Home §04 — PROOF OF METHOD. Each card renders ONLY when its artifact is real:
 // the sample report when public/sample-audit-report.pdf exists at build time, the
 // walkthrough when PROOF_LOOM_URL is set. No unfulfilled-promise placeholder
 // copy — if neither artifact exists, the whole section is omitted.
 // [VS-TODO:sample-report-pdf] [VS-TODO:loom]
-const SAMPLE_REPORT_HREF = '/sample-audit-report.pdf';
-
-function sampleReportExists(): boolean {
-  try {
-    return fs.existsSync(
-      path.join(process.cwd(), 'public', 'sample-audit-report.pdf')
-    );
-  } catch {
-    return false;
-  }
-}
 
 interface Proof {
   icon: typeof FileText;
@@ -37,7 +25,7 @@ interface Proof {
 export function ProofOfMethod() {
   const proofs: Proof[] = [];
 
-  if (sampleReportExists()) {
+  if (sampleAuditReportExists()) {
     proofs.push({
       icon: FileText,
       title: 'Sanitized sample audit report',

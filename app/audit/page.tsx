@@ -1,6 +1,8 @@
 import { createMetadata } from '@/lib/seo';
 import { OfferPage } from '@/components/site/offer-page';
 import { AUDIT_CONTENT } from '@/lib/offer-content';
+import { SampleReportCTA } from '@/components/site/sample-report-cta';
+import { SAMPLE_REPORT_HREF, sampleAuditReportExists } from '@/lib/assets';
 
 export const metadata = createMetadata({
   title: 'AI Agent Production-Readiness Audit',
@@ -10,5 +12,12 @@ export const metadata = createMetadata({
 });
 
 export default function AuditPage() {
-  return <OfferPage content={AUDIT_CONTENT} />;
+  return (
+    <>
+      <OfferPage content={AUDIT_CONTENT} />
+      {sampleAuditReportExists() && (
+        <SampleReportCTA href={SAMPLE_REPORT_HREF} />
+      )}
+    </>
+  );
 }

@@ -72,7 +72,9 @@ async function captureBookingCompleted(payload: {
 export async function POST(request: NextRequest) {
   const rawBody = await request.text();
 
-  if (!verifySignature(rawBody, request.headers.get('calendly-webhook-signature'))) {
+  if (
+    !verifySignature(rawBody, request.headers.get('calendly-webhook-signature'))
+  ) {
     return NextResponse.json(
       { ok: false, error: 'invalid or unconfigured signature' },
       { status: 401 }
@@ -83,7 +85,10 @@ export async function POST(request: NextRequest) {
   try {
     payload = JSON.parse(rawBody);
   } catch {
-    return NextResponse.json({ ok: false, error: 'invalid json' }, { status: 400 });
+    return NextResponse.json(
+      { ok: false, error: 'invalid json' },
+      { status: 400 }
+    );
   }
 
   if (payload?.event === 'invitee.created') {

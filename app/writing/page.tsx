@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { createMetadata, siteConfig } from '@/lib/seo';
 import { getAllBlogPosts } from '@/lib/blog-posts';
+import { TerminalSignup } from '@/components/lab/terminal-signup';
 
 // /writing — vendor-framed index over the SAME posts as /blog (the blog system
 // and its routes/RSS/SEO are untouched, R5). SITE STRUCTURE lists /writing as a
@@ -26,6 +27,11 @@ export default function WritingPage() {
           How I think about making agents trustworthy and affordable in
           production — the same methods behind the audits and teardowns.
         </p>
+
+        <TerminalSignup
+          blurb="Field notes on agent reliability and LLM cost — new posts, no fluff."
+          className="mb-12"
+        />
 
         {posts.length === 0 ? (
           <p className="text-muted-foreground">First articles coming soon.</p>

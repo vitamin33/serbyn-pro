@@ -26,10 +26,10 @@ Protocol: re-read this file → topmost unchecked task → implement → verify 
 ### WAVE 3 — FUNNEL PLUMBING
 - [x] 3.1 F8 — lib/booking.ts appendUtmParams; BookingButton appends utm_* cookies via useEffect. Routed all 5 hardcoded Calendly LINKS through BookingButton (about, blog/[slug], work/[slug], case-study-footer, app-shell ×2 sidebar+mobile) — now UTM-tagged AND fire cta_click. Remaining calendly.com refs: facts.ts:18 canonical, engagement-tracker detector, calendly-widget (dead, removed 5.8).
 - [x] 3.2 F8b — no embed → built app/api/calendly-webhook/route.ts (invitee.created → server-side PostHog booking_completed, HMAC-verified, fails closed w/o key). [VS-TODO:calendly-webhook] to configure.
-- [ ] 3.3 F9/F10 — 301 /blog→/writing (keep /blog/[slug]); TerminalSignup→/writing+post footers; gated sample-report-by-email on /audit
+- [x] 3.3 F9/F10 — 301(308) /blog→/writing in next.config (kept /blog/[slug]); removed /blog from sitemap; TerminalSignup now on /writing + every blog-post footer; gated SampleReportCTA (email→subscribe→reveal download) on /audit via lib/assets.sampleAuditReportExists(). T11 added.
 - [ ] 3.4 F27 — subscribe stub → {ok:false, stub:true} + log; [VS-TODO:resend-keys]
 - [ ] 3.5 F18 — /audit "Method, demonstrated" strip → 2 posts + /methodology
-- [ ] T11 — /blog 301→/writing; /blog/<slug> still 200. T12 — /audit HTML ≥2 links to /blog/ posts
+- [x] T11 — tests/refactor/funnel.spec.ts: /blog→308→/writing, /blog/<slug> 200. (T12 added in 3.5)
 
 ### WAVE 4 — AEO
 - [ ] 4.1 F11/D2 — robots.ts unblock GPTBot/Google-Extended/CCBot

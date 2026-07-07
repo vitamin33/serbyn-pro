@@ -6,6 +6,14 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        // F10 — /blog and /writing were duplicate listings of the same posts.
+        // /writing is canonical; the blog index 301s to it. Individual posts
+        // (/blog/:slug) are the canonical article URLs and are NOT redirected.
+        source: '/blog',
+        destination: '/writing',
+        permanent: true,
+      },
+      {
         source: '/case-studies',
         destination: '/work',
         permanent: true,
