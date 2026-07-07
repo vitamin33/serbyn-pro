@@ -70,13 +70,12 @@ export function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:block">
-            <ul className="flex items-center space-x-1" role="menubar">
+            <ul className="flex items-center space-x-1">
               {navigationLinks.map(link => (
-                <li key={link.name} role="none">
+                <li key={link.name}>
                   <Link
                     href={link.href as any}
                     className="btn btn-ghost px-3 py-2 text-sm"
-                    role="menuitem"
                     aria-label={link.description}
                   >
                     {link.name}
@@ -144,15 +143,19 @@ export function Navbar() {
             : 'max-h-0 opacity-0 overflow-hidden'
         }`}
         aria-hidden={!isMobileMenuOpen}
+        // `inert` (not just aria-hidden) removes the collapsed links from the tab
+        // order. Cast because @types/react 18.3 doesn't yet type the attribute.
+        {...(!isMobileMenuOpen
+          ? ({ inert: '' } as Record<string, string>)
+          : {})}
       >
         <div className="border-t border-border bg-background px-4 py-2 shadow-lg">
-          <ul className="space-y-1" role="menu">
+          <ul className="space-y-1">
             {navigationLinks.map(link => (
-              <li key={link.name} role="none">
+              <li key={link.name}>
                 <Link
                   href={link.href as any}
                   className="block rounded-md px-3 py-2 text-base font-medium text-foreground hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                  role="menuitem"
                   aria-label={link.description}
                   onClick={closeMobileMenu}
                 >

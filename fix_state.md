@@ -45,7 +45,7 @@ Protocol: re-read this file → topmost unchecked task → implement → verify 
 - [x] 5.2 F15 — globals.css:93 outline now hsl(var(--ring)) (was invalid raw triplet → ring never rendered).
 - [x] 5.3 F16 — deleted 2 render-blocking Google Fonts @import lines from globals.css (next/font already self-hosts).
 - [x] 5.4 F21 — min-h-[44px] hit areas on footer legal links, footer social (GITHUB/LINKEDIN/RSS), footer email, and systems-built repo/methodology mono links.
-- [ ] 5.5 F22 — navbar drop menu roles; inert closed mobile menu
+- [x] 5.5 F22 — navbar.tsx: removed role=menubar/menu/menuitem/none (plain nav>ul>li>Link); added inert to collapsed mobile menu so hidden links leave the tab order.
 - [ ] 5.6 F23 — hero UPDATED chip remove alpha (≥4.5:1)
 - [ ] 5.7 F29 — markdownToHtml strip duplicate leading H1
 - [ ] 5.8 F25 — remove react-calendly, swr, calendly-widget.tsx (verify unused)
