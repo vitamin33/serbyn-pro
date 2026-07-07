@@ -5,6 +5,9 @@ export default function robots(): MetadataRoute.Robots {
   const baseUrl = siteConfig.url;
 
   return {
+    // AI crawlers (GPTBot, Google-Extended, CCBot) are intentionally NOT blocked:
+    // warm buyers vet vendors through assistants, so being retrievable/citable is
+    // the goal. They fall under the '*' rule below. (F11)
     rules: [
       {
         userAgent: '*',
@@ -17,18 +20,6 @@ export default function robots(): MetadataRoute.Robots {
           '*.json',
           '/tmp/',
         ],
-      },
-      {
-        userAgent: 'GPTBot',
-        disallow: '/',
-      },
-      {
-        userAgent: 'Google-Extended',
-        disallow: '/',
-      },
-      {
-        userAgent: 'CCBot',
-        disallow: '/',
       },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,

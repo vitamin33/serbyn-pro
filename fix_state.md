@@ -32,7 +32,7 @@ Protocol: re-read this file → topmost unchecked task → implement → verify 
 - [x] T11 — tests/refactor/funnel.spec.ts: /blog→308→/writing, /blog/<slug> 200. (T12 added in 3.5)
 
 ### WAVE 4 — AEO
-- [ ] 4.1 F11/D2 — robots.ts unblock GPTBot/Google-Extended/CCBot
+- [x] 4.1 F11/D2 — robots.ts: removed GPTBot/Google-Extended/CCBot disallow blocks; AI crawlers now allowed under the * rule.
 - [ ] 4.2 F12 — Service + FAQPage JSON-LD on 3 offer pages
 - [ ] 4.3 Entity stitching — Person @id; Org founder/author/provider ref it; Org fixes; WebSite schema; twitter:creator
 - [ ] 4.4 F—  llms.txt served at /llms.txt (§5.D draft)
