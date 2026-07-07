@@ -6,8 +6,8 @@ import { SYSTEMS } from '@/lib/facts';
 
 // Home §4 — SYSTEMS I DESIGNED AND BUILT. Header states ownership literally
 // (source-label rule). One hard metric per card via the labeled Stat component;
-// GitHub link when a repo URL exists, otherwise a clean "coming soon" placeholder
-// (VS-TODO:dw-github) — never a broken link.
+// a GitHub/product link renders only when a repo URL exists — no placeholder,
+// no broken link. DW instead links to /methodology (VS-TODO:dw-github).
 export function SystemsBuilt() {
   return (
     <section className="section border-t border-border">
@@ -43,7 +43,7 @@ export function SystemsBuilt() {
                   <ArrowRight className="h-3.5 w-3.5" />
                 </Link>
               )}
-              {sys.repo ? (
+              {sys.repo && (
                 <OutboundLink
                   href={sys.repo}
                   location={`systems_${sys.id}`}
@@ -56,11 +56,6 @@ export function SystemsBuilt() {
                   )}
                   {sys.linkLabel ?? 'View on GitHub'}
                 </OutboundLink>
-              ) : (
-                <span className="inline-flex items-center gap-1.5 font-mono text-xs text-muted-foreground/60">
-                  <Github className="h-3.5 w-3.5" />
-                  Repository — coming soon
-                </span>
               )}
             </div>
           ))}

@@ -95,7 +95,7 @@ export const SYSTEMS: BuiltSystem[] = [
       caption: '6-provider LLM fallback · 18+ mature agents (27 total)',
       label: 'a system I designed and built',
     },
-    repo: CONTACT.github,
+    repo: 'https://github.com/vitamin33/ascend-core',
   },
   {
     id: 'dw',
@@ -107,8 +107,9 @@ export const SYSTEMS: BuiltSystem[] = [
       caption: 'logged runs, methodology defined',
       label: 'a system I designed and built',
     },
-    repo: undefined, // [VS-TODO:dw-github]
-    repoTodo: 'VS-TODO:dw-github',
+    // No public repo yet — the card links to /methodology instead of showing a
+    // placeholder. [VS-TODO:dw-github] set `repo` to auto-render a GitHub link.
+    repo: undefined,
   },
   {
     id: 'crest',
