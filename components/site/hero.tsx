@@ -47,7 +47,7 @@ export function Hero() {
             ))}
           </div>
 
-          <p className="mt-6 label-caps text-muted-foreground/70">
+          <p className="mt-6 label-caps text-muted-foreground">
             Updated {UPDATED}
           </p>
         </div>

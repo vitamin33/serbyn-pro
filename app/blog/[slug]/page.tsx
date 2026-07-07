@@ -241,6 +241,14 @@ function renderCodeFence(lang: string, code: string): string {
 
 function markdownToHtml(markdown: string): string {
   const lines = markdown.split('\n');
+
+  // Strip a leading H1 — the page already renders the post title as its <h1>,
+  // so a title-repeating '# …' at the top of the body would duplicate it (F29).
+  const firstContentIdx = lines.findIndex(l => l.trim() !== '');
+  if (firstContentIdx !== -1 && /^#\s+/.test(lines[firstContentIdx].trim())) {
+    lines.splice(firstContentIdx, 1);
+  }
+
   const html: string[] = [];
   let inCodeBlock = false;
   let codeBuffer: string[] = [];
