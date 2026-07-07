@@ -1,11 +1,10 @@
 {
   "basics": {
     "name": "Vitalii Serbyn",
-    "label": "MLOps Engineer & LLM Specialist",
+    "label": "Agentic Systems Architect",
     "email": "serbyn.vitalii@gmail.com",
-    "phone": "+380 XX XXX XXXX",
     "url": "https://serbyn.io",
-    "summary": "Delivered $150k business value through 6 AI/ML achievements including 60% GPU cost reduction and <2min model rollbacks. MLOps Engineer specializing in LLM infrastructure, cost optimization, and production-scale deployment.",
+    "summary": "Agentic Systems Architect. I make AI agents reliable enough to run in production — agent reliability engineering (trajectory evals, false-green metering, evidence-binding, trust-tiered execution) and LLM cost engineering — for US, UK, and EU teams via Easelect LTD.",
     "location": {
       "city": "Kyiv",
       "countryCode": "UA",
@@ -27,28 +26,29 @@
   "work": [
     {
       "name": "Easelect LTD",
-      "position": "Senior AI/ML Consultant",
+      "position": "Agentic Systems Architect",
       "url": "https://serbyn.io",
       "startDate": "2023-01-01",
-      "summary": "Independent consultant delivering MLOps and LLM infrastructure solutions for US/EU clients",
+      "summary": "Independent architect making AI agent systems reliable and cost-efficient for US/UK/EU teams.",
       "highlights": [
-        "Reduced LLM inference costs by 30-50% using vLLM optimization and model quantization",
-        "Implemented MLflow model registry with SLO-gated CI/CD, achieving <2min rollback times",
-        "Built RAG systems with 99.5% accuracy for financial compliance and e-commerce personalization",
-        "Deployed production systems serving 1M+ requests/day with 99.9% uptime SLA"
+        "Designed and built Ascend: a 27-agent (18 mature) multi-agent orchestration daemon with trust-tiered L0-L4 execution, policy gates, budget guards, and 1,178 automated tests",
+        "Built DW, an autonomous spec-driven development pipeline: 101 logged runs at a 0.94 pass rate, gated by acceptance checks",
+        "Built Crest, a LangGraph content engine with multi-model routing and multi-platform publishing",
+        "Cut own-platform LLM spend 58% ($82 to $34/month) via multi-model routing and semantic caching, without lowering output quality",
+        "Deliver fixed-scope agent production-readiness audits and LLM cost teardowns for US/UK/EU teams"
       ]
     },
     {
-      "name": "AdTech Startup",
-      "position": "Lead ML Engineer",
-      "startDate": "2021-03-01",
+      "name": "EPAM, GlobalLogic, Startups",
+      "position": "Senior/Lead Engineer",
+      "startDate": "2013-01-01",
       "endDate": "2023-01-01",
-      "summary": "Led ML engineering team building real-time bidding platform",
+      "summary": "Shipped production mobile, web, and cloud systems; led small teams and owned release trains.",
       "highlights": [
-        "Led team of 8 engineers building real-time bidding ML models for programmatic advertising",
-        "Implemented MLOps pipeline reducing model deployment time from weeks to hours",
-        "Achieved 15% CTR improvement and $2M+ annual revenue increase through model optimization",
-        "Built feature store and data pipeline processing 100TB+ daily with Apache Spark"
+        "Shipped a consumer app with 100M+ downloads and a Google Play Editor's Choice award (as engineer, in an employed role)",
+        "Delivered an 80-90% RPC cost reduction on a Web3 platform (as engineer, in an employed role)",
+        "Led teams of 3-4 engineers and owned release trains for high-traffic mobile apps",
+        "Introduced monitoring and incident routines with Prometheus/Grafana, reducing on-call noise"
       ]
     }
   ],
@@ -63,56 +63,44 @@
   ],
   "skills": [
     {
-      "name": "MLOps & Infrastructure",
-      "keywords": ["MLflow", "Kubeflow", "Docker", "Kubernetes", "Airflow", "DVC"]
+      "name": "Agent Reliability",
+      "keywords": ["Trajectory Evals", "False-Green Metering", "Evidence-Binding Gates", "Trust-Tiered Execution", "Policy Gates"]
     },
     {
       "name": "LLM & AI Frameworks",
-      "keywords": ["vLLM", "LangChain", "OpenAI", "Hugging Face", "PyTorch", "TensorFlow"]
+      "keywords": ["LangChain", "LangGraph", "OpenAI", "Anthropic", "vLLM", "RAG"]
     },
     {
-      "name": "Cloud & DevOps",
-      "keywords": ["AWS", "GCP", "Azure", "Terraform", "GitHub Actions", "Jenkins"]
+      "name": "Cost Engineering",
+      "keywords": ["Multi-Model Routing", "Semantic Caching", "Per-Service Cost Tracking"]
     },
     {
-      "name": "Programming",
-      "keywords": ["Python", "CUDA", "SQL", "JavaScript", "Go"]
+      "name": "Platform & DevOps",
+      "keywords": ["Python", "FastAPI", "Docker", "Kubernetes", "PostgreSQL", "Redis"]
     }
   ],
-  "achievements_summary": {
-    "total_impact_score": 89.8,
-    "total_business_value": 150500.0,
-    "key_skills": ["MLOps", "LLM Optimization", "Kubernetes", "Cost Engineering"],
-    "latest_achievements": 6,
-    "featured_metrics": {
-      "cost_reduction_percentage": 60,
-      "rollback_time": "90sec",
-      "uptime_sla": "99.9%",
-      "accuracy_improvement": "99.5%"
-    }
-  },
   "projects": [
     {
-      "name": "Threads Agent Platform",
-      "description": "AI-powered social media automation with LLM content generation",
+      "name": "Ascend",
+      "description": "Multi-agent orchestration daemon: trust-tiered L0-L4 execution, policy gates, budget guards, and audit logging across live projects. A system I designed and built.",
       "highlights": [
-        "$96.5k business value delivered",
-        "10k+ monthly active users",
-        "60% GPU cost reduction achieved"
+        "27 agents (18 mature)",
+        "1,178 automated tests",
+        "6-provider LLM fallback"
       ],
-      "keywords": ["Python", "FastAPI", "Kubernetes", "OpenAI", "MLflow"],
-      "url": "https://github.com/threads-agent/platform"
+      "keywords": ["Python", "LangGraph", "FastAPI", "PostgreSQL", "Redis"],
+      "url": "https://github.com/vitamin33/ascend-core"
     },
     {
-      "name": "AdTech Bidding Engine", 
-      "description": "Real-time programmatic advertising with ML bid optimization",
+      "name": "DW",
+      "description": "Autonomous spec-driven development pipeline: a spec goes in, a working change comes out, gated by acceptance checks before it lands. A system I designed and built.",
       "highlights": [
-        "$42k monthly revenue increase",
-        "500M+ daily ad impressions",
-        "28% CTR improvement"
+        "101 logged runs",
+        "0.94 pass rate",
+        "methodology defined at serbyn.io/methodology"
       ],
-      "keywords": ["Python", "Kafka", "Redis", "TensorFlow", "Kubernetes"],
-      "url": "https://github.com/adtech-platform/bidding-engine"
+      "keywords": ["Python", "LangGraph", "Evals"],
+      "url": "https://serbyn.io/methodology"
     }
   ]
 }

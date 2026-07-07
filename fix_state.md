@@ -10,7 +10,7 @@ Protocol: re-read this file → topmost unchecked task → implement → verify 
 
 ### WAVE 1 — TRUTH FIXES
 - [x] 1.1 F3 — "15-agent" → "27 agents (18 mature)" — resume/page.tsx:166, seo.ts:144; grep now CLEAN
-- [ ] 1.2 F4 — data/resume.json: remove placeholder phone; relabel/remove $150k/99.9%/1M claims; title→Agentic Systems Architect
+- [x] 1.2 F4 — data/resume.json rewritten to canonical-only: phone removed, achievements_summary (fabricated) removed, fake AdTech + 404 project URLs replaced with real Ascend/DW from facts.ts, title→Agentic Systems Architect. grep CLEAN.
 - [ ] 1.3 F19 — single title "Agentic Systems Architect" everywhere (resume, OG images, resume meta)
 - [ ] 1.4 F13 — facts.ts:98 Ascend→ascend-core repo; :110 DW→/methodology, no "coming soon"
 - [ ] 1.5 F26 — delete public/favicon-16x16.png (11-byte text placeholder)
@@ -60,3 +60,6 @@ Protocol: re-read this file → topmost unchecked task → implement → verify 
 
 ## VS-TODO (human input required — never a visible placeholder)
 (populated as encountered)
+
+- [VS-TODO:resume-phone] data/resume.json had placeholder "+380 XX XXX XXXX". Removed. If Vitalii wants a phone in the machine-readable resume, add `"phone"` back to basics with a real number. Plugs in: data/resume.json basics. Auto: served via /api/resume.
+- Decision (F4): data/resume.json was stale fake-positioning-era data (fabricated $150k/99.9%/1M+, "AdTech Startup" employment contradicting real EPAM/GlobalLogic history, two 404 GitHub project URLs). Per ZERO FABRICATION, rewrote the whole file to mirror the real /resume page narrative + lib/facts.ts canonical numbers with source labels. Only consumer is /api/resume (raw JSON); the /resume page uses hardcoded JSX, unaffected.
