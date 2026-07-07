@@ -15,7 +15,7 @@ Protocol: re-read this file → topmost unchecked task → implement → verify 
 - [x] 1.4 F13 — Ascend repo → github.com/vitamin33/ascend-core (verified 200); DW placeholder removed, card keeps /methodology link; systems-built.tsx else-branch dropped.
 - [x] 1.5 F26 — deleted public/favicon-16x16.png (11-byte "placeholder" text, unreferenced); also fixed site.webmanifest 4th stale title + light theme_color→dark #0A0C10.
 - [x] 1.6 F30 — removed "SYSTEM STATUS: ONLINE" static block from app-shell.tsx sidebar (green dot + label). CONTACT const string noted for Wave 3.1 routing.
-- [ ] T9 — regression test: no "15-agent"/"XX XXX"/"coming soon"/"available on request" in rendered output
+- [x] T9 (v1) — tests/refactor/truth.spec.ts source-grep guard: 15-agent/15 agent/XX XXX/stale resume title/total_business_value all absent. EXTEND in Wave 2 with coming-soon + available-on-request once colleagues/proof-of-method cleaned.
 
 ### WAVE 2 — TRUST LAYER
 - [ ] 2.1 F1/D3 — delete colleagues.tsx + usage; add continuity references line
