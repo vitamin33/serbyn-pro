@@ -26,6 +26,12 @@ export const CONTACT = {
 export const UPDATED = 'July 2026';
 
 // Trust chips shown under the hero CTA.
+// Proof-of-method artifacts (home §04). GATED: a card renders only when its
+// artifact is real. The sample report is a build-time file check for
+// public/sample-audit-report.pdf; the walkthrough renders only when the Loom URL
+// below is set. No placeholders — see components/site/proof-of-method.tsx.
+export const PROOF_LOOM_URL: string | undefined = undefined; // [VS-TODO:loom]
+
 export const TRUST_CHIPS = [
   'Fixed-scope audits',
   'Read-only by default',

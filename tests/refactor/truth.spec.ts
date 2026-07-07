@@ -6,7 +6,6 @@ import { join } from 'node:path';
 // Source-grep over the content-bearing dirs: none of these forbidden strings may
 // reappear. This is a static scan (no server needed) so it also catches copy that
 // lives in components not currently routed onto a rendered page.
-const ROOTS = ['app', 'components', 'lib', 'data', 'content'];
 const IGNORE = new Set(['node_modules', '.next', '.git']);
 
 function walk(dir: string): string[] {
@@ -22,30 +21,36 @@ function walk(dir: string): string[] {
 }
 
 const repoRoot = join(__dirname, '..', '..');
-const FILES = ROOTS.flatMap(r => {
-  try {
-    return walk(join(repoRoot, r));
-  } catch {
-    return [];
-  }
-});
+function filesUnder(roots: string[]): string[] {
+  return roots.flatMap(r => {
+    try {
+      return walk(join(repoRoot, r));
+    } catch {
+      return [];
+    }
+  });
+}
 
-// { needle, why, allow? } — allow lists files legitimately containing the needle
-// (e.g. this test file itself). Matched case-insensitively.
-const FORBIDDEN: { needle: string; why: string; allow?: RegExp }[] = [
+// { needle, why, roots } — roots scopes the scan (default: all content dirs). The
+// placeholder-copy needles are scoped to components/ per the audit spec (blog
+// empty-state fallbacks in app/ are conditional, never-render copy). Case-insensitive.
+const ALL_ROOTS = ['app', 'components', 'lib', 'data', 'content'];
+const FORBIDDEN: { needle: string; why: string; roots?: string[] }[] = [
   { needle: '15-agent', why: 'stale agent count (canonical: 27 agents / 18 mature)' },
   { needle: '15 agent', why: 'stale agent count (canonical: 27 agents / 18 mature)' },
   { needle: 'XX XXX', why: 'placeholder phone number' },
   { needle: 'MLOps Engineer & LLM Specialist', why: 'stale fabricated resume title' },
   { needle: 'total_business_value', why: 'fabricated unlabeled business-value metric' },
+  { needle: 'coming soon', why: 'unfulfilled-promise placeholder', roots: ['components'] },
+  { needle: 'available on request', why: 'unfulfilled-promise placeholder', roots: ['components'] },
+  { needle: 'reference available', why: 'empty testimonial placeholder', roots: ['components'] },
 ];
 
 test.describe('T9 — no forbidden truth-regression strings in source', () => {
   for (const f of FORBIDDEN) {
     test(`source is free of "${f.needle}" (${f.why})`, () => {
       const hits: string[] = [];
-      for (const file of FILES) {
-        if (f.allow && f.allow.test(file)) continue;
+      for (const file of filesUnder(f.roots ?? ALL_ROOTS)) {
         if (file.endsWith('truth.spec.ts')) continue; // this file lists the needles
         const text = readFileSync(file, 'utf8').toLowerCase();
         if (text.includes(f.needle.toLowerCase())) hits.push(file.replace(repoRoot, ''));

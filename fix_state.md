@@ -19,7 +19,7 @@ Protocol: re-read this file → topmost unchecked task → implement → verify 
 
 ### WAVE 2 — TRUST LAYER
 - [x] 2.1 F1/D3 — deleted colleagues.tsx (3 empty "Reference available on request" cards) + home usage; upgraded continuity References row to D3 line ("Named recommendations… shared on the fit call with links to the originals").
-- [ ] 2.2 F2 — gated sample-report block (renders only if public/sample-audit-report.pdf exists)
+- [x] 2.2 F2 — proof-of-method.tsx now gated: sample-report card renders only if public/sample-audit-report.pdf exists (build-time fs check); walkthrough only if PROOF_LOOM_URL set (facts.ts, undefined). Section omitted entirely when neither exists. No placeholder copy. T9 extended (coming soon / available on request / reference available, scoped to components/).
 - [ ] 2.3 F5 — OG cards per money page (1200×630 dark); price in first 150 chars of / and /audit meta
 - [ ] T10 — Playwright: og:image of 4 money pages = 200, image, 1200×630, non-transparent
 
@@ -66,3 +66,6 @@ Protocol: re-read this file → topmost unchecked task → implement → verify 
 
 - [VS-TODO:linkedin-headline] Site title now uniformly "Agentic Systems Architect". Align the LinkedIn headline (linkedin.com/in/vitalii-serbyn-b517a083) manually to match. No code hook.
 - [VS-TODO-none / self-note] public/og.png.svg is an orphaned stale OG source (fabricated 10M+/45%/99.9%). Delete during Wave 2.3 (F5) OG regeneration.
+
+- [VS-TODO:sample-report-pdf] Drop a sanitized 6-page audit report at public/sample-audit-report.pdf. Auto: the "Sanitized sample audit report" download card appears on home §04 (proof-of-method.tsx) AND the /audit email-capture block (Wave 3.3) activates, on next build. No code change needed.
+- [VS-TODO:loom] Set PROOF_LOOM_URL in lib/facts.ts to a real Loom/video URL. Auto: the "Method walkthrough" card appears on home §04 on next build.
