@@ -9,7 +9,7 @@ Protocol: re-read this file → topmost unchecked task → implement → verify 
 ## WAVE CHECKLIST
 
 ### WAVE 1 — TRUTH FIXES
-- [ ] 1.1 F3 — "15-agent" → "27 agents (18 mature)" (seo.ts:144, resume:166 + grep all)
+- [x] 1.1 F3 — "15-agent" → "27 agents (18 mature)" — resume/page.tsx:166, seo.ts:144; grep now CLEAN
 - [ ] 1.2 F4 — data/resume.json: remove placeholder phone; relabel/remove $150k/99.9%/1M claims; title→Agentic Systems Architect
 - [ ] 1.3 F19 — single title "Agentic Systems Architect" everywhere (resume, OG images, resume meta)
 - [ ] 1.4 F13 — facts.ts:98 Ascend→ascend-core repo; :110 DW→/methodology, no "coming soon"

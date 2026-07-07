@@ -141,7 +141,7 @@ export const pageMetadata = {
     createMetadata({
       title: 'Work',
       description:
-        'Real projects: 15-agent autonomous system, signal-driven AI platform, multi-project enterprise delivery. Architecture case studies with authentic metrics.',
+        'Real projects: 27-agent (18 mature) autonomous system, signal-driven AI platform, multi-project enterprise delivery. Architecture case studies with authentic metrics.',
       canonicalUrl: `${siteConfig.url}/work`,
     }),
 

@@ -1,0 +1,94 @@
+{
+  "steps": [
+    {
+      "step": 1,
+      "name": "event landing",
+      "title": "Select a Date & Time - Calendly",
+      "url": "https://calendly.com/serbyn-vitalii/consulting?month=2026-07"
+    },
+    {
+      "step": 2,
+      "name": "day picked"
+    },
+    {
+      "step": 3,
+      "name": "details form"
+    }
+  ],
+  "landingText": "POWERED BY\nCalendly\nVitalii Serbyn\nTech\n30 min\nWeb conferencing details provided upon confirmation.\nSelect a Day\nJuly 2026\nJuly is now displayed\nMon\tTue\tWed\tThu\tFri\tSat\tSun\n\t\t\n1\n\t\n2\n\t\n3\n\t\n4\n\t\n5\n\n\n6\n\t\n7\n\t\n8\n\t\n9\n\t\n10\n\t\n11\n\t\n12\n\n\n13\n\t\n14\n\t\n15\n\t\n16\n\t\n17\n\t\n18\n\t\n19\n\n\n20\n\t\n21\n\t\n22\n\t\n23\n\t\n24\n\t\n25\n\t\n26\n\n\n27\n\t\n28\n\t\n29\n\t\n30\n\t\n31\n\t\t\n\nTime zone\n\nEastern European Time\n(23:53)\nCookie settings\nWe use cookies and similar technologies to improve and personalize your experience, to understand website interactions (including clicks, cursor movement and screen recordings), and for marketing. Click “Decline” to decline optional cookies or “Cookie Settings” to manage individual settings. To learn more, visit our privacy notice.\nCookie settings\nDecline\nI understand",
+  "formFields": [
+    {
+      "tag": "input",
+      "type": "text",
+      "required": true,
+      "label": "Name\n*"
+    },
+    {
+      "tag": "input",
+      "type": "email",
+      "required": true,
+      "label": "Email\n*"
+    },
+    {
+      "tag": "textarea",
+      "type": "textarea",
+      "required": false,
+      "label": "Please share anything that will help prepare for our meeting."
+    },
+    {
+      "tag": "textarea",
+      "type": "textarea",
+      "required": false,
+      "label": "g-recaptcha-response"
+    },
+    {
+      "tag": "input",
+      "type": "checkbox",
+      "required": false,
+      "label": " Functional Cookies"
+    },
+    {
+      "tag": "input",
+      "type": "checkbox",
+      "required": false,
+      "label": " Performance Cookies"
+    },
+    {
+      "tag": "input",
+      "type": "checkbox",
+      "required": false,
+      "label": " Targeting Cookies"
+    },
+    {
+      "tag": "input",
+      "type": "text",
+      "required": false,
+      "label": "Cookie list search"
+    },
+    {
+      "tag": "input",
+      "type": "checkbox",
+      "required": false,
+      "label": "checkbox label"
+    },
+    {
+      "tag": "input",
+      "type": "checkbox",
+      "required": false,
+      "label": "checkbox label"
+    },
+    {
+      "tag": "input",
+      "type": "checkbox",
+      "required": false,
+      "label": "checkbox label"
+    },
+    {
+      "tag": "input",
+      "type": "checkbox",
+      "required": false,
+      "label": "checkbox label"
+    }
+  ],
+  "formText": "POWERED BY\nCalendly\nTech\n30 min\nWeb conferencing details provided upon confirmation.\n11:00 - 11:30, Tuesday, July 7, 2026\nEastern European Time\nEnter Details\nName\n*\nEmail\n*\nAdd guests\nPlease share anything that will help prepare for our meeting.\nBy proceeding, you confirm that you have read and agree to Calendly's Participant Terms and Privacy Notice.\nSchedule Event\nCookie settings"
+}

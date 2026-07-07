@@ -163,8 +163,9 @@ export default function ResumePage() {
               </div>
               <ul className="list-disc list-inside text-sm space-y-1 ml-4">
                 <li>
-                  Designed Ascend: 15-agent autonomous orchestration system with
-                  trust-gated L0-L4 execution across 4 production projects
+                  Designed Ascend: 27-agent (18 mature) autonomous orchestration
+                  system with trust-gated L0-L4 execution across 4 production
+                  projects
                 </li>
                 <li>
                   Built policy engine with YAML-based permission boundaries,
