@@ -19,6 +19,12 @@ async function ensureInit(): Promise<void> {
     capture_pageleave: true,
     autocapture: true,
     person_profiles: 'identified_only',
+    // Cookieless: keep all state in memory, set no cookies/localStorage. Removes
+    // the PECR/GDPR consent-banner requirement (no persistent identifiers) at the
+    // cost of cross-session stitching — the right default for a UK/EU-facing site
+    // that makes a data-rights claim on /legal/privacy. (F17)
+    persistence: 'memory',
+    disable_persistence: true,
   });
   _registerCapture((event, props) => posthog.capture(event, props));
   ready = true;

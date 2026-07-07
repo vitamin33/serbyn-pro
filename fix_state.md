@@ -49,8 +49,8 @@ Protocol: re-read this file → topmost unchecked task → implement → verify 
 - [x] 5.6 F23 — hero "Updated" chip: dropped /70 alpha → full muted-foreground (~6.3:1, meets AA).
 - [x] 5.7 F29 — markdownToHtml strips a leading "# …" body H1 that duplicated the page title (blog/[slug]/page.tsx:243).
 - [x] 5.8 F25 — removed unused deps react-calendly + swr (0 live imports) and dead components/calendly-widget.tsx; lockfile synced.
-- [ ] 5.9 F20 — (time-permitting) pre-render mermaid→SVG; scope hljs CSS
-- [ ] 5.10 F17 — PostHog cookieless (persistence:'memory')
+- [~] 5.9 F20 — DEFERRED (time-permitting flag). Mermaid→SVG build pre-render needs a headless-browser build step (high risk to blog pipeline) for a blog-only weight issue; money pages already exclude mermaid+hljs (loaded only by content-enhancers on posts). hljs theme CSS is already blog-route-scoped. Deferred as out-of-safe-scope for this loop.
+- [x] 5.10 F17 — PostHog cookieless: persistence:memory + disable_persistence in posthog-provider.tsx init (no cookie, no consent UI needed).
 - [ ] 5.11 D1 — /resume cleanup (noindex, drop sitemap, remove (Learning) + Education, demote Download Resume)
 - [ ] T15 — Playwright: 404 dark + /audit link; focus outline non-none; no fonts.googleapis.com request
 
@@ -79,3 +79,5 @@ Protocol: re-read this file → topmost unchecked task → implement → verify 
 - [VS-TODO:twitter-handle] Removed unverified twitter:creator/site '@VitaliiSerbyn' (not linked anywhere). If a real handle exists, re-add creator/site in lib/seo.ts createMetadata twitter block.
 
 - [VS-TODO:domain-email] llms.txt + site use serbyn.vitalii@gmail.com (current truth). If a domain email (vitalii@serbyn.io) is set up, update CONTACT.email in lib/facts.ts — propagates everywhere including llms.txt.
+
+- Decision (F17): chose cookieless (persistence:'memory' + disable_persistence) over a consent gate — zero UI, GDPR/PECR-clean, no persistent identifiers. Trade-off: loses cross-session person stitching. Right default for a UK/EU-facing site that claims data-rights on /legal/privacy. Only active once NEXT_PUBLIC_POSTHOG_KEY is set.
