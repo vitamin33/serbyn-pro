@@ -23,7 +23,7 @@ Protocol: re-read this file → topmost unchecked task → implement → verify 
 - [x] 2.3 F5 — added lib/og-card.tsx + 5 opengraph-image.tsx routes (root default, home, 3 offers), all 1200×630 dark cards w/ price line. createMetadata default image→null (no more square logo.png og:image anywhere). Front-loaded price in / and /audit meta descriptions. Deleted stale public/og.png.svg.
 - [x] T10 — tests/refactor/og.spec.ts: 4 money pages, og:image 200 + image/* + 1200×630 + opaque dark corner. PASS.
 
-### WAVE 3 — FUNNEL PLUMBING
+### WAVE 3 — FUNNEL PLUMBING ✅ (boundary: 47/47 green)
 - [x] 3.1 F8 — lib/booking.ts appendUtmParams; BookingButton appends utm_* cookies via useEffect. Routed all 5 hardcoded Calendly LINKS through BookingButton (about, blog/[slug], work/[slug], case-study-footer, app-shell ×2 sidebar+mobile) — now UTM-tagged AND fire cta_click. Remaining calendly.com refs: facts.ts:18 canonical, engagement-tracker detector, calendly-widget (dead, removed 5.8).
 - [x] 3.2 F8b — no embed → built app/api/calendly-webhook/route.ts (invitee.created → server-side PostHog booking_completed, HMAC-verified, fails closed w/o key). [VS-TODO:calendly-webhook] to configure.
 - [x] 3.3 F9/F10 — 301(308) /blog→/writing in next.config (kept /blog/[slug]); removed /blog from sitemap; TerminalSignup now on /writing + every blog-post footer; gated SampleReportCTA (email→subscribe→reveal download) on /audit via lib/assets.sampleAuditReportExists(). T11 added.
