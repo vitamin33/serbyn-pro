@@ -40,7 +40,7 @@ Protocol: re-read this file → topmost unchecked task → implement → verify 
 - [x] 4.6 Extractability — offer FAQ dt→h3 with stable anchor ids (#faq-slug, scroll-mt); unique deliverables H2s per offer (audit/teardown/retainer); stat.tsx value+caption wrapped in one <p> block for contiguous extraction; U+2212→ASCII hyphen in facts.ts −58% (×2).
 - [x] T13 — schema.spec.ts: each offer page = exactly 1 Service (price matches 3500/2000/4000) + 1 FAQPage. (T14 in 4.4)
 
-### WAVE 5 — FRONTEND POLISH
+### WAVE 5 — FRONTEND POLISH ✅ (final suite: 54/54 green; F20 deferred)
 - [x] 5.1 F14 — app/not-found.tsx: branded dark 404 inside AppShell, cards linking /audit + /writing + home. (was stock white Next.js block)
 - [x] 5.2 F15 — globals.css:93 outline now hsl(var(--ring)) (was invalid raw triplet → ring never rendered).
 - [x] 5.3 F16 — deleted 2 render-blocking Google Fonts @import lines from globals.css (next/font already self-hosts).
@@ -81,3 +81,80 @@ Protocol: re-read this file → topmost unchecked task → implement → verify 
 - [VS-TODO:domain-email] llms.txt + site use serbyn.vitalii@gmail.com (current truth). If a domain email (vitalii@serbyn.io) is set up, update CONTACT.email in lib/facts.ts — propagates everywhere including llms.txt.
 
 - Decision (F17): chose cookieless (persistence:'memory' + disable_persistence) over a consent gate — zero UI, GDPR/PECR-clean, no persistent identifiers. Trade-off: loses cross-session person stitching. Right default for a UK/EU-facing site that claims data-rights on /legal/privacy. Only active once NEXT_PUBLIC_POSTHOG_KEY is set.
+
+---
+
+# FINAL REPORT
+
+**Branch:** `fix/audit-implementation` (unpushed) · **Base:** `main` @ 5f0ac20
+**Diff:** 58 files, +1374 / −521 · **36 commits** (one task per commit)
+**Verification:** `npm run lint` clean · `npm run build` green · full Playwright suite **54/54** (T1–T15) in one run.
+**No code on `main` touched. No push.**
+
+## C4 — Per-finding status (F1–F30)
+
+| # | Finding | Status | Where |
+|---|---|---|---|
+| F1 | Placeholder testimonial cards | ✅ fixed | deleted colleagues.tsx; continuity References line (2.1) |
+| F2 | Sample report / walkthrough = promises | ✅ fixed (gated) | proof-of-method gates on real asset (2.2) · PDF+Loom = VS-TODO |
+| F3 | "15-agent" contradiction | ✅ fixed | seo.ts:144, resume:166 → 27 (18 mature) (1.1) |
+| F4 | resume.json placeholders/fabrications | ✅ fixed | rewritten canonical-only (1.2) |
+| F5 | og:image square transparent glyph | ✅ fixed | 5 opengraph-image routes, 1200×630 (2.3) |
+| F6 | Calendly event "Tech", no qualification | ⏳ VS-TODO | Calendly dashboard (human) |
+| F7 | US slots 04:00–09:30 only | ⏳ VS-TODO | Calendly availability (human) |
+| F8 | Booking completion invisible / no UTM | ✅ fixed | UTM passthrough (3.1) + webhook receiver (3.2) · webhook config = VS-TODO |
+| F9 | No capture on money pages | ✅ fixed | signup on /writing+posts, gated /audit block (3.3) |
+| F10 | /blog vs /writing duplicate | ✅ fixed | 308 redirect, sitemap prune (3.3) |
+| F11 | robots blocks AI crawlers | ✅ fixed | robots.ts (4.1) |
+| F12 | No Service/FAQPage schema | ✅ fixed | generate*Schema in OfferPage (4.2) |
+| F13 | Ascend→profile / DW "coming soon" | ✅ fixed | facts.ts (1.4) |
+| F14 | Stock white 404 | ✅ fixed | app/not-found.tsx (5.1) |
+| F15 | Invisible keyboard focus | ✅ fixed | globals.css hsl(var(--ring)) (5.2) |
+| F16 | Fonts double-loaded | ✅ fixed | dropped @imports (5.3) |
+| F17 | PostHog cookie, no consent UI | ✅ fixed | cookieless persistence:memory (5.10) |
+| F18 | Offer pages don't link corpus | ✅ fixed | MethodDemonstrated on /audit (3.5) |
+| F19 | Identity fragmentation (titles) | ✅ fixed | single title + manifest (1.3, 1.5) · LinkedIn = VS-TODO |
+| F20 | Blog JS weight (mermaid) | ⚠️ deferred | headless-browser build step, high risk, blog-only weight (5.9) |
+| F21 | Tap targets 16–20px | ✅ fixed | min-h-[44px] on footer/repo links (5.4) |
+| F22 | Menu roles / hidden focusable | ✅ fixed | plain nav + inert (5.5) |
+| F23 | "UPDATED" chip contrast | ✅ fixed | dropped /70 alpha (5.6) |
+| F24 | sitemap lastModified = new Date() | ✅ fixed | stable siteUpdated (4.5) |
+| F25 | Dead deps react-calendly/swr | ✅ fixed | removed + component (5.8) |
+| F26 | favicon-16 placeholder text file | ✅ fixed | deleted + manifest fix (1.5) |
+| F27 | Subscribe silent {ok:true} | ✅ fixed | fails closed 503 (3.4) · resend keys = VS-TODO |
+| F28 | gmail vs domain email | ⏳ VS-TODO | domain-email (human); gmail = current truth |
+| F29 | Duplicate blog H1 | ✅ fixed | markdownToHtml strips leading H1 (5.7) |
+| F30 | "SYSTEM STATUS: ONLINE" theater | ✅ fixed | removed (1.6) |
+
+**AEO (§5 findings, non-F-numbered):** entity stitching via @id + Companies House identifier + WebSite schema (4.3) ✅ · /llms.txt (4.4) ✅ · extractability: FAQ h3 anchors, unique offer H2s, joined stat nodes, ASCII minus (4.6) ✅.
+
+**Tally: 25 fixed · 4 VS-TODO (human/config only: F6, F7, F28 + partial F2/F8/F19/F27) · 1 deferred (F20).** Every finding that could be closed in code is closed.
+
+## C3 — VS-TODO ledger (what Vitalii supplies → where → what auto-happens)
+
+| id | Supply | Plugs in | Auto-effect on next build/deploy |
+|---|---|---|---|
+| sample-report-pdf | Sanitized 6-page PDF at `public/sample-audit-report.pdf` | lib/assets.ts fs check | Home §04 download card + /audit email-capture block appear |
+| loom | Real URL → `PROOF_LOOM_URL` in lib/facts.ts | proof-of-method.tsx | Walkthrough card appears |
+| calendly-event-config (F6/F7) | Rename Calendly event "Tech"→"Agent systems fit call — 30 min"; add 2 qualification Qs; open US-afternoon (EET) slots | Calendly dashboard | Booking handoff stops leaking (no code) |
+| calendly-webhook (F8) | Calendly webhook → /api/calendly-webhook + `CALENDLY_WEBHOOK_SIGNING_KEY` + `NEXT_PUBLIC_POSTHOG_KEY` (Vercel) | app/api/calendly-webhook/route.ts | Server-side `booking_completed` per booking |
+| resend-keys (F27) | `RESEND_API_KEY` + `RESEND_AUDIENCE_ID` (Vercel) | app/api/subscribe/route.ts | Signups flow to Resend (else 503 fail-closed) |
+| linkedin-headline (F19) | Set LinkedIn headline = "Agentic Systems Architect" | LinkedIn (human) | Entity coherence for verifiers |
+| domain-email (F28) | `vitalii@serbyn.io` → `CONTACT.email` in lib/facts.ts | facts.ts | Propagates sitewide incl. llms.txt |
+| twitter-handle | Verified handle → twitter creator/site in lib/seo.ts | seo.ts createMetadata | twitter:creator restored |
+| resume-phone | Optional real phone → resume.json basics | data/resume.json | Served via /api/resume |
+| dw-github | DW public repo URL → SYSTEMS.dw.repo | lib/facts.ts | DW card renders GitHub link |
+| company-spelling | Confirm "Easelect LTD" spelling (pre-existing note) | lib/facts.ts:21 | — |
+
+## C4 — Re-run the audit in DIFF mode
+
+The baseline is on disk at `.fable_audit/baseline.json` (untracked). Re-run the **original audit prompt** in this repo — Step 0 detects the existing baseline and runs the whole audit in **DIFF MODE**, reporting regressions/improvements vs baseline first. DIFF rules: CWV ±10% = noise; any trust-ledger state change, new broken link, new console error, persona verdict flip, JS weight >15%, or robots/schema regression = must-report.
+
+Fast local regression check (no full audit): `npm run test:e2e` (T1–T15, ~20s after build). Expect **54/54**.
+
+## Completion checklist
+- [x] C1 all waves done or blocked-by-VS-TODO (F20 deferred w/ reason)
+- [x] C2 lint + build green; full suite T1–T15 green in one run (54/54)
+- [x] C3 VS-TODO ledger complete
+- [x] C4 per-finding table + diff stats + DIFF re-run command
+- [x] no `main` changes, branch unpushed
