@@ -31,7 +31,7 @@ Protocol: re-read this file → topmost unchecked task → implement → verify 
 - [x] 3.5 F18 — components/site/method-demonstrated.tsx on /audit: links six-false-greens + calibration-ledger posts + /methodology. T12 added.
 - [x] T11 — tests/refactor/funnel.spec.ts: /blog→308→/writing, /blog/<slug> 200. (T12 added in 3.5)
 
-### WAVE 4 — AEO
+### WAVE 4 — AEO ✅ (boundary: 51/51 green)
 - [x] 4.1 F11/D2 — robots.ts: removed GPTBot/Google-Extended/CCBot disallow blocks; AI crawlers now allowed under the * rule.
 - [x] 4.2 F12 — generateServiceSchema + generateFaqSchema in lib/seo.ts (price from canonical OFFERS); emitted as 2 ld+json blocks in OfferPage → all 3 offer pages. Built FAQPage from structured content.faq (cleaner than parsing dt/dd). T13 added.
 - [x] 4.3 Entity stitching — Person @id=serbyn.io/#person; Org @id=#organization; Person.worksFor→@id Org; Org.founder→@id Person; BlogPosting author/publisher→@id refs; Service.provider→@id Person (from 4.2). Org: dropped serbyn-solutions sameAs + empty telephone, added Companies House identifier 15983917. Added WebSite schema (publisher→Person) in layout. Removed unverified twitter:creator/site.
