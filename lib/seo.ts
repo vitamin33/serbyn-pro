@@ -181,8 +181,11 @@ export const pageMetadata = {
     createMetadata({
       title: 'Resume',
       description:
-        'Agentic Systems Architect resume. 12+ years production systems, autonomous agent orchestration, MLOps. Download PDF or view online.',
+        'Agentic Systems Architect resume. 12+ years production systems, autonomous agent orchestration, MLOps.',
       canonicalUrl: `${siteConfig.url}/resume`,
+      // Vendor site, not a job hunt: keep the route reachable but out of the
+      // index so it doesn't read as "hireable candidate" in search (D1).
+      noIndex: true,
     }),
 };
 

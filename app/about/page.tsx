@@ -106,20 +106,16 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* CTAs */}
-        <section className="flex flex-wrap gap-4">
+        {/* CTAs — booking is primary; resume demoted to a text link (D1) */}
+        <section className="flex flex-col items-start gap-3">
+          <BookingButton location="about" label="Book a Call" />
           <Link
             href="/resume"
-            className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="inline-flex items-center gap-1.5 font-mono text-xs text-muted-foreground hover:text-foreground"
           >
-            <Download className="h-4 w-4" />
-            Download Resume
+            <Download className="h-3.5 w-3.5" />
+            View résumé
           </Link>
-          <BookingButton
-            location="about"
-            label="Book a Call"
-            variant="secondary"
-          />
         </section>
       </div>
     </div>

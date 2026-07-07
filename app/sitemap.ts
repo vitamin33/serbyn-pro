@@ -76,12 +76,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly' as const,
       priority: 0.8,
     },
-    {
-      url: `${baseUrl}/resume`,
-      lastModified: siteUpdated,
-      changeFrequency: 'monthly' as const,
-      priority: 0.7,
-    },
+    // /resume is intentionally omitted (noindex, vendor not candidate — D1).
     ...caseStudyRoutes,
     ...blogRoutes,
     {

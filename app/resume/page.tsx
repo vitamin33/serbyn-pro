@@ -82,9 +82,7 @@ export default function ResumePage() {
                   <Badge variant="secondary">Hybrid Retrieval</Badge>
                 </div>
 
-                <h4 className="font-medium mb-2">
-                  MLOps & Platform (Learning)
-                </h4>
+                <h4 className="font-medium mb-2">MLOps & Platform</h4>
                 <div className="flex flex-wrap gap-1 mb-3">
                   <Badge variant="secondary">MLflow</Badge>
                   <Badge variant="secondary">SLO-gated CI</Badge>
@@ -346,33 +344,6 @@ export default function ResumePage() {
                     with Grafana dashboards and PagerDuty alerts
                   </li>
                 </ul>
-              </div>
-            </div>
-          </section>
-
-          {/* Education */}
-          <section className="mb-8 page-break-inside-avoid">
-            <h3 className="text-lg font-semibold mb-3 border-b pb-1">
-              Education
-            </h3>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <div>
-                  <h4 className="font-medium">M.Sc. in Computer Science</h4>
-                  <p className="text-muted-foreground">
-                    V. N. Karazin Kharkiv National University
-                  </p>
-                </div>
-                <span className="text-muted-foreground">2009 - 2011</span>
-              </div>
-              <div className="flex justify-between">
-                <div>
-                  <h4 className="font-medium">
-                    Software Engineering Management
-                  </h4>
-                  <p className="text-muted-foreground">EPAM School</p>
-                </div>
-                <span className="text-muted-foreground">2019</span>
               </div>
             </div>
           </section>

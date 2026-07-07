@@ -51,7 +51,7 @@ Protocol: re-read this file → topmost unchecked task → implement → verify 
 - [x] 5.8 F25 — removed unused deps react-calendly + swr (0 live imports) and dead components/calendly-widget.tsx; lockfile synced.
 - [~] 5.9 F20 — DEFERRED (time-permitting flag). Mermaid→SVG build pre-render needs a headless-browser build step (high risk to blog pipeline) for a blog-only weight issue; money pages already exclude mermaid+hljs (loaded only by content-enhancers on posts). hljs theme CSS is already blog-route-scoped. Deferred as out-of-safe-scope for this loop.
 - [x] 5.10 F17 — PostHog cookieless: persistence:memory + disable_persistence in posthog-provider.tsx init (no cookie, no consent UI needed).
-- [ ] 5.11 D1 — /resume cleanup (noindex, drop sitemap, remove (Learning) + Education, demote Download Resume)
+- [x] 5.11 D1 — /resume: noIndex in pageMetadata.resume (seo.ts); removed from sitemap; "(Learning)" dropped from skills heading; Education section removed; /about "Download Resume" primary button demoted to a small "View résumé" text link below the primary Book a Call.
 - [ ] T15 — Playwright: 404 dark + /audit link; focus outline non-none; no fonts.googleapis.com request
 
 ## Decisions log
