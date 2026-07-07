@@ -43,7 +43,7 @@ export const AUDIT_CONTENT: OfferPageContent = {
   h1: 'Find out where your agents will fail in production — before your users do.',
   promise:
     'A fixed-scope, two-week audit that measures your agents the way production will: real trajectories, real pass/fail, real cost — and hands you a prioritized, evidence-backed fix list.',
-  deliverablesHeading: 'What you get',
+  deliverablesHeading: 'What you get in the audit',
   deliverables: [
     {
       title: 'Trajectory evaluation suite',
@@ -159,7 +159,7 @@ export const TEARDOWN_CONTENT: OfferPageContent = {
   h1: 'Cut your LLM bill with six levers — without lowering output quality.',
   promise:
     'A one-week teardown of where your LLM spend actually goes, which of six levers move it, and how much each is worth against your own traffic and quality bar — no guesswork, no quality regressions.',
-  deliverablesHeading: 'What you get',
+  deliverablesHeading: 'What you get in the teardown',
   deliverables: [
     {
       title: 'Spend map',
@@ -283,7 +283,7 @@ export const FRACTIONAL_CONTENT: OfferPageContent = {
   h1: 'Keep your agent platform reliable and cheap as it scales — with an architect on the hook.',
   promise:
     'Ongoing architectural ownership of your agent platform, about one day a week: I hold the reliability and cost lines so quality and spend stay in control while your team keeps shipping.',
-  deliverablesHeading: 'What you get',
+  deliverablesHeading: 'What you get with the retainer',
   deliverables: [
     {
       title: 'Standing reliability & cost ownership',

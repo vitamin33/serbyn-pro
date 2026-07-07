@@ -2,6 +2,7 @@ import { Check, X, ChevronRight } from 'lucide-react';
 import { BookingButton, EmailButton } from '@/components/site/cta';
 import { OFFERS, TRUST_CHIPS } from '@/lib/facts';
 import { generateServiceSchema, generateFaqSchema } from '@/lib/seo';
+import { slugify } from '@/lib/toc';
 import type { OfferPageContent } from '@/lib/offer-content';
 
 // Shared renderer for the offer pages. The canonical price renders EXACTLY ONCE
@@ -181,19 +182,28 @@ export function OfferPage({
       <section className="section border-t border-border">
         <div className="container">
           <h2 className="headline-lg mb-8">FAQ</h2>
-          <dl className="space-y-6">
-            {content.faq.map(f => (
-              <div key={f.q} className="border-l-2 border-primary/40 pl-6">
-                <dt className="headline-sm mb-1.5 flex items-start gap-2">
-                  <ChevronRight className="mt-1 h-4 w-4 shrink-0 text-primary" />
-                  {f.q}
-                </dt>
-                <dd className="body-md leading-relaxed text-muted-foreground">
-                  {f.a}
-                </dd>
-              </div>
-            ))}
-          </dl>
+          <div className="space-y-6">
+            {content.faq.map(f => {
+              const id = `faq-${slugify(f.q)}`;
+              return (
+                <div
+                  key={f.q}
+                  id={id}
+                  className="scroll-mt-24 border-l-2 border-primary/40 pl-6"
+                >
+                  <h3 className="headline-sm mb-1.5 flex items-start gap-2">
+                    <ChevronRight className="mt-1 h-4 w-4 shrink-0 text-primary" />
+                    <a href={`#${id}`} className="hover:underline">
+                      {f.q}
+                    </a>
+                  </h3>
+                  <p className="body-md leading-relaxed text-muted-foreground">
+                    {f.a}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </section>
 

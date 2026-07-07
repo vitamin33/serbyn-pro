@@ -16,10 +16,14 @@ export function Stat({
 }) {
   return (
     <div data-claim className={cn('flex flex-col', className)}>
-      <span className="metric-lg text-foreground">{claim.value}</span>
-      <span className="mt-1 body-md text-muted-foreground">
-        {claim.caption}
-      </span>
+      {/* value + caption in one block element so the pairing (e.g. "1,178
+          automated tests") survives text extraction as a single unit (AEO). */}
+      <p className="flex flex-col">
+        <span className="metric-lg text-foreground">{claim.value}</span>
+        <span className="mt-1 body-md text-muted-foreground">
+          {claim.caption}
+        </span>
+      </p>
       <span
         data-claim-label
         className={cn(

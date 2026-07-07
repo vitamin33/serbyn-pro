@@ -25,13 +25,13 @@ export const CONTACT = {
 // Freshness cue — bump when content is materially refreshed. Today: 2026-07.
 export const UPDATED = 'July 2026';
 
-// Trust chips shown under the hero CTA.
 // Proof-of-method artifacts (home §04). GATED: a card renders only when its
 // artifact is real. The sample report is a build-time file check for
 // public/sample-audit-report.pdf; the walkthrough renders only when the Loom URL
 // below is set. No placeholders — see components/site/proof-of-method.tsx.
 export const PROOF_LOOM_URL: string | undefined = undefined; // [VS-TODO:loom]
 
+// Trust chips shown under the hero CTA.
 export const TRUST_CHIPS = [
   'Fixed-scope audits',
   'Read-only by default',
@@ -63,7 +63,7 @@ export const RESULTS: Claim[] = [
     label: 'on DW, a system I designed and built',
   },
   {
-    value: '−58%',
+    value: '-58%',
     caption: 'LLM bill: $82 → $34 / month',
     label: 'on my own platform — small bill, same levers scale with spend',
   },
@@ -189,7 +189,7 @@ export const UPSELL =
 export const COST_CASE = {
   before: '$82',
   after: '$34',
-  delta: '−58%',
+  delta: '-58%',
   label: 'on my own platform — small bill, same levers scale with spend',
 } as const;
 
