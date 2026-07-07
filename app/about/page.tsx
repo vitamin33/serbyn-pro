@@ -1,6 +1,7 @@
 import Link from 'next/link';
-import { ExternalLink, Download } from 'lucide-react';
+import { Download } from 'lucide-react';
 import { pageMetadata } from '@/lib/seo';
+import { BookingButton } from '@/components/site/cta';
 
 export const metadata = pageMetadata.about();
 
@@ -114,15 +115,11 @@ export default function AboutPage() {
             <Download className="h-4 w-4" />
             Download Resume
           </Link>
-          <a
-            href="https://calendly.com/serbyn-vitalii/consulting"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-lg border border-border px-6 py-3 text-sm font-medium text-foreground transition-colors hover:bg-accent"
-          >
-            Book a Call
-            <ExternalLink className="h-4 w-4" />
-          </a>
+          <BookingButton
+            location="about"
+            label="Book a Call"
+            variant="secondary"
+          />
         </section>
       </div>
     </div>

@@ -7,6 +7,7 @@ import { ShieldCheck, Gauge, Layers, Newspaper, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Navbar } from '@/components/navbar';
 import { FooterLegal } from '@/components/footer-legal';
+import { BookingButton } from '@/components/site/cta';
 
 const NAV = [
   { name: 'AUDIT', href: '/audit', icon: ShieldCheck },
@@ -15,8 +16,6 @@ const NAV = [
   { name: 'WRITING', href: '/writing', icon: Newspaper },
   { name: 'ABOUT', href: '/about', icon: User },
 ] as const;
-
-const CONTACT = 'https://calendly.com/serbyn-vitalii/consulting';
 
 // Only the resume keeps the simple top-nav layout (it's print-optimized).
 // Everything else — including the legal pages — gets the persistent lab sidebar
@@ -90,14 +89,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           ))}
         </nav>
         <div className="space-y-3 border-t border-border px-4 py-4">
-          <a
-            href={CONTACT}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block rounded-md bg-primary px-3 py-2 text-center text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            CONTACT
-          </a>
+          <BookingButton
+            location="sidebar"
+            label="Contact"
+            className="w-full rounded-md px-3 py-2"
+          />
         </div>
       </aside>
 
@@ -126,14 +122,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               {item.name}
             </Link>
           ))}
-          <a
-            href={CONTACT}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-1 block rounded-md bg-primary px-3 py-2 text-center text-sm font-medium text-primary-foreground"
-          >
-            CONTACT
-          </a>
+          <BookingButton
+            location="mobile_menu"
+            label="Contact"
+            className="mt-1 w-full rounded-md px-3 py-2"
+          />
         </div>
       )}
 

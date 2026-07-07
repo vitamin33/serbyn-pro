@@ -1,11 +1,12 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, ExternalLink } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { getAllBlogPosts, getBlogPostBySlug } from '@/lib/blog-posts';
 import { createMetadata, siteConfig } from '@/lib/seo';
 import { getAllCaseStudies } from '@/lib/case-studies';
 import { ContentEnhancers } from '@/components/blog/content-enhancers';
 import { EngagementTracker } from '@/components/blog/engagement-tracker';
+import { BookingButton } from '@/components/site/cta';
 import { extractFaqs } from '@/lib/blog-faq';
 
 interface PageProps {
@@ -196,15 +197,10 @@ export default function BlogPostPage({ params }: PageProps) {
             I help teams build autonomous agent systems and production AI
             infrastructure.
           </p>
-          <a
-            href="https://calendly.com/serbyn-vitalii/consulting"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            Book Architecture Review
-            <ExternalLink className="h-4 w-4" />
-          </a>
+          <BookingButton
+            location={`blog_${post.slug}`}
+            label="Book Architecture Review"
+          />
         </div>
       </div>
     </div>

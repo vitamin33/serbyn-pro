@@ -24,7 +24,7 @@ Protocol: re-read this file → topmost unchecked task → implement → verify 
 - [x] T10 — tests/refactor/og.spec.ts: 4 money pages, og:image 200 + image/* + 1200×630 + opaque dark corner. PASS.
 
 ### WAVE 3 — FUNNEL PLUMBING
-- [ ] 3.1 F8 — BookingButton appends utm_* cookies; route all 6 hardcoded Calendly links through it
+- [x] 3.1 F8 — lib/booking.ts appendUtmParams; BookingButton appends utm_* cookies via useEffect. Routed all 5 hardcoded Calendly LINKS through BookingButton (about, blog/[slug], work/[slug], case-study-footer, app-shell ×2 sidebar+mobile) — now UTM-tagged AND fire cta_click. Remaining calendly.com refs: facts.ts:18 canonical, engagement-tracker detector, calendly-widget (dead, removed 5.8).
 - [ ] 3.2 F8b — booking_completed via Calendly postMessage (embed) or [VS-TODO:calendly-webhook]
 - [ ] 3.3 F9/F10 — 301 /blog→/writing (keep /blog/[slug]); TerminalSignup→/writing+post footers; gated sample-report-by-email on /audit
 - [ ] 3.4 F27 — subscribe stub → {ok:false, stub:true} + log; [VS-TODO:resend-keys]

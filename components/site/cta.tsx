@@ -1,8 +1,10 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { ArrowUpRight, Mail } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { track } from '@/lib/analytics';
+import { appendUtmParams } from '@/lib/booking';
 import { CONTACT } from '@/lib/facts';
 
 // Shared conversion CTAs. Every click fires a PostHog event (no-ops cleanly when
@@ -27,9 +29,17 @@ export function BookingButton({
   variant?: 'primary' | 'secondary';
   className?: string;
 }) {
+  // SSR renders the bare booking URL; after hydration we append any utm_* cookies
+  // (set by middleware) so Calendly receives campaign attribution. Updating the
+  // href in an effect avoids a hydration mismatch.
+  const [href, setHref] = useState<string>(CONTACT.booking);
+  useEffect(() => {
+    setHref(appendUtmParams(CONTACT.booking));
+  }, []);
+
   return (
     <a
-      href={CONTACT.booking}
+      href={href}
       target="_blank"
       rel="noopener noreferrer"
       data-cta="booking"

@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, ArrowRight, ExternalLink } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { BookingButton } from '@/components/site/cta';
 import type { CaseStudy } from '@/lib/case-studies';
 import { getAllCaseStudies } from '@/lib/case-studies';
 
@@ -34,16 +35,10 @@ export function CaseStudyFooter({ caseStudy }: CaseStudyFooterProps) {
             Want to explore how similar patterns could work for your system?
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="flex items-center gap-2" asChild>
-              <a
-                href="https://calendly.com/serbyn-vitalii/consulting"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Book Architecture Review
-                <ExternalLink className="h-4 w-4" />
-              </a>
-            </Button>
+            <BookingButton
+              location="case_study_footer"
+              label="Book Architecture Review"
+            />
           </div>
         </CardContent>
       </Card>
