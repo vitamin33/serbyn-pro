@@ -1,4 +1,10 @@
 import type { Metadata } from 'next';
+import { OFFERS } from '@/lib/facts';
+
+// Canonical @id for the site's Person entity — referenced by Organization,
+// Service.provider, and BlogPosting.author so assistants resolve one entity
+// instead of disconnected copies.
+export const PERSON_ID = 'https://serbyn.io/#person';
 
 export const siteConfig = {
   name: 'Vitalii Serbyn — Agentic Systems Architect',
@@ -179,6 +185,66 @@ export const pageMetadata = {
       canonicalUrl: `${siteConfig.url}/resume`,
     }),
 };
+
+const SERVICE_TYPE: Record<string, string> = {
+  audit: 'AI agent reliability audit',
+  'llm-cost-teardown': 'LLM cost engineering',
+  fractional: 'Fractional AI architecture',
+};
+
+// Service schema for an offer page (F12). Price is pulled from the canonical
+// OFFERS so structured data can never drift from the rendered price.
+export function generateServiceSchema(offerId: string) {
+  const offer = OFFERS.find(o => o.id === offerId);
+  if (!offer) return null;
+  const priceValue = offer.price.replace(/[^0-9]/g, '');
+  const isMonthly = /\/mo/.test(offer.price);
+  const url = `${siteConfig.url}${offer.href}`;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    '@id': `${url}#service`,
+    name: offer.name,
+    serviceType: SERVICE_TYPE[offerId] ?? 'AI consulting',
+    description: offer.summary,
+    provider: { '@id': PERSON_ID },
+    areaServed: ['US', 'GB', 'EU'],
+    offers: {
+      '@type': 'Offer',
+      url,
+      priceCurrency: 'USD',
+      price: priceValue,
+      ...(isMonthly
+        ? {
+            priceSpecification: {
+              '@type': 'UnitPriceSpecification',
+              price: priceValue,
+              priceCurrency: 'USD',
+              referenceQuantity: {
+                '@type': 'QuantitativeValue',
+                value: 1,
+                unitCode: 'MON',
+              },
+            },
+          }
+        : {}),
+    },
+  };
+}
+
+// FAQPage schema from an offer page's structured Q&A (F12).
+export function generateFaqSchema(faqs: { q: string; a: string }[]) {
+  if (!faqs.length) return null;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map(f => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  };
+}
 
 export function generatePersonSchema() {
   return {

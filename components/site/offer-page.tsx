@@ -1,6 +1,7 @@
 import { Check, X, ChevronRight } from 'lucide-react';
 import { BookingButton, EmailButton } from '@/components/site/cta';
 import { OFFERS, TRUST_CHIPS } from '@/lib/facts';
+import { generateServiceSchema, generateFaqSchema } from '@/lib/seo';
 import type { OfferPageContent } from '@/lib/offer-content';
 
 // Shared renderer for the offer pages. The canonical price renders EXACTLY ONCE
@@ -15,9 +16,24 @@ export function OfferPage({
   extra?: React.ReactNode;
 }) {
   const offer = OFFERS.find(o => o.id === content.offerId)!;
+  const serviceSchema = generateServiceSchema(content.offerId);
+  const faqSchema = generateFaqSchema(content.faq);
 
   return (
     <div>
+      {serviceSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+        />
+      )}
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
+
       {/* HERO — quantified-mechanism promise + price (once) */}
       <section className="relative overflow-hidden py-20 sm:py-24">
         <div className="blueprint-grid pointer-events-none absolute inset-0 opacity-40" />

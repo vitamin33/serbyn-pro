@@ -33,12 +33,12 @@ Protocol: re-read this file → topmost unchecked task → implement → verify 
 
 ### WAVE 4 — AEO
 - [x] 4.1 F11/D2 — robots.ts: removed GPTBot/Google-Extended/CCBot disallow blocks; AI crawlers now allowed under the * rule.
-- [ ] 4.2 F12 — Service + FAQPage JSON-LD on 3 offer pages
+- [x] 4.2 F12 — generateServiceSchema + generateFaqSchema in lib/seo.ts (price from canonical OFFERS); emitted as 2 ld+json blocks in OfferPage → all 3 offer pages. Built FAQPage from structured content.faq (cleaner than parsing dt/dd). T13 added.
 - [ ] 4.3 Entity stitching — Person @id; Org founder/author/provider ref it; Org fixes; WebSite schema; twitter:creator
 - [ ] 4.4 F—  llms.txt served at /llms.txt (§5.D draft)
 - [ ] 4.5 F24 — sitemap lastModified → real dates (no new Date())
 - [ ] 4.6 Extractability — FAQ dt→h3 anchors; unique offer H2s; metric number+label one node; U+2212→ASCII
-- [ ] T13 — each offer page: exactly 1 Service + 1 FAQPage JSON-LD, parseable, price matches. T14 — /llms.txt 200 text/markdown
+- [x] T13 — schema.spec.ts: each offer page = exactly 1 Service (price matches 3500/2000/4000) + 1 FAQPage. (T14 in 4.4)
 
 ### WAVE 5 — FRONTEND POLISH
 - [ ] 5.1 F14 — branded app/not-found.tsx (dark, links /audit + /writing)
@@ -73,3 +73,5 @@ Protocol: re-read this file → topmost unchecked task → implement → verify 
 - [VS-TODO:calendly-webhook] app/api/calendly-webhook/route.ts is built and inert. Activate: (1) Calendly (Pro+) → create webhook subscription for `invitee.created` → https://serbyn.io/api/calendly-webhook; (2) set CALENDLY_WEBHOOK_SIGNING_KEY and NEXT_PUBLIC_POSTHOG_KEY in Vercel env. Auto: fires server-side PostHog `booking_completed` per booking, closing the funnel past cta_click. Fails closed (401) until signing key set.
 
 - [VS-TODO:resend-keys] Set RESEND_API_KEY + RESEND_AUDIENCE_ID in Vercel env. Until then /api/subscribe fails closed (503 {ok:false,stub:true}) and the signup forms show their error state — honest, no silent drops. Auto: once set, real captures flow to Resend Audiences.
+
+- Decision (4.2): offer FAQ is already structured (content.faq {q,a}[]) so FAQPage JSON-LD is built directly from it rather than parsing rendered dt/dd via lib/blog-faq — same result, no HTML round-trip. blog-faq extractor stays for markdown posts.
