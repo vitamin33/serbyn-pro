@@ -5,12 +5,16 @@ import { getAllBlogPosts } from '@/lib/blog-posts';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = siteConfig.url;
-  const currentDate = new Date().toISOString();
+  // Stable "content last materially updated" date, NOT build time — a fresh
+  // timestamp every build is meaningless freshness noise (F24). Bump when static
+  // content materially changes (mirrors lib/facts UPDATED). Posts use their own
+  // dates below.
+  const siteUpdated = '2026-07-07';
 
   const caseStudies = getAllCaseStudies();
   const caseStudyRoutes = caseStudies.map(study => ({
     url: `${baseUrl}${study.url}`,
-    lastModified: currentDate,
+    lastModified: siteUpdated,
     changeFrequency: 'monthly' as const,
     priority: 0.7,
   }));
@@ -26,55 +30,55 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const routes = [
     {
       url: baseUrl,
-      lastModified: currentDate,
+      lastModified: siteUpdated,
       changeFrequency: 'weekly' as const,
       priority: 1.0,
     },
     {
       url: `${baseUrl}/audit`,
-      lastModified: currentDate,
+      lastModified: siteUpdated,
       changeFrequency: 'monthly' as const,
       priority: 0.95,
     },
     {
       url: `${baseUrl}/llm-cost-teardown`,
-      lastModified: currentDate,
+      lastModified: siteUpdated,
       changeFrequency: 'monthly' as const,
       priority: 0.95,
     },
     {
       url: `${baseUrl}/fractional`,
-      lastModified: currentDate,
+      lastModified: siteUpdated,
       changeFrequency: 'monthly' as const,
       priority: 0.95,
     },
     {
       url: `${baseUrl}/work`,
-      lastModified: currentDate,
+      lastModified: siteUpdated,
       changeFrequency: 'weekly' as const,
       priority: 0.9,
     },
     {
       url: `${baseUrl}/writing`,
-      lastModified: currentDate,
+      lastModified: siteUpdated,
       changeFrequency: 'weekly' as const,
       priority: 0.7,
     },
     {
       url: `${baseUrl}/methodology`,
-      lastModified: currentDate,
+      lastModified: siteUpdated,
       changeFrequency: 'monthly' as const,
       priority: 0.5,
     },
     {
       url: `${baseUrl}/about`,
-      lastModified: currentDate,
+      lastModified: siteUpdated,
       changeFrequency: 'monthly' as const,
       priority: 0.8,
     },
     {
       url: `${baseUrl}/resume`,
-      lastModified: currentDate,
+      lastModified: siteUpdated,
       changeFrequency: 'monthly' as const,
       priority: 0.7,
     },
@@ -82,13 +86,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...blogRoutes,
     {
       url: `${baseUrl}/legal/privacy`,
-      lastModified: currentDate,
+      lastModified: siteUpdated,
       changeFrequency: 'yearly' as const,
       priority: 0.3,
     },
     {
       url: `${baseUrl}/legal/terms`,
-      lastModified: currentDate,
+      lastModified: siteUpdated,
       changeFrequency: 'yearly' as const,
       priority: 0.3,
     },

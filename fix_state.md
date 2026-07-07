@@ -36,7 +36,7 @@ Protocol: re-read this file → topmost unchecked task → implement → verify 
 - [x] 4.2 F12 — generateServiceSchema + generateFaqSchema in lib/seo.ts (price from canonical OFFERS); emitted as 2 ld+json blocks in OfferPage → all 3 offer pages. Built FAQPage from structured content.faq (cleaner than parsing dt/dd). T13 added.
 - [x] 4.3 Entity stitching — Person @id=serbyn.io/#person; Org @id=#organization; Person.worksFor→@id Org; Org.founder→@id Person; BlogPosting author/publisher→@id refs; Service.provider→@id Person (from 4.2). Org: dropped serbyn-solutions sameAs + empty telephone, added Companies House identifier 15983917. Added WebSite schema (publisher→Person) in layout. Removed unverified twitter:creator/site.
 - [x] 4.4 — app/llms.txt/route.ts serves §5.D draft as text/markdown, generated from lib/facts (offers/prices/identity stay canonical). Kept gmail (VS-TODO:domain-email). T14 added.
-- [ ] 4.5 F24 — sitemap lastModified → real dates (no new Date())
+- [x] 4.5 F24 — sitemap.ts: replaced new Date() build-time timestamp with stable siteUpdated=2026-07-07 for static routes+case studies; posts keep post.date. No more per-build churn.
 - [ ] 4.6 Extractability — FAQ dt→h3 anchors; unique offer H2s; metric number+label one node; U+2212→ASCII
 - [x] T13 — schema.spec.ts: each offer page = exactly 1 Service (price matches 3500/2000/4000) + 1 FAQPage. (T14 in 4.4)
 
