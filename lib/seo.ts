@@ -112,8 +112,8 @@ export function createMetadata({
       title: metaTitle,
       description: metaDescription,
       ...(includeImage ? { images: [imageUrl] } : {}),
-      creator: '@VitaliiSerbyn',
-      site: '@VitaliiSerbyn',
+      // twitter:creator/site omitted — no verified handle is linked from the
+      // site. [VS-TODO:twitter-handle] add back once a real handle is confirmed.
     },
     icons: {
       icon: '/favicon.ico',
@@ -246,10 +246,13 @@ export function generateFaqSchema(faqs: { q: string; a: string }[]) {
   };
 }
 
+const ORG_ID = 'https://serbyn.io/#organization';
+
 export function generatePersonSchema() {
   return {
     '@context': 'https://schema.org',
     '@type': 'Person',
+    '@id': PERSON_ID,
     name: 'Vitalii Serbyn',
     jobTitle: 'Agentic Systems Architect',
     description: siteConfig.description,
@@ -259,11 +262,7 @@ export function generatePersonSchema() {
       'https://www.linkedin.com/in/vitalii-serbyn-b517a083',
       'https://github.com/vitamin33',
     ],
-    worksFor: {
-      '@type': 'Organization',
-      name: 'Easelect LTD',
-      url: siteConfig.url,
-    },
+    worksFor: { '@id': ORG_ID },
     address: {
       '@type': 'PostalAddress',
       addressCountry: 'UA',
@@ -287,11 +286,18 @@ export function generateOrganizationSchema() {
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
+    '@id': ORG_ID,
     name: 'Easelect LTD',
     url: siteConfig.url,
     logo: 'https://serbyn.io/logo.png',
     description:
       'AI systems architecture consulting. Autonomous agent orchestration, trust layers, and production AI infrastructure.',
+    // The one machine-verifiable trust fact the site has.
+    identifier: {
+      '@type': 'PropertyValue',
+      propertyID: 'UK Companies House',
+      value: '15983917',
+    },
     address: {
       '@type': 'PostalAddress',
       streetAddress: 'Office 12, Initial Business Centre, Wilson Business Park',
@@ -301,15 +307,21 @@ export function generateOrganizationSchema() {
     },
     contactPoint: {
       '@type': 'ContactPoint',
-      telephone: '',
       email: 'serbyn.vitalii@gmail.com',
       contactType: 'customer service',
       availableLanguage: ['English', 'Ukrainian', 'Russian'],
     },
-    founder: {
-      '@type': 'Person',
-      name: 'Vitalii Serbyn',
-    },
-    sameAs: ['https://linkedin.com/company/serbyn-solutions'],
+    founder: { '@id': PERSON_ID },
+  };
+}
+
+export function generateWebsiteSchema() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': 'https://serbyn.io/#website',
+    url: siteConfig.url,
+    name: siteConfig.name,
+    publisher: { '@id': PERSON_ID },
   };
 }

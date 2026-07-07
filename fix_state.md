@@ -34,7 +34,7 @@ Protocol: re-read this file → topmost unchecked task → implement → verify 
 ### WAVE 4 — AEO
 - [x] 4.1 F11/D2 — robots.ts: removed GPTBot/Google-Extended/CCBot disallow blocks; AI crawlers now allowed under the * rule.
 - [x] 4.2 F12 — generateServiceSchema + generateFaqSchema in lib/seo.ts (price from canonical OFFERS); emitted as 2 ld+json blocks in OfferPage → all 3 offer pages. Built FAQPage from structured content.faq (cleaner than parsing dt/dd). T13 added.
-- [ ] 4.3 Entity stitching — Person @id; Org founder/author/provider ref it; Org fixes; WebSite schema; twitter:creator
+- [x] 4.3 Entity stitching — Person @id=serbyn.io/#person; Org @id=#organization; Person.worksFor→@id Org; Org.founder→@id Person; BlogPosting author/publisher→@id refs; Service.provider→@id Person (from 4.2). Org: dropped serbyn-solutions sameAs + empty telephone, added Companies House identifier 15983917. Added WebSite schema (publisher→Person) in layout. Removed unverified twitter:creator/site.
 - [ ] 4.4 F—  llms.txt served at /llms.txt (§5.D draft)
 - [ ] 4.5 F24 — sitemap lastModified → real dates (no new Date())
 - [ ] 4.6 Extractability — FAQ dt→h3 anchors; unique offer H2s; metric number+label one node; U+2212→ASCII
@@ -75,3 +75,5 @@ Protocol: re-read this file → topmost unchecked task → implement → verify 
 - [VS-TODO:resend-keys] Set RESEND_API_KEY + RESEND_AUDIENCE_ID in Vercel env. Until then /api/subscribe fails closed (503 {ok:false,stub:true}) and the signup forms show their error state — honest, no silent drops. Auto: once set, real captures flow to Resend Audiences.
 
 - Decision (4.2): offer FAQ is already structured (content.faq {q,a}[]) so FAQPage JSON-LD is built directly from it rather than parsing rendered dt/dd via lib/blog-faq — same result, no HTML round-trip. blog-faq extractor stays for markdown posts.
+
+- [VS-TODO:twitter-handle] Removed unverified twitter:creator/site '@VitaliiSerbyn' (not linked anywhere). If a real handle exists, re-add creator/site in lib/seo.ts createMetadata twitter block.

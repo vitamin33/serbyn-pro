@@ -9,6 +9,7 @@ import {
   pageMetadata,
   generatePersonSchema,
   generateOrganizationSchema,
+  generateWebsiteSchema,
 } from '@/lib/seo';
 
 const inter = Inter({
@@ -48,6 +49,12 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(generateOrganizationSchema()),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(generateWebsiteSchema()),
           }}
         />
       </head>

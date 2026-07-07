@@ -51,16 +51,8 @@ export default function BlogPostPage({ params }: PageProps) {
     description: post.description,
     datePublished: post.date,
     dateModified: post.date,
-    author: {
-      '@type': 'Person',
-      name: 'Vitalii Serbyn',
-      url: siteConfig.url,
-    },
-    publisher: {
-      '@type': 'Organization',
-      name: 'Easelect LTD',
-      url: siteConfig.url,
-    },
+    author: { '@id': 'https://serbyn.io/#person' },
+    publisher: { '@id': 'https://serbyn.io/#organization' },
     url: `${siteConfig.url}/blog/${post.slug}`,
     keywords: post.keywords?.join(', '),
     wordCount: post.content.split(' ').length,
