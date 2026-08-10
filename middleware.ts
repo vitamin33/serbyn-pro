@@ -5,10 +5,18 @@ import type { NextRequest } from 'next/server'
 // subscribe page with per-lane UTM tagging. Inbound query params are
 // deliberately not passed through. Lanes: default = LinkedIn Featured link;
 // ?src=comment = links dropped in post comments.
+// Link-preview crawlers are exempt: they fall through to app/newsletter/
+// page.tsx (200 + OG metadata) because LinkedIn's Featured-link validator
+// rejects a bare off-domain 302.
 const NEWSLETTER_TARGET = 'https://falsegreen.beehiiv.com/subscribe'
+const PREVIEW_BOT_RE =
+  /linkedinbot|facebookexternalhit|twitterbot|slackbot|slack-linkexpanding|whatsapp|telegrambot|discordbot|googlebot|bingbot/i
 
 export function middleware(request: NextRequest) {
-  if (request.nextUrl.pathname === '/newsletter') {
+  if (
+    request.nextUrl.pathname === '/newsletter' &&
+    !PREVIEW_BOT_RE.test(request.headers.get('user-agent') ?? '')
+  ) {
     const lane =
       request.nextUrl.searchParams.get('src') === 'comment'
         ? 'utm_source=linkedin&utm_medium=comment&utm_campaign=comments'
