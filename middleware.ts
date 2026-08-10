@@ -1,7 +1,21 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
+// Newsletter funnel: 302 (not 301 — target will change) to the beehiiv
+// subscribe page with per-lane UTM tagging. Inbound query params are
+// deliberately not passed through. Lanes: default = LinkedIn Featured link;
+// ?src=comment = links dropped in post comments.
+const NEWSLETTER_TARGET = 'https://falsegreen.beehiiv.com/subscribe'
+
 export function middleware(request: NextRequest) {
+  if (request.nextUrl.pathname === '/newsletter') {
+    const lane =
+      request.nextUrl.searchParams.get('src') === 'comment'
+        ? 'utm_source=linkedin&utm_medium=comment&utm_campaign=comments'
+        : 'utm_source=linkedin&utm_medium=featured&utm_campaign=profile'
+    return NextResponse.redirect(`${NEWSLETTER_TARGET}?${lane}`, 302)
+  }
+
   const response = NextResponse.next()
 
   const { searchParams } = new URL(request.url)
