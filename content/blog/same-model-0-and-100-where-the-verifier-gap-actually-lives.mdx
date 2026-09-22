@@ -1,158 +1,176 @@
 ---
-title: "Same Model, 0% and 100%: Where the Verifier Gap Actually Lives"
+title: "When an AI Agent Says Done: 0% vs 100% False Greens"
 slug: same-model-0-and-100-where-the-verifier-gap-actually-lives
-description: "One model. Shown a bug in code, it caught 50 of 50. Shown a silent tool failure inside its own trajectory, it caught 8 of 70 and claimed success 45 times out of 45. A field report on where self-verification breaks."
+description: "One model rejected all 50 planted bugs when checking a single answer. Over 12-step tasks, all 45 wrong runs claimed success. What that means for agents."
 date: '2026-09-06'
 keywords:
-- verifier gap
-- agent self-verification
+- how to evaluate AI agents
+- agent evals
+- trajectory evaluation
 - false green rate
-- trajectory evals
-- silent tool failure
-- pre-registered agent eval
-- contamination depth
-- deepseek-v4-flash
-seo_keywords:
-- verifier gap
-- agent self-verification
-- false green rate
-- trajectory evals
-- silent tool failure
-- pre-registered agent eval
-- contamination depth
+- LLM self-verification
 - agent reliability
+- pre-registered experiment
 category: architecture
 author: Vitalii Serbyn
 featured: true
+seo_keywords:
+- how to evaluate AI agents
+- agent evals
+- trajectory evaluation
+- false green rate
+- LLM self-verification
+- agent reliability
+- pre-registered experiment
 ---
 
-> Part of the series: [Six False-Greens: Field Notes from a Self-Auditing Agent Pipeline](/blog/six-false-greens-in-a-self-auditing-agent-pipeline)
+# When an AI Agent Says Done: 0% vs 100% False Greens
 
-# Same Model, 0% and 100%: Where the Verifier Gap Actually Lives
+*Updated 22 September 2026: rewritten so the result reads on one screen for people who run agent teams as well as for engineers, and extended with the September replication and the two instrument failures it exposed.*
 
-Trajectory T4, run 0. The agent read customer C1's record, got told the region was APAC when it was EU, and never asked again. Eleven tool calls later it submitted a regional rollup with 120.00 sitting in the wrong bucket, marked `claims_success: true`, and put its confidence at 100.
-
-One trajectory out of 280. On its own it proves nothing, but it's the shape of what I spent two weeks and $2.43 measuring.
-
-The claim under test was the one this whole series has circled: that agents are better at generating answers than at verifying them, so asking one to check its own work raises its confidence more than its accuracy. I built an experiment to falsify that. Then I built a second one because the first came back with the opposite answer, and I did not believe either of them until the two were sitting next to each other.
-
-## Two numbers, one model
-
-Experiment 1 put `deepseek-v4-flash` in front of a single piece of code and asked it whether the code was correct. Fifty of those pieces had a planted bug: a naive `line.split(",")`, a lexicographic version sort, an INNER JOIN that drops zero-order customers, `NOT IN` against a NULL. The model approved none of them. 0 of 50. Every rejection came with a repair, and all 50 repairs passed the asserts.
-
-Experiment 2 put the same model in a twelve-step tool-calling loop and silently corrupted one tool result somewhere in the middle. Not an error or an exception, just a plausible, well-formed, wrong value. The model noticed 8 times out of 70. Of the 45 trajectories that ended with a wrong answer, 45 claimed success.
-
-Side by side, single answer first, trajectory second:
-
-- false-green rate: **0%** [0.0, 7.1], then **100%** [92.1, 100.0]
-- caught the planted fault: 50 of 50, then 8 of 70
-- the thesis: falsified, then supported
-
-Brackets are Wilson 95% intervals. Same model, same temperature, same week, same laptop.
+I asked one model to check work in two different ways. Shown a single wrong answer, it caught the bug **50 times out of 50**. Asked to finish a twelve-step task where one step had been quietly corrupted, it finished wrong **45 times and claimed success all 45 times**.
 
 ![False-green rate and fault-catch rate, single answer versus trajectory, deepseek-v4-flash](/blog/verifier-gap-contrast.png "Same model. Left pair: how often a wrong answer was marked correct. Right pair: how often the planted fault was caught. Error bars are Wilson 95% intervals.")
 
-The gap between those two numbers is the finding. It's also the easiest thing here to overread.
+Same model. Same month. Opposite answers. The difference is not how smart the model is. It is what you ask it to verify, and only one of those two jobs is the one an agent actually does in production.
 
-## What experiment 1 actually showed
+## The Short Version
 
-I expected a false-green rate of 25 to 40%. I had written that prediction down in RESEARCH.md before collecting anything, with a threshold of 15% and a falsification condition, because I've moved a threshold after seeing data before, and this series exists partly so I stop doing that.
+If you have two minutes, this is the whole post.
 
-The baseline generation arm came back at 98% pass@1. That was already a problem. With one wrong answer in fifty there was nothing for a verifier to be wrong about. So I tried making the tasks harder. A pilot on the hardened set scored 10 of 10, at three to thirty times the reasoning cost. One task went from 13k output tokens to 32k. The model did not make more mistakes when the task got harder. It thought longer.
+- **What I tested.** Whether an AI agent's own "done, this is correct" can be trusted. A wrong answer marked correct is what I call a **false green**: the dashboard says pass, the work is wrong, and nobody looks again.
+- **What I found.** Checking one short answer, the model was an excellent reviewer: zero false greens in 100 attempts across two runs. Checking its own multi-step work, it was nearly blind: it noticed a corrupted step 8 times in 70, and every run that ended wrong reported success.
+- **How.** One reasoning model, `deepseek-v4-flash`. 680 runs in total. Experiment 1 is 200 runs (ten tasks, five attempts each, with and without a self-check, plus 50 planted bugs and 50 correct solutions shown to the checker), done twice a month apart, so 400. Experiment 2 is 280 multi-step runs over two stages. Hypotheses and pass thresholds were written down before any data. Right and wrong were decided by ordinary code, never by another model.
+- **What it means.** An agent's self-report is not a safety gate for multi-step work. A review step that works in a demo on one answer tells you nothing about a twelve-step task.
+- **What to do.** Keep a check the model cannot talk its way past: a test, a reconciliation, a second source of truth. Put it at the points where the agent hands a result to the next step, not only at the end.
+- **What it cost.** All 680 runs, with every raw record published, cost **$3.13** in model usage. Measuring this is cheap. Not measuring it is the expensive option.
+- **If you remember one sentence:** the model is a good reviewer of a single answer and a poor auditor of its own multi-step work, so an agent's "done" needs a check the model cannot talk its way past.
 
-I didn't expect that. Ninety-plus percent of this model's output on these tasks is reasoning tokens that never reach the response. In a sizing probe, a CSV parser cost 30,579 tokens of thought to produce 294 tokens of code. (The parser was correct.) On small, fully specified, self-contained problems, extended reasoning closes the generation gap almost entirely, and hardening the task just buys more thinking.
+## Why I Ran This
 
-So I stopped tuning difficulty and added an arm where the wrong answers were supplied instead of generated: each task's documented buggy implementation, fenced the way the model fences its own output, placed in the assistant turn, with the identical verification prompt after it. That gave the false-green metric a denominator of 50 by construction.
+I have written seven posts on this blog about false greens in my own agent pipeline, starting with [six ways my dev-loop reported success when nothing had landed](/blog/six-false-greens-in-a-self-auditing-agent-pipeline). Those were field reports: real incidents, one at a time. Field reports are honest, but they are anecdotes. They cannot tell you how often something happens.
 
-And it caught all 50. I ran the numbers three times because I assumed the harness was broken. It was, several times, but never in that direction. That's its own post.
+So I ran it as an experiment, the way a research lab would, at the scale one person can afford. Three rules made the result checkable:
 
-Four of five hypotheses were falsified by their own pre-registered thresholds. The fifth was undetermined, because you cannot average the confidence of false greens that do not exist.
+- **Hypotheses with numbers, written before any data.** For example: "the model approves at least 15% of wrong answers." A test in the repository fails if anyone edits a threshold after the fact.
+- **No AI grading AI.** Ground truth is ordinary code: executable checks that either pass or fail. A model's opinion never decides what is correct.
+- **Everything published.** Every raw record, every failed calibration round, and the [full repository](https://github.com/vitamin33/agent-eval-labs) with a one-command reproduction.
 
-## What experiment 2 changed
+I expected the experiment to confirm what my seven posts implied. The first half did not.
 
-Experiment 1 had a substrate problem, and I only saw it clearly after it was over. "Write a function that parses CSV" is one call. No tools, no state, no steps. It is an LLM eval wearing an agent eval's clothes. Whether a model can review a diff was never the autonomy question. The question is whether "done" means anything after twelve steps.
+## Experiment 1: Can the Model Check One Answer?
 
-So the second experiment is a small deterministic environment. Orders, customers, shipments, seven tools, all pure functions of an in-memory state I control. That last part is the design. Ground truth is computable at every step, not inferred from the outcome, because I know what every tool should have returned.
+Ten small coding tasks, each hiding a bug an obvious test will not catch: a CSV parser that breaks on quoted commas, a version sort that puts 1.10 before 1.9, a database query that silently drops customers with zero orders. Each trap is the natural first thing a hurried engineer writes, and it is exactly the class of mistake a self-check exists to catch.
 
-Into one tool result per trajectory I inject a silent failure. Four kinds.
+I showed the model 50 solutions containing those bugs, formatted exactly like its own answers, and asked: is this correct?
 
-- `list_orders` drops the last matching id
-- `get_order` returns the status from before a write
-- `sum_totals` omits the smallest item
-- `get_customer` returns a neighbouring region
+It rejected all 50. Every rejection came with a repair that passed the checks. My hypothesis said it would approve at least 15% of them. The measured rate was **0%**. Fifty samples cannot prove "never," so here is the worst case that could hide in a sample this small: a true rate of 7.1%. Even that is well under my 15% prediction. My own experiment falsified my own hypothesis.
 
-Every one of them is discoverable. There is a redundant route, `count_orders` beside `list_orders` and so on, and a gate proves before any run that a sequence of tool calls exists which exposes the corruption. Without that gate the experiment would be scoring an impossible task as agent failure, which would look like a strong result.
+Two details matter for anyone budgeting this:
+
+- **The model almost never needed the review.** Working alone, five attempts at each of the ten tasks, it solved 49 of 50 on the first try. It spends most of its output on reasoning, the hidden "thinking" text that the provider bills for but does not show. One task spent 30,579 tokens reasoning and 294 tokens writing the code, tens of pages of thought for ten lines of code.
+- **The review step is not free and not harmless.** Adding a self-check cost 1.64 times as much and caught nothing, because nothing wrong reached it. On correct solutions it raised a false alarm 10% of the time, and those five false alarms ate 37% of that arm's budget. Each of the five took far longer to reason through than a normal correct verdict, which five cases cannot make a law but is worth watching in your own logs.
+
+If I had stopped here, the headline would have been "self-verification works." That headline would have been wrong, and experiment 2 is why.
+
+## Experiment 2: Checking Twelve Steps of Its Own Work
+
+Reviewing ten lines of code in front of you is not what an agent does. An agent calls a tool, reads the result, decides, calls another tool, and carries what it learned forward. After a dozen steps it says "done."
+
+So I built a small simulated order desk with customers, orders, and totals, where the right answer is computable at every step. Eight tasks, such as "find the pending orders for this customer and total them." Then I corrupted exactly one tool result per run. Not an error message. A plausible, wrong value: a total that is off, a customer record that is slightly different. The kind of thing a flaky API or a stale cache produces on an ordinary Tuesday.
+
+In plain terms: a wrong number enters at an early step, the agent builds on it for the rest of the task, and at the end it reports "done, correct" while a deterministic check shows the answer is wrong.
 
 ```mermaid
-flowchart TD
-  A[step k: get_customer C1] --> B[env: region is EU]
-  B --> C{inject?}
-  C -->|no| D[agent believes EU]
-  C -->|yes| E[agent believes APAC]
-  E --> F[steps k+1 ... k+11 build on APAC]
-  F --> G[submit: claims_success = true, confidence 100]
-  G --> H[grader: final state wrong]
+flowchart LR
+ A[Step 1: list orders] --> B[Step 3: tool returns a wrong total]
+ B --> C[Steps 4 to 11: agent builds on it]
+ C --> D[Step 12: agent says done, correct]
+ D --> E[Deterministic check: answer is wrong]
 ```
 
-Detection has a mechanical definition. The agent detects the failure if, after the injection, it re-examines the same subject through a tool that would expose it. Same customer id, same filter, same set of ids. Not "called `get_customer` again," which is what I tried first and which counted the agent's ordinary progress through a customer list as suspicion. On the same data that definition reads 56%. The published 11.4% is what remains once "same subject" is required.
+The run counts, so the rest is checkable. The main stage had 200 runs. In 40 of them nothing was corrupted, to see how often the agent fails on its own: it passed 39 of those 40. In the other 160 a corruption was attempted. It actually fired in 90; in the rest the agent never called the tool I had rigged. One task's own instructions already told the agent to "cross-check the data," which is not a fair test of whether it gets suspicious on its own, so that task's 20 runs were excluded before counting, a rule written down before the run. That leaves 160 attempted, 90 fired, **70 counted**, and every detection number below is out of those 70.
 
-Contamination depth is how many tool calls ran on the poisoned value before anything noticed. Median 8. Maximum 21. The agent keeps acting on the bad number for most of the trajectory, then submits.
+- **The agent rarely noticed.** It flagged the corrupted value in 8 of 70 runs, which is 11.4%.
+- **Every wrong finish claimed success.** 45 runs ended with a wrong answer. All 45 reported success. The false-green rate was **100%**, and even the cautious end of the statistical range is 92.1%.
+- **Errors travel far.** The agent kept building on the bad value for a median of 8 further steps, and up to 21. By the time it said "done," the mistake was buried under most of the work.
+- **The obvious fix did nothing.** I added the instruction teams actually ship: "check your work is consistent at each step." Detection went from 3 of 35 runs to 5 of 35, a move of 5.7 percentage points that two extra catches can produce by chance. It cost almost nothing, 1.03 times the baseline, and it bought almost nothing.
+- **Noticing was the whole battle.** In the 8 runs where the agent did notice, it recovered all 8 times. Eight is a small number, so the 95% range on that recovery rate starts at 67.6%, but the predicted failure, "sees the problem and still fails," did not happen once. The failure is that seeing is rare.
 
-![Histogram of contamination depth across 70 injected trajectories, median 8](/blog/contamination-depth.png "How many tool calls each trajectory made on the corrupted value before re-checking it, or before submitting. Most never re-checked; the depth is just how long the trajectory ran.")
+## Why the Same Model Gives Opposite Answers
 
-## What I got wrong
+Think of two different jobs.
 
-The prediction I was most confident about was that agents would notice a problem and still fail. Hypothesis 6, recovery under 60%. I had a whole paragraph drafted about how detection is necessary but not sufficient.
+In the first, someone hands you one page and asks whether it contains a mistake. Everything you need is on the page. That is experiment 1, and the model is very good at it.
 
-Recovery was 8 of 8. Every time the agent went back and re-read the corrupted subject, it went on to produce the right answer, sometimes after a couple of extra calls, but it got there. So the failure isn't that agents can't fix what they notice. It's that they almost never notice. That reframes what to build: not better repair, better suspicion.
+In the second, you are on page twelve of a report you are writing yourself, and the question is whether a figure you copied on page three was wrong. Nothing on page twelve looks wrong. Each step followed logically from the one before. To catch the error you would have to go back and re-derive page three from the original source, and nothing prompts you to do that.
 
-The second miss was the per-step verification instruction. I added a line to the system prompt telling the agent to check that what it already knew was consistent before each tool call, and to resolve any contradiction before continuing. This is roughly what people ship. I predicted it would help a little at real cost, maybe 10 points of detection for 1.5x the tokens. It moved detection by +5.7 points at 1.03x. Free, and inside the noise. The hypothesis was falsified on the cost side, which I hadn't considered as a way to be wrong: an instruction to be careful is cheap because the model mostly doesn't act on it.
+That second job is what "verify your work" means for an agent. The model is not lying and it is not lazy. It is checking that its steps are consistent with each other, and they are. They are consistently built on a bad input.
 
-And the position comparison never happened. I wanted early versus late injections and the late ones fired 0 times in 32, because these agents fetch everything in the first turn or two and there is no later call to corrupt. That's a design defect on my side, I'll cover it separately, and the only thing I'll say here is that it's also a fact about the agents: the dangerous window is the start of a trajectory, since that's when data enters.
+This is why a review step that scores well on single answers can be useless in a pipeline. The two tests measure different abilities, and only one of them was ever in doubt.
 
-## Why the same model gives opposite answers
+## What I Would Do Differently on Monday
 
-The tempting explanation is that verification is hard. But the first experiment says it isn't, not for this model. Reviewing ten lines of code that are in front of you is something it does well.
+**If you run or fund a team shipping agents:**
 
-What is different in a trajectory is that nothing is in front of you. The corrupted value entered at step 3, got folded into a sum at step 6, the sum got compared to a threshold at step 9, and by step 12 the agent is looking at a submit payload that is internally consistent with everything it has seen. There's no diff to review. There's a belief, and the belief was wrong from the moment it formed, and every step since has been consistent with it.
+- Ask what checks each agent's "done." If the answer is "the model reviews its own output," you are relying on the skill that scored perfectly on single answers to protect the kind of work where it noticed 8 errors in 70.
+- Ask for the false-green rate, not the accuracy. Accuracy tells you how often the agent is right. The false-green rate tells you how often it is wrong without telling anyone, and that is the number that turns into an incident.
+- Expect this to be cheap. The full study cost $3.13 in model usage. A team that says measurement is too expensive has not priced it.
 
-So the checking is fine. By the time it runs there just isn't anything left to check against.
+**If you build them:**
 
-## What it cost, and what n is
+- Put deterministic checks at hand-off points between steps, not only at the end. A median of 8 contaminated steps means an end-of-task check finds the problem after the damage is done.
+- Do not spend effort on "double-check yourself" prompts for multi-step work. Measured effect: within noise.
+- Evaluate trajectories, not only final answers. My [earlier post on path checking](/blog/the-arc-since-the-six-were-caught) argued this from incidents. These are the numbers behind it.
+- Inject faults on purpose. You cannot measure detection without something to detect. One corrupted tool result per run was enough to expose the gap.
 
-Both experiments together came to 480 records and $2.43. About four hours of API time. The two weeks were mostly me getting the harness wrong, which is the next post. Experiment 1 was 200 records at $0.74. Experiment 2 was 280 trajectories at $1.69. In the final stage, 70 of 160 injections never fired because the agent never called the tool I was targeting, so the effective sample for detection is 70, not the 160 I planned.
+## Two Failures Inside My Own Instrument
 
-That's a small n. The false-green interval is [92.1, 100] because 45 of 45 is a lot of agreement. The detection interval is [5.9, 21.0], and that's wide. I'd rather you read the interval than the point. Every rate in the repo carries its interval.
+An experiment about false greens should be held to its own standard, so here are two that happened inside my measuring equipment.
 
-There's a larger caveat and it bothers me more than the sample size. In experiment 1, the verifier judged code it did not write. It had no stake in the answer. That is the favourable condition for a verifier, which makes the 0% a lower bound on the gap rather than evidence that self-verification is safe. Experiment 2 closes some of that distance, since the agent is judging its own trajectory, but the trajectory was corrupted by me rather than by the agent's own mistake. A model defending an answer it reasoned its way to might be worse still.
+**The model changed underneath me.** A month after the first run I repeated the whole thing. The configuration pinned a specific model name, `deepseek-v4-flash`. The provider's API accepted that name and served a different one, `deepseek-flash`. My "is this the same model?" check passed anyway, because it only verified that one run used one model throughout. It never compared what I asked for with what I got. The repeat confirmed every conclusion, but it is published beside the original result rather than merged into it, and the check now compares the two names.
+
+**Three correct verdicts were recorded as "unreadable."** In the repeat, the model sometimes gave a clean verdict, then second-guessed its own formatting and wrote the verdict again. My parser choked on the extra text and logged "no verdict." All three were correct rejections. The model did its job and my harness failed to read it.
+
+Neither failure changed a conclusion. Both are the same shape as the thing I was measuring: a number that looked measured and was not quite what it claimed. If you run evals, assume your instrument has these too.
+
+## What This Does Not Show
+
+- **One model.** Everything here is `deepseek-v4-flash`, one reasoning model from one provider. A different model could land elsewhere. The method transfers; the numbers may not.
+- **Small, fully specified tasks.** Real work is messier, and messier usually means worse, but I have not measured that.
+- **Wide ranges.** Fifty samples are enough to reject my 15% prediction and not enough to claim "never." Every rate in the repository carries its 95% range.
+- **A favourable setup in experiment 1.** The model judged code it did not write, so it had nothing to defend. Judging its own code is plausibly harder. At 98% first-try accuracy there were no wrong answers of its own to test on.
+- **An imperfect fault injector.** In experiment 2 the corruption failed to fire in 43.8% of the 160 attempts, because the agent never called the rigged tool. That is why the detection figures rest on 70 runs. One hypothesis, about whether late corruptions are harder to catch than early ones, could not be decided and is reported as open.
 
 ## FAQ
 
-**What is the verifier gap?** The verifier gap is how much worse an LLM agent is at judging whether an answer is correct than it is at producing a correct answer in the first place. The claim is that models generate better than they verify, so self-verification inflates stated confidence more than actual accuracy. These two experiments found no gap when the model reviewed a single piece of code and a total gap when it reviewed its own multi-step trajectory.
+**What is a false green in AI agents?** A false green is a wrong result that the system reports as successful. The agent says the task is complete and correct, the dashboard shows a pass, and the output is wrong. It is more dangerous than a visible failure because a visible failure triggers a retry, while a false green moves downstream unchecked.
 
-**What is a trajectory false green?** A trajectory false green is a multi-step agent run that ends with a wrong final state while the agent's own structured submit payload claims success. In this experiment, 45 of 45 wrong trajectories were false greens. The agent's "done" signal carried no information about correctness.
+**Can an LLM reliably verify its own output?** It depends on what it is verifying. In this study the model rejected all 50 planted bugs when reviewing a single short answer. Verifying its own multi-step work, it noticed an injected error in only 8 of 70 runs, and all 45 runs that ended wrong claimed success. Single-answer review results do not carry over to multi-step agents.
 
-**What is contamination depth?** Contamination depth is the number of tool-call steps an agent takes on a corrupted value before it re-examines the source or the trajectory ends. Here the median was 8 and the maximum 21, meaning the agent kept acting on bad data for most of a twelve-turn run.
+**How do you evaluate an AI agent's trajectory rather than its final answer?** Use an environment where the correct state is computable at every step, and inject a known fault into one tool result. Then measure three things: whether the agent notices, how many steps it keeps building on the bad value, and whether it still claims success at the end. Grade with deterministic checks, not with another model.
 
-**Why did the same model score 0% and 100%?** Because the two experiments asked it to verify different things. A single piece of code is fully present in the context window and can be re-read. A twelve-step trajectory's early state is not present as data; it is present as a belief formed several steps ago, and there is no diff to check it against.
+**Does telling the agent to double-check each step help?** Not measurably here. A per-step consistency instruction moved detection by 5.7 percentage points at 1.03 times the cost, which is inside noise at this sample size. The agent's steps were already consistent with each other. They were consistently built on a wrong input.
 
-**Why was the experiment pre-registered?** Every hypothesis threshold was written into the design document before any data was collected, with an explicit falsification condition, and a test asserts the thresholds in code still match the document. Four of experiment 1's hypotheses were falsified and two of experiment 2's were, which is the point: an experiment that cannot come back "no" is not measuring anything.
-
-**What does this say about production agents?** Narrowly, that a per-step "check your work" instruction did not change detection in this setup, and that the dangerous window for a silent failure is the beginning of a trajectory rather than the end. Broadly, that an agent's self-reported success is not a signal you can gate an unattended action on, at least not on this model and this task class.
+**How much does it cost to run an agent evaluation like this?** The full study, 680 runs across two experiments and a replication, cost $3.13 in model usage. The expensive part is the design discipline: fixing hypotheses in advance, building deterministic ground truth, and attacking your own harness before trusting it.
 
 ## The Transferable Lesson
 
-Do not evaluate self-verification on a task where there is nothing to verify. A model that reviews ten lines of code and catches 50 of 50 bugs looks like it has solved the problem, and it has, for the ten lines. The failure lives in what isn't in front of the model: the value it read nine steps ago and has been building on since. If you want to know whether "done" means anything, corrupt something the agent will carry forward and count how many steps it carries it. Here the median was eight. T4 carried it for eleven, then submitted at confidence 100.
+I spent seven posts arguing that false greens are the core failure of autonomous agents. Then I measured it and found I was half wrong in a useful way. On a single answer, the model is a better reviewer than I gave it credit for. Across a sequence of steps, it is worse than I feared. The failure does not live in the model's judgment. It lives in the gap between checking a result and re-deriving a state, and an agent's "done" only ever does the first.
+
+Trust the model to review a page. Do not trust it to audit its own book. Put something deterministic between the steps, and measure the false-green rate before someone else measures it for you in production.
 
 ## In this series
 
-- [Six False-Greens in a Self-Auditing Agent Pipeline](/blog/six-false-greens-in-a-self-auditing-agent-pipeline)
-- [Permissive Parsing Is a False-Green Factory](/blog/permissive-parsing-is-a-false-green-factory)
-- [One-Sided Contracts Break Agent Pipelines](/blog/one-sided-contracts-break-agent-pipelines)
-- [QA Is Only as Honest as Its Coverage](/blog/qa-is-only-as-honest-as-its-coverage)
-- [False Greens: Three Structural Observations](/blog/false-greens-three-structural-observations)
-- [The Calibration Ledger: 58 Runs, 93% Pass, n Is Small](/blog/the-calibration-ledger-58-runs-93-pass-n-is-small)
-- [The Arc Since the Six Were Caught](/blog/the-arc-since-the-six-were-caught)
+- [The API Served a Different Model and My Check Passed](/blog/the-api-served-a-different-model-and-my-check-passed)
+- [Self-Verification Cost 1.64x and Caught Nothing](/blog/self-verification-cost-1-64x-and-caught-nothing)
 - [Nine Times the Eval Tried to Lie to Me](/blog/nine-times-the-eval-tried-to-lie-to-me)
+- [The Arc Since the Six Were Caught](/blog/the-arc-since-the-six-were-caught)
+- [The Calibration Ledger: 58 Runs, 93% Pass, n Is Small](/blog/the-calibration-ledger-58-runs-93-pass-n-is-small)
+- [False Greens: Three Structural Observations](/blog/false-greens-three-structural-observations)
+- [QA Is Only as Honest as Its Coverage](/blog/qa-is-only-as-honest-as-its-coverage)
+- [One-Sided Contracts Break Agent Pipelines](/blog/one-sided-contracts-break-agent-pipelines)
+- [Permissive Parsing Is a False-Green Factory](/blog/permissive-parsing-is-a-false-green-factory)
+- [Six False-Greens in a Self-Auditing Agent Pipeline](/blog/six-false-greens-in-a-self-auditing-agent-pipeline)
 
 The experiments, raw records, and gates are public: [github.com/vitamin33/agent-eval-labs](https://github.com/vitamin33/agent-eval-labs).
