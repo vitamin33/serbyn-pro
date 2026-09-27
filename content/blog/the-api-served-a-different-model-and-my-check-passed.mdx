@@ -21,46 +21,46 @@ seo_keywords:
 - silent model change
 ---
 
-> Part of the series: [Same Model, 0% and 100%: Where the Verifier Gap Actually Lives](/blog/same-model-0-and-100-where-the-verifier-gap-actually-lives)
+> Part of the series: [When an AI Agent Says Done: 0% vs 100% False Greens](/blog/same-model-0-and-100-where-the-verifier-gap-actually-lives)
 
 # The API Served a Different Model and My Check Passed
 
-In August I ran an experiment against a model called `deepseek-v4-flash`. In September I ran the identical experiment, requested the identical name, and every one of the 200 responses came back labelled `deepseek-flash`. My configuration pinned the model. My gate, the automated check that has to pass before a result counts, asserted the run used a single model. The gate passed. It was checking the wrong thing.
+In August I ran an experiment against a model called `deepseek-v4-flash`. In September I ran the identical experiment, requested the identical name, and every one of the 200 responses came back labelled `deepseek-flash`. My configuration pinned the model. My check, the automated test that has to pass before a result counts, asserted the run used a single model. The check passed. It was asking the wrong question.
 
 If you run anything on a third-party model, this is the risk. The model behind a name can change without an error, a warning, or a line in a changelog. A check that only looks for internal consistency will not tell you.
 
 ## The Short Version
 
-- **What happened.** Between two runs a month apart, the provider began serving a differently named model for the same requested id. No error and no warning in the API. I found no public announcement, but I was not watching for one: no changelog subscription and no canary check on this provider, so "none found" means only that I did not see one.
-- **Why the check missed it.** The gate verified that all records in a run agreed with each other. A run served entirely by the wrong model agrees with itself perfectly.
-- **What it cost.** Nothing in dollars beyond the $0.6972 the rerun cost anyway. It cost the replication its status: the September numbers cannot be called "the same experiment" and are published beside the August result, not merged into it. In a product, the same event would mean a month of behaviour you could not attribute to a version.
+- **What happened.** Between two runs a month apart, the provider began serving a differently named model for the same requested id. No error and no warning in the API. I found no public announcement, but I was not watching for one. No changelog subscription, no canary check on this provider, so "none found" means only that I did not see one.
+- **Why the check missed it.** It verified that all records in a run agreed with each other. A run served entirely by the wrong model agrees with itself perfectly.
+- **What it cost.** Nothing in dollars beyond the $0.6972 the rerun cost anyway. It cost the replication its status: the September numbers cannot be called "the same experiment" and are published beside the August result rather than merged into it. In a product, the same event would mean a month of behaviour you could not attribute to a version.
 - **The fix.** Compare the id the API *served* to the id you *asked for*, on every record, and refuse to publish a run where they differ.
 - **For anyone running evals or agents in production:** if your "model version" check does not compare requested with served, you do not have one.
 
 ## What I Actually Pinned
 
-My config had one line: `model: deepseek-v4-flash`. That is not an alias. It is the specific id the provider documents, chosen precisely because their alias `deepseek-chat` is documented to resolve to whatever they decide. Every record kept two labels side by side: the model I asked for (`model_requested`) and the model the API said it used (`model_resolved`).
+My config had one line: `model: deepseek-v4-flash`. That is the specific id the provider documents, chosen because their alias `deepseek-chat` is documented to resolve to whatever they decide. Every record kept two labels side by side: the model I asked for (`model_requested`) and the model the API said it used (`model_resolved`).
 
-In plain terms, the gate only checked that a run did not mix models midway. It never checked that the model used was the one requested. Here is the check, for readers who want the code:
+In plain terms, the check only confirmed that a run did not mix models midway. It never confirmed that the model used was the one requested. Here it is, for readers who want the code:
 
 ```python
 models = sorted({r["model_resolved"] for r in records})
 Check("single resolved model", len(models) == 1, ...)
 ```
 
-Read it again. It asks whether the run *spans* more than one model. It never asks whether that one model is the one in the config. In August the served id happened to equal the requested id, so the check looked like it was doing more than it was. My own README claimed it caught "the alias silently resolving to a different id server-side." It did not. It caught a run that switched models mid-way, a weaker property I had never actually needed.
+Read it again. It asks whether the run *spans* more than one model. It never asks whether that one model is the one in the config. In August the served id happened to equal the requested id, so the check looked like it was doing more than it was. My own README claimed it caught "the alias silently resolving to a different id server-side". It did not. It caught a run that switched models mid-way, a weaker property I had never needed.
 
 ## How It Surfaced
 
-It did not surface because anything looked wrong. The replication reproduced every conclusion: zero planted bugs approved in 50 chances, same hypothesis verdicts, overlapping confidence intervals on every rate. I noticed only because I printed the resolved model while checking the raw records for something else, and the string was shorter than I remembered.
+Nothing looked wrong. The replication reproduced every conclusion: zero planted bugs approved in 50 chances, same hypothesis verdicts, overlapping confidence intervals on every rate. I noticed only because I printed the resolved model while checking the raw records for something else, and the string was shorter than I remembered.
 
-Whether the weights changed, I cannot know from the outside: a rename and a quiet swap look identical on this task set. What I can say with a number is that every rate on the two ids overlaps on its 95% interval, which rules out a large change and not a small one. The honest statement is the narrow one: the id changed, I was not told, and my instrument did not notice.
+Whether the weights changed, I cannot know from the outside. A rename and a quiet swap look identical on this task set. What I can say with a number is that every rate on the two ids overlaps on its 95% interval, which rules out a large change and does not rule out a small one. The honest statement is the narrow one: the id changed, I was not told, and my instrument did not notice.
 
 ## The Fix, in Three Places
 
-**In the gate.** G4 now also asserts that every served id is in the set of requested ids. The September runs fail this check, which is correct, and the gate names them by filename so they cannot be quietly dropped.
+**In the check.** G4, the check in question, now also asserts that every served id is in the set of requested ids. The September runs fail it, which is correct, and the check names them by filename so they cannot be quietly dropped.
 
-**In the report generator.** The script that writes the README refuses to publish a run whose served model differs from the pinned one unless told explicitly to allow it. Newest no longer wins by default. In practice, the report always shows the run that matches the pinned id as the headline, and every other run of that arm appears only as a labelled replication, never silently swapped in as the new result. A run on disk can be contradicted in the report; it cannot be absent from it.
+**In the report generator.** The script that writes the README refuses to publish a run whose served model differs from the pinned one unless told explicitly to allow it. Newest no longer wins by default. The report always shows the run that matches the pinned id as the headline. Every other run of that arm appears only as a labelled replication, never silently swapped in as the new result. A run on disk can be contradicted in the report. It cannot be absent from it.
 
 **In the record.** Every record already carried both ids. That is what made the fix cheap. If your logs store only the name you sent, you cannot retro-detect this at all.
 
@@ -72,16 +72,18 @@ Check("served model matches the pinned id", not (served - requested), ...)
 
 ## What to Do on Monday
 
-- **Log the served model on every call**, next to the requested one. Most providers return it in the response body. If yours does not, that is worth knowing too.
-- **Assert equality, not consistency.** "All calls used the same model" is not "all calls used the model I chose."
-- **Treat a rename as a version change until proven otherwise.** Re-baseline your evals. If the numbers agree, say "the numbers agree," not "same model."
-- **Decide in advance what happens when the pin breaks.** Mine was: keep the old result as published, publish the new run as data, and fix the instrument. Deciding after the fact is where the quiet promotion of a nicer number sneaks in.
+- Log the served model on every call, next to the requested one. Most providers return it in the response body. If yours does not, that is worth knowing too.
+- Assert equality. "All calls used the same model" is a weaker claim than "all calls used the model I chose", and only the second one protects you.
+- Treat a rename as a version change until proven otherwise. Re-baseline your evals. If the numbers agree, say "the numbers agree" and stop there.
+- Decide in advance what happens when the pin breaks. Mine was: keep the old result as published, publish the new run as data, and fix the instrument. Deciding after the fact is where the quiet promotion of a nicer number sneaks in.
 
 ## What This Does Not Show
 
-- **One provider.** I have no reason to think this is unusual, and no data that it is common.
-- **No claim about the weights.** A renamed model and a replaced model look identical from the outside on this task set.
-- **Small tasks.** Ten tasks and 50 planted bugs cannot distinguish two models that differ in subtle ways. Agreement here is a floor, not a fingerprint.
+One provider. I have no reason to think this is unusual, and no data that it is common.
+
+No claim about the weights. A renamed model and a replaced model look identical from the outside on this task set.
+
+Small tasks. Ten tasks and 50 planted bugs cannot distinguish two models that differ in subtle ways. Agreement here is a floor. It says the two are close on ten tasks and nothing more.
 
 ## FAQ
 
@@ -89,13 +91,13 @@ Check("served model matches the pinned id", not (served - requested), ...)
 
 **Does a renamed model id mean the model changed?** Not necessarily, and you usually cannot tell from outside. In my case the replicated experiment reproduced every conclusion, which is consistent with a rename and also consistent with a similar successor. Treat it as a version change until the provider says otherwise.
 
-**Why not just re-pin to the new name and move on?** Because the August result was produced under the old id and the September result under the new one. Re-pinning would let the newer run silently become the headline. The original stays published as the result; the rerun is published beside it as raw data, with the mismatch stated.
+**Why not just re-pin to the new name and move on?** Because the August result was produced under the old id and the September result under the new one. Re-pinning would let the newer run silently become the headline. The original stays published as the result. The rerun is published beside it as raw data, with the mismatch stated.
 
-**Where is the code?** In the [agent-eval-labs repository](https://github.com/vitamin33/agent-eval-labs), gate G4 in `gates.py`, the `model_mismatch` guard in `report.py`, and the run selector in `pick.py`. The calibration log records the whole episode.
+**Where is the code?** In the [agent-eval-labs repository](https://github.com/vitamin33/agent-eval-labs): check G4 in `gates.py`, the `model_mismatch` guard in `report.py`, and the run selector in `pick.py`. The calibration log records the whole episode.
 
 ## The Transferable Lesson
 
-A consistency check feels like a version check and is not one. The gate answered a real question honestly, "did this run use one model?", and not the question I needed, "was it the model I pinned?". Those are two different checks. Only the second would have caught this, and for a month I had only the first.
+A consistency check feels like a version check. The one I had answered a real question honestly, "did this run use one model?", and it was the wrong question. The one I needed was "was it the model I pinned?". Those are two different checks. Only the second would have caught this, and for a month I had only the first.
 
 ## In this series
 
@@ -109,4 +111,4 @@ A consistency check feels like a version check and is not one. The gate answered
 - [Permissive Parsing Is a False-Green Factory](/blog/permissive-parsing-is-a-false-green-factory)
 - [Six False-Greens in a Self-Auditing Agent Pipeline](/blog/six-false-greens-in-a-self-auditing-agent-pipeline)
 
-The experiments, raw records, and gates are public: [github.com/vitamin33/agent-eval-labs](https://github.com/vitamin33/agent-eval-labs).
+The experiments, raw records, and checks are public: [github.com/vitamin33/agent-eval-labs](https://github.com/vitamin33/agent-eval-labs).
