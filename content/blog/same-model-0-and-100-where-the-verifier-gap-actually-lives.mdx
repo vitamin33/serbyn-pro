@@ -40,7 +40,7 @@ If you have two minutes, this is the whole post.
 
 - **What I tested.** Whether an AI agent's own "done, this is correct" can be trusted. A wrong answer marked correct is what I call a **false green**: the dashboard says pass, the work is wrong, and nobody looks again.
 - **What I found.** Checking one short answer, the model was an excellent reviewer: zero false greens in 100 attempts across two runs. Checking its own multi-step work, it was nearly blind. It noticed a corrupted step 8 times in 70, and every run that ended wrong reported success.
-- **How.** One reasoning model, `deepseek-v4-flash`. 680 runs in total. Experiment 1 is 200 runs (ten tasks, five attempts each, with and without a self-check, plus 50 planted bugs and 50 correct solutions shown to the checker), done twice a month apart, so 400. Experiment 2 is 280 multi-step runs over two stages. Hypotheses and pass thresholds were written down before any data. Right and wrong were decided by ordinary code, never by another model.
+- **How.** One reasoning model, `deepseek-v4-flash`. 680 runs in total. Experiment 1 is 200 runs (ten tasks, five attempts each, with and without a self-check, plus 50 planted bugs and 50 correct solutions shown to the checker), done twice a month apart, so 400. Experiment 2 is 280 multi-step runs: 80 in a first stage that set the sample size, 200 in the main stage the numbers below come from. Hypotheses and pass thresholds were written down before any data. Right and wrong were decided by ordinary code, never by another model.
 - **What it means.** An agent's self-report cannot be the safety check for multi-step work. A review step that works in a demo on one answer tells you nothing about a twelve-step task.
 - **What to do.** Keep a check the model cannot talk its way past: a test, a reconciliation, a second source of truth. Put it at the points where the agent hands a result to the next step. A check at the end comes after the damage.
 - **What it cost.** All 680 runs, with every raw record published, cost **$3.13** in model usage. Measuring this is cheap.
@@ -60,7 +60,7 @@ Ten small coding tasks, each hiding a bug an obvious test will not catch. A CSV 
 
 I showed the model 50 solutions containing those bugs, formatted exactly like its own answers, and asked: is this correct?
 
-It rejected all 50. Every rejection came with a repair that passed the checks. My hypothesis said it would approve at least 15% of them. The measured rate was **0%**. Fifty samples cannot prove "never", so here is the worst case that could hide in a sample this small: a true rate of 7.1%. Even that is well under my 15% prediction. My own experiment falsified my own hypothesis.
+It rejected all 50, and each time it also offered a repair that passed the checks. The repair was a bonus. The measurement is the approvals: my hypothesis said it would approve at least 15% of the wrong answers, and the measured rate was **0%**. Fifty samples cannot prove "never". In plain terms, even if the model were secretly approving up to 7.1% of wrong answers, a sample of 50 could still show zero by chance. That worst case is still well under my 15% prediction. My own experiment falsified my own hypothesis.
 
 Two details matter for anyone budgeting this. The model almost never needed the review. Working alone, five attempts at each of the ten tasks, it solved 49 of 50 on the first try. It spends most of its output on reasoning, the hidden "thinking" text that the provider bills for but does not show. One task spent 30,579 tokens reasoning and 294 tokens writing the code, tens of pages of thought for ten lines of code.
 
@@ -86,13 +86,13 @@ flowchart LR
 
 The run counts, so the rest is checkable. The main stage had 200 runs. In 40 of them nothing was corrupted, to see how often the agent fails on its own, and it passed 39 of those 40.
 
-In the other 160 a corruption was attempted. It fired in 90. In the rest the agent never called the tool I had rigged. One task's own instructions already told the agent to "cross-check the data". That is no test of whether it gets suspicious on its own, so that task's 20 runs were excluded before counting, a rule written down before the run. That leaves **70 counted**, and every detection number below is out of those 70.
+In the other 160 a corruption was attempted. It fired in 90. In the rest the agent never called the tool I had rigged. One task's own instructions already told the agent to "cross-check the data". That is no test of whether it gets suspicious on its own, so that task's 20 runs were excluded before counting, a rule written down before the run. That leaves **70 counted**, and every detection number below is out of those 70. Those 70 split into two halves of 35: one with the plain prompt, one with a "check your work" instruction added, which is the comparison further down.
 
 The agent rarely noticed. It flagged the corrupted value in 8 of 70 runs, which is 11.4%.
 
 Every wrong finish claimed success. 45 runs ended with a wrong answer, and all 45 reported success. The false-green rate was **100%**, and even the cautious end of the statistical range is 92.1%. The errors travelled far, too. The agent kept building on the bad value for a median of 8 further steps, and up to 21. By the time it said "done", the mistake was buried under most of the work.
 
-The obvious fix did nothing. I added the instruction teams ship: "check your work is consistent at each step". Detection went from 3 of 35 runs to 5 of 35, a move of 5.7 percentage points that two extra catches can produce by chance. It cost almost nothing, 1.03 times the baseline, and it bought almost nothing.
+The obvious fix did nothing. I added the instruction teams ship: "check your work is consistent at each step". Detection went from 3 of 35 runs without it to 5 of 35 with it, a move of 5.7 percentage points that two extra catches can produce by chance. It cost almost nothing, 1.03 times the baseline, and it bought almost nothing.
 
 Noticing was the whole battle. In the 8 runs where the agent did notice, it recovered all 8 times. Eight is a small number, so the 95% range on that recovery rate starts at 67.6%. Still, the predicted failure, "sees the problem and still fails", did not happen once. The failure is that seeing is rare.
 
@@ -129,7 +129,7 @@ An experiment about false greens should be held to its own standard, so here are
 
 **The model changed underneath me.** A month after the first run I repeated the whole thing. The configuration pinned a specific model name, `deepseek-v4-flash`. The provider's API accepted that name and served a different one, `deepseek-flash`. My "is this the same model?" check passed anyway, because it only verified that one run used one model throughout. It never compared what I asked for with what I got. The repeat confirmed every conclusion. It is published beside the original result rather than merged into it, and the check now compares the two names.
 
-**Three correct verdicts were recorded as "unreadable".** In the repeat, the model sometimes gave a clean verdict, then second-guessed its own formatting and wrote the verdict again. My parser choked on the extra text and logged "no verdict". All three were correct rejections. The model did its job and my own code failed to read it.
+**Three correct verdicts were recorded as "unreadable".** In the repeat, the model sometimes gave a clean verdict, then second-guessed its own formatting and wrote the verdict again. That was a bug in my own parser: it choked on the extra text and logged three correct rejections as "no verdict". None of the published numbers changed because of it. The model did its job and my own code failed to read it.
 
 Neither failure changed a conclusion. Both are the same shape as the thing I was measuring: a number that looked measured and was not quite what it claimed. If you run evals, assume your instrument has these too.
 
@@ -161,7 +161,7 @@ An imperfect fault injector. In experiment 2 the corruption failed to fire in 43
 
 I spent seven posts arguing that false greens are the core failure of autonomous agents. Then I measured it and found I was half wrong in a useful way. On a single answer, the model is a better reviewer than I gave it credit for. Across a sequence of steps, it is worse than I feared. The failure lives in the gap between checking a result and re-deriving a state, and an agent's "done" only ever does the first.
 
-Trust the model to review a page. Do not trust it to audit its own book. Put something deterministic between the steps, and measure the false-green rate before someone else measures it for you in production.
+Trust the model to review a page. Do not trust it to audit its own book: 8 of 70 caught there, against 50 of 50 on a single page. Put something deterministic between the steps, and measure the false-green rate before someone else measures it for you in production.
 
 ## In this series
 

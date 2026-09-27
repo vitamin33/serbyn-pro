@@ -32,14 +32,14 @@ Adding a "now check your answer" turn to a coding model cost 1.64 times the base
 - **The setup.** Ten small coding tasks, each with a trap. Fifty attempts without a self-check, fifty with one. Every API call logged with its tokens and cost.
 - **The bill.** Baseline: $0.2004 for 50 tasks, $0.00409 per correct answer. With the self-check: $0.3285, $0.00657 per correct answer. The extra $0.128 bought zero catches.
 - **The reason.** Only one of 100 first attempts was wrong, and it was in the baseline arm. The self-check arm generated 50 correct answers and then paid to re-read all of them.
-- **The hidden cost.** When shown 50 solutions that *were* correct, the checker wrongly rejected 5. Those 5 false alarms consumed 37% of that arm's spend, because the model reasons about five times longer when it is about to be wrong.
+- **The hidden cost.** When shown 50 solutions that *were* correct, the checker wrongly rejected 5. Those 5 false alarms consumed 37% of that arm's spend: each took about five times longer to reason through than a normal correct verdict, 7,730 reasoning tokens against 1,423. A pattern in five cases, and not yet a rule.
 - **For anyone budgeting agents:** measure your first-try error rate before you buy a review step. If it is low, the review step is a tax with no refund.
 
 ## Where the Money Went
 
-Every record in the experiment stores per-call token counts: input, output, cache hits, and reasoning tokens, which this provider bills as output but never shows you. That last category is the story. Across the baseline arm, more than nine in every ten output tokens were reasoning: 146,071 of 150,465. One CSV parsing task spent 30,579 tokens thinking and 294 writing code. You are paying for deliberation. The text is a rounding error.
+The model is `deepseek-v4-flash`. Every record in the experiment stores per-call token counts: input, output, cache hits, and reasoning tokens, which DeepSeek bills as output but never shows you. That last category is the story. Across the baseline arm, more than nine in every ten output tokens were reasoning: 146,071 of 150,465. One CSV parsing task spent 30,579 tokens thinking and 294 writing code. You are paying for deliberation. The text is a rounding error.
 
-The self-check adds a second call that re-sends the task, the answer, and a verification instruction. Cache hits make the re-sent prompt cheap. The reasoning is not cached, and the model reasons again from scratch. The verification calls alone cost $0.0996, which is 30% of the self-check arm's total.
+The self-check adds a second call that re-sends the task, the answer, and a verification instruction. Cache hits make the re-sent prompt cheap. The reasoning is not cached. Caching makes the repeated prompt cheap and does nothing for the thinking, so the model redoes all of it on the second call. The verification calls alone cost $0.0996, which is 30% of the self-check arm's total.
 
 ## What the Second Call Bought
 
@@ -54,7 +54,7 @@ The self-check arm scored 50 of 50 and the baseline 49 of 50. That two-point dif
 
 ## The Cost of Being Wrong About a Right Answer
 
-To measure the checker at all, I had to feed it wrong answers on purpose: 50 solutions with planted bugs, and 50 correct reference solutions as a control. Each planted bug is the natural first thing a hurried engineer writes for that task, the kind that passes the obvious test and fails an edge case. It rejected all 50 of them. It also rejected 5 of the 50 correct ones, with stated confidence between 80 and 100.
+To measure the checker at all, I had to feed it wrong answers on purpose: 50 solutions with planted bugs, and 50 correct reference solutions as a control. Each planted bug follows one rule: it passes the task's obvious test and fails on one specific edge case, the shortcut a hurried engineer takes under a deadline. It rejected all 50 of them. It also rejected 5 of the 50 correct ones, with stated confidence between 80 and 100.
 
 Those 5 rejections are where the budget went. A normal "yes, this is correct" verdict cost about a fifth of a cent: 1,423 reasoning tokens, $0.00196. A false alarm cost about a cent: 7,730 reasoning tokens, $0.01048, which is 5.4 times a normal correct verdict. Every false alarm in this data took longer to reason through than a typical correct approval. Five cases are too few to call that a rule. Five records, 10% of the control arm, took 37% of its money.
 
@@ -73,7 +73,7 @@ One model, one provider's pricing. The 1.64x is a property of this tariff, where
 
 Small tasks, low error rate. This experiment has no data on tasks the model often gets wrong. The arithmetic says a review step needs errors to catch to earn its cost. Whether it pays for itself at a 30% first-try error rate is a prediction from that arithmetic, and I have not measured it. This post argues for measuring before buying review.
 
-Fifty samples per arm. The 5 of 50 false-alarm rate carries a 95% interval of 4.3% to 21.4%. The replication measured 8 of 50. Both are inside each other's intervals.
+Fifty samples per arm. The 5 of 50 false-alarm rate is noisy at this size. Run it again and the true rate could sit anywhere from 4.3% to 21.4% (the 95% interval), so read "5 of 50" as a range. The replication measured 8 of 50, inside that range.
 
 ## FAQ
 

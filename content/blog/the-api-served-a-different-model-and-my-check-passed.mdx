@@ -54,13 +54,13 @@ Read it again. It asks whether the run *spans* more than one model. It never ask
 
 Nothing looked wrong. The replication reproduced every conclusion: zero planted bugs approved in 50 chances, same hypothesis verdicts, overlapping confidence intervals on every rate. I noticed only because I printed the resolved model while checking the raw records for something else, and the string was shorter than I remembered.
 
-Whether the weights changed, I cannot know from the outside. A rename and a quiet swap look identical on this task set. What I can say with a number is that every rate on the two ids overlaps on its 95% interval, which rules out a large change and does not rule out a small one. The honest statement is the narrow one: the id changed, I was not told, and my instrument did not notice.
+Whether the weights changed, I cannot know from the outside. A rename and a quiet swap look identical on this task set. What I can say with a number: every rate compared between the two ids has overlapping 95% intervals, with the bounds in the repository, which rules out a large change and does not rule out a small one. The honest statement is the narrow one: the id changed, I was not told, and my instrument did not notice.
 
 ## The Fix, in Three Places
 
-**In the check.** G4, the check in question, now also asserts that every served id is in the set of requested ids. The September runs fail it, which is correct, and the check names them by filename so they cannot be quietly dropped.
+**In the check.** The same-model check, called G4 in the repository, now also asserts that every served id is in the set of requested ids. The September runs fail it, which is correct, and the check names them by filename so they cannot be quietly dropped.
 
-**In the report generator.** The script that writes the README refuses to publish a run whose served model differs from the pinned one unless told explicitly to allow it. Newest no longer wins by default. The report always shows the run that matches the pinned id as the headline. Every other run of that arm appears only as a labelled replication, never silently swapped in as the new result. A run on disk can be contradicted in the report. It cannot be absent from it.
+**In the report generator.** The script that writes the README refuses to publish a run whose served model differs from the pinned one unless told explicitly to allow it. The newest run no longer becomes the headline by default. The report always shows the run that matches the pinned id as the headline. Every other run of that arm appears only as a labelled replication, never silently swapped in as the new result. A run on disk can be contradicted in the report. It cannot be absent from it.
 
 **In the record.** Every record already carried both ids. That is what made the fix cheap. If your logs store only the name you sent, you cannot retro-detect this at all.
 
@@ -83,7 +83,7 @@ One provider. I have no reason to think this is unusual, and no data that it is 
 
 No claim about the weights. A renamed model and a replaced model look identical from the outside on this task set.
 
-Small tasks. Ten tasks and 50 planted bugs cannot distinguish two models that differ in subtle ways. Agreement here is a floor. It says the two are close on ten tasks and nothing more.
+Small tasks. Ten tasks, 50 planted bugs and 50 correct controls, plus 100 fresh attempts at the tasks: that is the 200 responses, and it cannot distinguish two models that differ in subtle ways. Agreement here is a floor. It says the two are close on ten tasks and nothing more.
 
 ## FAQ
 
@@ -93,7 +93,7 @@ Small tasks. Ten tasks and 50 planted bugs cannot distinguish two models that di
 
 **Why not just re-pin to the new name and move on?** Because the August result was produced under the old id and the September result under the new one. Re-pinning would let the newer run silently become the headline. The original stays published as the result. The rerun is published beside it as raw data, with the mismatch stated.
 
-**Where is the code?** In the [agent-eval-labs repository](https://github.com/vitamin33/agent-eval-labs): check G4 in `gates.py`, the `model_mismatch` guard in `report.py`, and the run selector in `pick.py`. The calibration log records the whole episode.
+**Where is the code?** In the [agent-eval-labs repository](https://github.com/vitamin33/agent-eval-labs): the check that compares the requested model with the served one (G4 in `gates.py`), the guard that refuses to publish on a mismatch (`model_mismatch` in `report.py`), and the logic that decides which run is the headline (`pick.py`). The calibration log records the whole episode.
 
 ## The Transferable Lesson
 
