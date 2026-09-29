@@ -2,7 +2,7 @@
 title: "The Check the Agent Cannot Skip: 0 of 40 Silent Failures vs 22 of 40"
 slug: enforced-checkpoint-0-of-40-silent-failures-vs-22-of-40
 description: "A check the agent cannot skip removed every silent failure in 40 injected runs at the cost of no check. As an optional tool it doubled the bill and let 6 through."
-date: '2026-09-29'
+date: '2026-09-30'
 keywords:
 - agent reliability
 - deterministic checkpoint
@@ -33,7 +33,7 @@ A check the agent cannot skip removed every silent failure, a run that finishes 
 - **What I found.** With no checkpoint, 22 of 40 runs finished wrong and claimed success. With the checkpoint offered as an optional tool, 6 of 40. With the checkpoint forced into every tool result by the code around the agent, 0 of 40.
 - **How.** One model, `deepseek-flash`. Eight tasks over a small order database, one silently wrong tool result planted in each run. 160 runs at the final stage, 40 per arm. Five hypotheses with numeric thresholds, written and committed before any data. Right and wrong decided by asserts on the final state, never by a model.
 - **What it means.** Reconciliation works when the code enforces it. Handed to the agent as a choice, it gets used a lot, aimed at the wrong things, and paid for twice.
-- **What it cost.** The forced checkpoint ran at 1.00x the cost of no checkpoint. The optional tool ran at 1.94x. The whole experiment, pilot and both stages and three aborted starts, was $2.12.
+- **What it cost.** The forced checkpoint ran at 1.00x the cost of no checkpoint. The optional tool ran at 1.94x. The whole experiment, pilot, both stages, the follow-up without the sentence and three aborted starts, was $3.67.
 
 ## Why I Ran This
 
@@ -106,7 +106,7 @@ Eight tasks, three kinds of planted failure, one kind per task, so no claim abou
 
 The enforced arm's cost includes the wrapper on every call, including calls that read data no injection ever touched. A team that checkpoints only writes would pay less and, in this design, would have caught nothing on six of the eight tasks, because every injection here corrupted a read.
 
-The instructions in the enforced arm say the checkpoint is authoritative. Without that line the agent would be reacting to a strange-looking result, which is a different experiment. I ran the one that matches what a team would deploy.
+The instructions in the enforced arm say the checkpoint is authoritative. I then ran the wrapper without that line, 40 more runs on the same model. Handed the truth with no explanation, the agent still used it on seven of the eight tasks: 4 of 40 silent failures, all on the one task whose job is to report whether two counts agree, where it reported the disagreement it had been shown. And without the line the agent kept re-deriving, so that arm cost 1.58x. The line is what turns the checkpoint from evidence into the answer, and what makes it free.
 
 ## FAQ
 
@@ -115,6 +115,8 @@ The instructions in the enforced arm say the checkpoint is authoritative. Withou
 **Does giving the agent a reconcile tool help?** It helped, and less than forcing it. Used as an optional tool, silent failures fell from 22 of 40 to 6 of 40, at 1.94x the cost. Forced on every call, none remained, at the cost of no check. All six remaining failures were on tasks where the corrupted field was a customer's region the agent never chose to check.
 
 **Why did the enforced check not cost more?** The agent took fewer steps. Handed the true value next to every tool result, it stopped re-reading and cross-checking on its own. Total input tokens per run fell slightly, 25,493 against 26,582. The larger tool results were paid for by the steps that disappeared.
+
+**Does the agent need to be told the checkpoint is authoritative?** Mostly no, and it matters where. Without the sentence, 4 of 40 runs still failed silently, every one on the task that asks whether two counts agree, and the arm cost 1.58x because the agent kept re-checking. With the sentence, 0 of 40 at 0.86x.
 
 **How do I know these numbers were not tuned after the fact?** The five hypotheses, their thresholds and the stopping rule were committed to the repository before the first run. A test fails if a threshold in the code stops matching the design document. Every number in this post is recomputed from the raw run records by a test in the same repository. The three defects the run exposed are written up with their cost.
 
