@@ -4,23 +4,21 @@ export function FooterLegal() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-border bg-muted no-print">
-      <div className="container py-12">
-        <div className="grid gap-8 lg:grid-cols-3">
+    <footer className="no-print border-t border-border text-[0.85rem] text-muted-foreground [&_p:not(.text-foreground)]:text-muted-foreground">
+      <div className="container py-10">
+        <div className="grid gap-8 sm:grid-cols-3">
           {/* Company Information */}
           <div className="space-y-4">
             <div>
-              <h3 className="font-semibold text-foreground mb-2">
+              <h3 className="mb-2 font-mono text-[0.72rem] font-medium uppercase tracking-[0.06em] text-foreground">
                 Easelect LTD
               </h3>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-muted-foreground">
                 Agentic Systems Architecture
               </p>
-              <p className="text-sm text-muted-foreground">
-                Company Number: 15983917
-              </p>
+              <p className="text-muted-foreground">Company Number: 15983917</p>
             </div>
-            <div className="text-sm text-muted-foreground">
+            <div className="text-muted-foreground">
               <p className="font-medium text-foreground mb-1">
                 Registered Office:
               </p>
@@ -39,8 +37,10 @@ export function FooterLegal() {
           {/* Contact Information */}
           <div className="space-y-4">
             <div>
-              <h3 className="font-semibold text-foreground mb-2">Contact</h3>
-              <div className="space-y-1 text-sm text-muted-foreground">
+              <h3 className="mb-2 font-mono text-[0.72rem] font-medium uppercase tracking-[0.06em] text-foreground">
+                Contact
+              </h3>
+              <div className="space-y-1 text-muted-foreground">
                 <p>
                   <a
                     href="mailto:serbyn.vitalii@gmail.com"
@@ -58,8 +58,10 @@ export function FooterLegal() {
           {/* Legal Links */}
           <div className="space-y-4">
             <div>
-              <h3 className="font-semibold text-foreground mb-2">Legal</h3>
-              <nav className="space-y-2 text-sm" aria-label="Legal pages">
+              <h3 className="mb-2 font-mono text-[0.72rem] font-medium uppercase tracking-[0.06em] text-foreground">
+                Legal
+              </h3>
+              <nav className="space-y-1" aria-label="Legal pages">
                 <Link
                   href={'/legal/privacy' as any}
                   className="flex min-h-[44px] items-center text-muted-foreground hover:text-primary transition-colors"
@@ -78,9 +80,9 @@ export function FooterLegal() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-8 pt-8 border-t border-border">
+        <div className="mt-8 border-t border-border pt-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="text-sm text-muted-foreground">
+            <div className="text-muted-foreground">
               <p>
                 &copy; {currentYear} Easelect LTD. All rights reserved.
                 <span className="ml-2 inline-block">

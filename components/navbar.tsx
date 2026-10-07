@@ -149,7 +149,7 @@ export function Navbar() {
           ? ({ inert: '' } as Record<string, string>)
           : {})}
       >
-        <div className="border-t border-border bg-background px-4 py-2 shadow-lg">
+        <div className="border-t border-border bg-background px-4 py-2">
           <ul className="space-y-1">
             {navigationLinks.map(link => (
               <li key={link.name}>
