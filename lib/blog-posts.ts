@@ -20,6 +20,11 @@ export interface BlogPostMeta {
 
   /** Compile the body as real MDX (components such as <FlowDiagram/>). */
   mdx?: boolean;
+  /**
+   * Unpublished. Never listed (index, sitemap, RSS, llms.txt, related posts)
+   * and never routable in a production build; viewable under `next dev` only.
+   */
+  draft?: boolean;
 }
 
 export interface BlogPost extends BlogPostMeta {
@@ -30,7 +35,15 @@ export interface BlogPost extends BlogPostMeta {
 
 const BLOG_PATH = path.join(process.cwd(), 'content/blog');
 
+/** Drafts are previewable only on the dev server, never in a production build. */
+export const draftsVisible = () => process.env.NODE_ENV === 'development';
+
+/** Published posts only. Every listing, feed and static path uses this. */
 export function getAllBlogPosts(): BlogPost[] {
+  return readAllPosts().filter(post => !post.draft);
+}
+
+function readAllPosts(): BlogPost[] {
   if (!fs.existsSync(BLOG_PATH)) {
     fs.mkdirSync(BLOG_PATH, { recursive: true });
     return [];
@@ -74,8 +87,16 @@ export function getAllBlogPosts(): BlogPost[] {
 }
 
 export function getBlogPostBySlug(slug: string): BlogPost | null {
-  const posts = getAllBlogPosts();
-  return posts.find(post => post.slug === slug) || null;
+  const post = readAllPosts().find(p => p.slug === slug) ?? null;
+  if (post?.draft && !draftsVisible()) return null;
+  return post;
+}
+
+/** Draft slugs, for the dev-only preview route params. */
+export function getDraftSlugs(): string[] {
+  return readAllPosts()
+    .filter(post => post.draft)
+    .map(post => post.slug);
 }
 
 export function getFeaturedBlogPosts(): BlogPost[] {

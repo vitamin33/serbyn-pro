@@ -1,7 +1,12 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
-import { getAllBlogPosts, getBlogPostBySlug } from '@/lib/blog-posts';
+import {
+  draftsVisible,
+  getAllBlogPosts,
+  getBlogPostBySlug,
+  getDraftSlugs,
+} from '@/lib/blog-posts';
 import { createMetadata, siteConfig } from '@/lib/seo';
 import { getAllCaseStudies } from '@/lib/case-studies';
 import { ContentEnhancers } from '@/components/blog/content-enhancers';
@@ -15,9 +20,14 @@ interface PageProps {
   params: { slug: string };
 }
 
+// Only the listed slugs exist. Drafts are added on the dev server alone, so a
+// production build has no route for them (404, not just unlisted).
+export const dynamicParams = false;
+
 export function generateStaticParams() {
-  const posts = getAllBlogPosts();
-  return posts.map(post => ({ slug: post.slug }));
+  const slugs = getAllBlogPosts().map(post => post.slug);
+  if (draftsVisible()) slugs.push(...getDraftSlugs());
+  return slugs.map(slug => ({ slug }));
 }
 
 export async function generateMetadata({ params }: PageProps) {
@@ -30,6 +40,7 @@ export async function generateMetadata({ params }: PageProps) {
     image: null, // use the dynamic opengraph-image.tsx card
     canonicalUrl: `${siteConfig.url}/blog/${post.slug}`,
     article: { publishedTime: post.date, tags: post.keywords },
+    ...(post.draft ? { noIndex: true } : {}),
   });
 }
 
@@ -96,6 +107,14 @@ export default async function BlogPostPage({ params }: PageProps) {
           <ArrowLeft className="h-3.5 w-3.5" />
           All posts
         </Link>
+
+        {post.draft && (
+          <p className="a-draft max-w-measure" role="status">
+            <strong>Draft preview</strong>
+            Not listed and not routable in production. Visible on the dev server
+            only.
+          </p>
+        )}
 
         <header className="post-header">
           <div className="a-eyebrow flex flex-wrap items-center gap-x-3 gap-y-1">

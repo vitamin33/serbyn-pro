@@ -79,14 +79,16 @@
 .a-stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1px;
-  background: var(--line);
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   overflow: hidden;
 }
+/* dividers per cell, so a short last row leaves no line-colored gap */
 .a-stat {
-  background: var(--surface);
+  box-shadow:
+    1px 0 0 var(--line),
+    0 1px 0 var(--line);
   padding: 14px 16px;
   display: grid;
   gap: 2px;
