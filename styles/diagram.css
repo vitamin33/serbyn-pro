@@ -1,0 +1,103 @@
+/* Diagram frame and SVG role classes. Same vocabulary as the reference
+   (.diagram, .b, .b-acc, .ln …) with a dg- prefix. No color lives in the SVG
+   markup: every fill and stroke reads a token from styles/theme.css, so light,
+   dark and data-theme all work without JavaScript. */
+
+.dg-figure {
+  margin: 0;
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+.dg-frame {
+  overflow-x: auto;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px;
+}
+.dg-frame svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  color: var(--fg);
+}
+.dg-caption {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--muted);
+  max-width: 80ch;
+}
+.dg-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font: 400 0.75rem/1.4 var(--mono);
+  color: var(--muted);
+}
+.dg-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.dg-swatch {
+  width: 16px;
+  height: 11px;
+  border-radius: 2px;
+  border: 1.3px solid var(--fg);
+  background: var(--surface);
+}
+.dg-swatch[data-enc='accent'] { background: var(--accent-soft); border: 1.6px solid var(--accent); }
+.dg-swatch[data-enc='muted'] { background: var(--bg); border-color: var(--muted); }
+.dg-swatch[data-enc='dashed'] { background: transparent; border-style: dashed; }
+.dg-swatch[data-enc='edge-accent'] { height: 0; border: 0; border-top: 2px solid var(--accent); border-radius: 0; background: none; }
+.dg-swatch[data-enc='edge-dashed'] { height: 0; border: 0; border-top: 1.6px dashed var(--muted); border-radius: 0; background: none; }
+.dg-swatch[data-enc^='tier-'] { width: 11px; border: 0; border-radius: 50%; }
+.dg-swatch[data-enc='tier-a'] { background: var(--tier-a); }
+.dg-swatch[data-enc='tier-b'] { background: var(--tier-b); }
+.dg-swatch[data-enc='tier-c'] { background: var(--tier-c); }
+.dg-swatch[data-enc='tier-d'] { background: var(--tier-d); }
+
+/* boxes */
+.dg-b { fill: var(--surface); stroke: var(--fg); stroke-width: 1.2; }
+.dg-b-acc { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.6; }
+.dg-b-led { fill: var(--bg); stroke: var(--muted); stroke-width: 1.2; }
+.dg-b-mut { fill: var(--bg); stroke: var(--line); stroke-width: 1.2; }
+/* lines */
+.dg-ln { stroke: var(--fg); stroke-width: 1.3; fill: none; }
+.dg-ln-acc { stroke: var(--accent); stroke-width: 1.6; fill: none; }
+.dg-ln-mut { stroke: var(--line); stroke-width: 1.2; fill: none; }
+.dg-ln-mfg { stroke: var(--muted); stroke-width: 1.2; fill: none; }
+.dg-dash { stroke-dasharray: 5 4; }
+/* text */
+.dg-t { fill: var(--fg); font: 500 13px var(--body); }
+.dg-t-s { fill: var(--muted); font: 400 11.5px var(--body); }
+.dg-t-m { fill: var(--fg); font: 400 11px var(--mono); }
+.dg-t-mm { fill: var(--muted); font: 400 11px var(--mono); }
+.dg-t-acc { fill: var(--accent); font: 600 12px var(--mono); }
+.dg-t-h { fill: var(--muted); font: 500 10.5px var(--mono); letter-spacing: 0.06em; text-transform: uppercase; }
+.dg-halo { paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; }
+/* arrowheads */
+.dg-ah { fill: var(--fg); }
+.dg-ah-acc { fill: var(--accent); }
+.dg-ah-mfg { fill: var(--muted); }
+/* test-run pills and tiers */
+.dg-run { fill: var(--surface); stroke: var(--fg); stroke-width: 1.4; }
+.dg-run-mut { fill: var(--bg); stroke: var(--muted); stroke-width: 1.2; }
+.dg-run-acc { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.6; }
+.dg-sfg { stroke: var(--fg); }
+.dg-sa { stroke: var(--tier-a); } .dg-sb { stroke: var(--tier-b); } .dg-sc { stroke: var(--tier-c); } .dg-sd { stroke: var(--tier-d); }
+.dg-fa { fill: var(--tier-a); } .dg-fb { fill: var(--tier-b); } .dg-fc { fill: var(--tier-c); } .dg-fd { fill: var(--tier-d); }
+.dg-fg { fill: var(--fg); }
+.dg-badge-t { fill: var(--bg); font: 600 14px var(--display); }
+/* regions (zones, overlaps): translucent so overlaps read darker */
+.dg-rg { fill: var(--line); fill-opacity: 0.28; stroke: var(--fg); stroke-width: 1.2; }
+.dg-rg-acc { fill: var(--accent-soft); fill-opacity: 0.75; stroke: var(--accent); stroke-width: 1.6; }
+.dg-rg-mut { fill: none; stroke: var(--muted); stroke-width: 1.2; }
+.dg-rg-a { fill: var(--tier-a); fill-opacity: 0.12; stroke: var(--tier-a); stroke-width: 1.4; }
+.dg-rg-b { fill: var(--tier-b); fill-opacity: 0.12; stroke: var(--tier-b); stroke-width: 1.4; }
+.dg-rg-c { fill: var(--tier-c); fill-opacity: 0.12; stroke: var(--tier-c); stroke-width: 1.4; }
+.dg-rg-d { fill: var(--tier-d); fill-opacity: 0.12; stroke: var(--tier-d); stroke-width: 1.4; }

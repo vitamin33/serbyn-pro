@@ -1,4 +1,6 @@
 @import './theme.css';
+@import './diagram.css';
+@import './article.css';
 
 @tailwind base;
 @tailwind components;
