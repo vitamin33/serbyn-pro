@@ -3,23 +3,22 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ShieldCheck, Gauge, Layers, Newspaper, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Navbar } from '@/components/navbar';
 import { FooterLegal } from '@/components/footer-legal';
 import { BookingButton } from '@/components/site/cta';
 
 const NAV = [
-  { name: 'AUDIT', href: '/audit', icon: ShieldCheck },
-  { name: 'COST_TEARDOWN', href: '/llm-cost-teardown', icon: Gauge },
-  { name: 'FRACTIONAL', href: '/fractional', icon: Layers },
-  { name: 'WRITING', href: '/writing', icon: Newspaper },
-  { name: 'ABOUT', href: '/about', icon: User },
+  { name: 'AUDIT', href: '/audit' },
+  { name: 'COST_TEARDOWN', href: '/llm-cost-teardown' },
+  { name: 'FRACTIONAL', href: '/fractional' },
+  { name: 'WRITING', href: '/writing' },
+  { name: 'ABOUT', href: '/about' },
 ] as const;
 
 // Only the resume keeps the simple top-nav layout (it's print-optimized).
-// Everything else — including the legal pages — gets the persistent lab sidebar
-// shell so branding and navigation stay consistent.
+// Everything else gets this shell: one quiet header, the page, the footer.
+// Visual language: docs/design/diagram-system.md (reference explainer).
 function isMinimal(path: string): boolean {
   return path.startsWith('/resume');
 }
@@ -31,14 +30,17 @@ function Wordmark({ className }: { className?: string }) {
       className={cn('flex items-center gap-2', className)}
       aria-label="serbyn.io — home"
     >
-      <span className="h-2 w-2 rounded-full bg-success" />
-      <span className="font-mono text-sm font-semibold tracking-tight">
+      <span className="h-2 w-2 rounded-full bg-primary" />
+      <span className="font-mono text-sm font-medium tracking-tight">
         <span className="text-foreground">serbyn</span>
         <span className="text-primary">.io</span>
       </span>
     </Link>
   );
 }
+
+const navLink =
+  'font-mono text-[0.72rem] font-medium uppercase tracking-[0.06em] transition-colors';
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname() || '/';
@@ -59,78 +61,92 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const isActive = (href: string) => pathname.startsWith(href);
 
   return (
-    <div className="lg:pl-64">
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-border bg-card lg:flex">
-        <Wordmark className="border-b border-border px-5 py-[18px]" />
-        <div className="border-b border-border px-5 py-4">
-          <p className="font-mono text-xs font-semibold tracking-tight text-foreground">
-            VITALII_SERBYN
-          </p>
-          <p className="label-caps mt-1 text-muted-foreground">
-            AGENTIC_SYSTEMS_ARCHITECT
-          </p>
-        </div>
-        <nav className="flex-1 space-y-0.5 py-5" aria-label="Primary">
-          {NAV.map(item => (
-            <Link
-              key={item.href}
-              href={item.href as any}
-              aria-current={isActive(item.href) ? 'page' : undefined}
-              className={cn(
-                'flex items-center gap-2.5 border-l-2 py-2 pl-[18px] pr-4 font-mono text-xs tracking-wide transition-colors',
-                isActive(item.href)
-                  ? 'border-primary bg-primary/10 text-primary'
-                  : 'border-transparent text-muted-foreground hover:bg-secondary/50 hover:text-foreground'
-              )}
-            >
-              <item.icon className="h-3.5 w-3.5 shrink-0" strokeWidth={1.75} />
-              {item.name}
-            </Link>
-          ))}
-        </nav>
-        <div className="space-y-3 border-t border-border px-4 py-4">
-          <BookingButton
-            location="sidebar"
-            label="Contact"
-            className="w-full rounded-md px-3 py-2"
-          />
-        </div>
-      </aside>
+    <div className="flex min-h-screen flex-col">
+      <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur">
+        <div className="container flex h-14 items-center justify-between gap-6">
+          <div className="flex min-w-0 items-baseline gap-4">
+            <Wordmark />
+            <p className="hidden truncate font-mono text-[0.68rem] uppercase tracking-[0.06em] text-muted-foreground xl:block">
+              VITALII_SERBYN · AGENTIC_SYSTEMS_ARCHITECT
+            </p>
+          </div>
 
-      {/* Mobile top bar */}
-      <div className="sticky top-0 z-50 flex items-center justify-between border-b border-border bg-background/80 px-4 py-3 backdrop-blur lg:hidden">
-        <Wordmark />
-        <button
-          type="button"
-          onClick={() => setOpen(o => !o)}
-          className="btn btn-ghost p-2"
-          aria-expanded={open}
-          aria-label={open ? 'Close menu' : 'Open menu'}
-        >
-          <span className="font-mono text-xs">{open ? 'CLOSE' : 'MENU'}</span>
-        </button>
-      </div>
-      {open && (
-        <div className="border-b border-border bg-card px-4 py-2 lg:hidden">
-          {NAV.map(item => (
-            <Link
-              key={item.href}
-              href={item.href as any}
-              onClick={() => setOpen(false)}
-              className="block rounded-md px-3 py-2 font-mono text-sm text-muted-foreground hover:text-foreground"
-            >
-              {item.name}
-            </Link>
-          ))}
-          <BookingButton
-            location="mobile_menu"
-            label="Contact"
-            className="mt-1 w-full rounded-md px-3 py-2"
-          />
-        </div>
-      )}
+          <nav
+            className="hidden items-center gap-6 lg:flex"
+            aria-label="Primary"
+          >
+            {NAV.map(item => (
+              <Link
+                key={item.href}
+                href={item.href as any}
+                aria-current={isActive(item.href) ? 'page' : undefined}
+                className={cn(
+                  navLink,
+                  'border-b-2 py-1',
+                  isActive(item.href)
+                    ? 'border-primary text-primary'
+                    : 'border-transparent text-muted-foreground hover:text-foreground'
+                )}
+              >
+                {item.name}
+              </Link>
+            ))}
+            <BookingButton
+              location="sidebar"
+              label="Contact"
+              className="rounded-sm px-3 py-1.5"
+            />
+          </nav>
 
-      <main id="main">{children}</main>
+          <button
+            type="button"
+            onClick={() => setOpen(o => !o)}
+            className="btn btn-ghost px-2 py-1 lg:hidden"
+            aria-expanded={open}
+            aria-controls="mobile-nav"
+            aria-label={open ? 'Close menu' : 'Open menu'}
+          >
+            <span className="font-mono text-xs">{open ? 'CLOSE' : 'MENU'}</span>
+          </button>
+        </div>
+
+        {open && (
+          <div
+            id="mobile-nav"
+            className="border-t border-border bg-card px-4 py-2 lg:hidden"
+          >
+            <p className="px-3 pb-1 pt-2 font-mono text-[0.68rem] uppercase tracking-[0.06em] text-muted-foreground">
+              VITALII_SERBYN · AGENTIC_SYSTEMS_ARCHITECT
+            </p>
+            {NAV.map(item => (
+              <Link
+                key={item.href}
+                href={item.href as any}
+                onClick={() => setOpen(false)}
+                aria-current={isActive(item.href) ? 'page' : undefined}
+                className={cn(
+                  navLink,
+                  'block rounded-sm px-3 py-2.5',
+                  isActive(item.href)
+                    ? 'text-primary'
+                    : 'text-muted-foreground hover:text-foreground'
+                )}
+              >
+                {item.name}
+              </Link>
+            ))}
+            <BookingButton
+              location="mobile_menu"
+              label="Contact"
+              className="mb-2 mt-1 w-full rounded-sm px-3 py-2"
+            />
+          </div>
+        )}
+      </header>
+
+      <main id="main" className="flex-1">
+        {children}
+      </main>
       <FooterLegal />
     </div>
   );

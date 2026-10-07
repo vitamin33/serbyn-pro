@@ -1,15 +1,21 @@
-import type { Config } from 'tailwindcss'
+import type { Config } from 'tailwindcss';
 
 // Colors are the hex tokens in styles/theme.css. color-mix keeps Tailwind's
 // opacity modifiers working (`bg-primary/10`) without converting the tokens to
 // channel triplets, so the tokens stay exactly as in the reference.
 const token = (name: string) =>
-  `color-mix(in srgb, var(${name}) calc(<alpha-value> * 100%), transparent)`
+  `color-mix(in srgb, var(${name}) calc(<alpha-value> * 100%), transparent)`;
 
 const config: Config = {
   // Dark mode is token-driven (prefers-color-scheme + data-theme), so `dark:`
   // variants are not needed. If one is ever added, it follows the same rules.
-  darkMode: ['variant', ['@media (prefers-color-scheme: dark) { &:not([data-theme=light] *) }', '&:is([data-theme=dark] *)']],
+  darkMode: [
+    'variant',
+    [
+      '@media (prefers-color-scheme: dark) { &:not([data-theme=light] *) }',
+      '&:is([data-theme=dark] *)',
+    ],
+  ],
   content: [
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -90,5 +96,5 @@ const config: Config = {
     },
   },
   plugins: [],
-}
-export default config
+};
+export default config;
