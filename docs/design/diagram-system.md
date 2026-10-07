@@ -99,13 +99,15 @@ downloads IBM Plex at build and serves it from our own origin (test T15c).
 
 ```
 components/diagram/
-  tokens.ts        text metrics (Plex widths), tone and tier names
+  metrics.ts       text metrics (Plex advance widths), box fitting
   primitives.tsx   Diagram (figure + svg + caption + legend), Box, Boundary,
                    Arrow, Lane, Marker, Badge, Pill, Diamond, Group, Note,
                    SectionLabel, Divider
   geometry.ts      box anchors, orthogonal routing, arrowheads, label placement
   presets/         flow, loop, architecture, swimlane, comparison,
-                   objective-tree, regions, graph, state-machine
+                   objective-tree, regions, graph, state-machine,
+                   layered.ts (the dagre wrapper and edge routing)
+  examples/        the three proof-of-green diagrams, rebuilt
   index.ts         public exports
   mdx.tsx          the map handed to the MDX compiler
 components/article/  page elements from the reference: Eyebrow, Short,
@@ -153,18 +155,40 @@ is explained by the caption; three accented boxes earn a legend line.
 
 | Preset | Data API (short) | Layout |
 |---|---|---|
-| `FlowDiagram` | `steps[{id,title,sub}]`, `edges?` (default: sequential), `rows?` | Hand-free: equal columns, labeled straight arrows |
+| `FlowDiagram` | `steps[{id,title,sub}]`, `edges?` (default: sequential), `title?` | Equal columns, labeled straight arrows; backward or skipping edges loop underneath |
 | `LoopDiagram` | `nodes[]`, `edges?` (default: cyclic), `exit?{from,title,label}` | Nodes on an ellipse, arrows clipped to box edges, optional exit to the right |
 | `ArchitectureDiagram` | `nodes[{id,col,row,colSpan}]`, `boundaries[{id,label,contains[]}]` (nest by containing a boundary id), `edges[]` | 12-column grid; boundaries wrap their children with padding by depth; orthogonal edges |
 | `SwimlaneDiagram` | `domain`, `columns[{label,at}]`, `lanes[{label,events[],outcome}]`, `marker{at,label}`, `axis` | Lanes against one time axis, marker line across all lanes |
-| `ComparisonDiagram` | `nodes[]`, `before{title,edges}`, `after{title,edges}` | Shared node positions (dagre on the union graph); edges only in `after` are accented, edges only in `before` are dashed |
+| `ComparisonDiagram` | `nodes[]`, `before{title,edges}`, `after{title,edges}` | Shared node positions (dagre on the union graph); edges only in `after` are accented, edges only in `before` are dashed. Panels sit side by side when both fit 960, stacked otherwise |
 | `ObjectiveTree` | `root{title, children[{title, children[]}]}` | Objective on top, sub-objectives in columns, key results stacked under each |
 | `RegionsDiagram` | `regions[{id,label,x,y,w,h,shape}]`, `items[{label,x,y}]` on a 12×6 grid | Zones and overlaps; ellipse or rect; overlaps tint |
-| `GraphDiagram` | `nodes[]`, `edges[]`, `direction` | dagre |
+| `GraphDiagram` | `nodes[]`, `edges[]`, `direction` | dagre for positions; forward edges get one orthogonal elbow, back edges a U under the nodes |
 | `StateMachine` | `states[{id,initial,final}]`, `transitions[{from,to,label}]` | dagre; self-loops drawn as arcs; initial dot, final double ring |
 
 The gallery at `/lab/diagrams` renders every preset in both themes, plus the
-three reference diagrams rebuilt with primitives.
+three reference diagrams rebuilt (two with primitives, one with
+`SwimlaneDiagram`). Tests: `tests/refactor/diagrams.spec.ts` (T16).
+
+### Writing one in a post
+
+A post opts into MDX with `mdx: true` in its frontmatter, then:
+
+```mdx
+<FlowDiagram
+  label="A spec goes from the decomposer to the agent, the walker parses the result, the merge gate asks once."
+  caption="The merge gate is the only point where a human answers."
+  emphasis={['gate']}
+  steps={[
+    { id: 'decompose', title: 'Decomposer', sub: 'validated specs' },
+    { id: 'agent', title: 'Dev-lead agent', sub: 'plan, code, QA' },
+    { id: 'gate', title: 'Merge gate', sub: 'single y/N' },
+  ]}
+/>
+```
+
+Article elements from the reference are available the same way: `Eyebrow`,
+`Lede`, `Short`, `DataTable`, `Stats`/`Stat`, `Cards`/`Card`, `Callout`, `Tag`,
+`TierBadge`, `Interim`, `DraftNote` (`components/article`).
 
 ## 6. What this does not do
 

@@ -34,7 +34,8 @@ function PageviewTracker() {
   const pathname = usePathname();
   const search = useSearchParams();
   useEffect(() => {
-    if (!POSTHOG_KEY) return;
+    // /lab/* is internal (noindex, unlinked): no analytics, no external calls.
+    if (!POSTHOG_KEY || pathname?.startsWith('/lab')) return;
     void ensureInit().then(() => {
       void import('posthog-js').then(({ default: posthog }) =>
         posthog.capture('$pageview', { $current_url: window.location.href })
