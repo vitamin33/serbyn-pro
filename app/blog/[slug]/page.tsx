@@ -9,6 +9,7 @@ import { EngagementTracker } from '@/components/blog/engagement-tracker';
 import { BookingButton } from '@/components/site/cta';
 import { TerminalSignup } from '@/components/lab/terminal-signup';
 import { extractFaqs } from '@/lib/blog-faq';
+import { renderMdx } from '@/lib/mdx';
 
 interface PageProps {
   params: { slug: string };
@@ -32,7 +33,7 @@ export async function generateMetadata({ params }: PageProps) {
   });
 }
 
-export default function BlogPostPage({ params }: PageProps) {
+export default async function BlogPostPage({ params }: PageProps) {
   const post = getBlogPostBySlug(params.slug);
   if (!post) notFound();
 
@@ -124,10 +125,14 @@ export default function BlogPostPage({ params }: PageProps) {
         </header>
 
         <article className="blog-content post-body">
-          <div
-            className="post-flow"
-            dangerouslySetInnerHTML={{ __html: markdownToHtml(post.content) }}
-          />
+          {post.mdx ? (
+            <div className="post-flow">{await renderMdx(post.content)}</div>
+          ) : (
+            <div
+              className="post-flow"
+              dangerouslySetInnerHTML={{ __html: markdownToHtml(post.content) }}
+            />
+          )}
           <ContentEnhancers />
         </article>
 

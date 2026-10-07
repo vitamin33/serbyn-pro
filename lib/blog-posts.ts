@@ -17,6 +17,9 @@ export interface BlogPostMeta {
   cover?: string;
   featured_code?: { lang: string; label?: string; code: string };
   toc?: boolean;
+
+  /** Compile the body as real MDX (components such as <FlowDiagram/>). */
+  mdx?: boolean;
 }
 
 export interface BlogPost extends BlogPostMeta {
