@@ -20,13 +20,13 @@ test('T4 — internal links resolve (crawl from home, depth 2)', async ({
   const depth1 = new Set(await internalLinks(page));
 
   const depth2 = new Set<string>(depth1);
-  for (const url of depth1) {
+  for (const url of Array.from(depth1)) {
     await page.goto(url);
     for (const l of await internalLinks(page)) depth2.add(l);
   }
 
   const broken: string[] = [];
-  for (const url of depth2) {
+  for (const url of Array.from(depth2)) {
     const res = await request.get(url);
     if (res.status() >= 400) broken.push(`${url} → ${res.status()}`);
   }
