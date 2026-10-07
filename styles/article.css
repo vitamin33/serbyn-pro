@@ -196,3 +196,172 @@
     white-space: normal;
   }
 }
+
+/* ── Post template ─────────────────────────────────────────────────────────
+   One reading column (70ch); figures, tables, stat strips, card rows and code
+   break out to the 1000px track. Left-aligned, as in the reference. */
+.post {
+  display: grid;
+  gap: 48px;
+}
+.post-header {
+  display: grid;
+  gap: 16px;
+  max-width: var(--measure);
+}
+.post-header h1 {
+  font-size: clamp(2rem, 5vw, 2.9rem);
+}
+.post-aside {
+  display: grid;
+  gap: 14px;
+}
+.post-body {
+  min-width: 0;
+}
+.post-flow > * {
+  max-width: var(--measure);
+  margin: 0;
+}
+.post-flow > * + * {
+  margin-top: 18px;
+}
+.post-flow > .wide,
+.post-flow > figure,
+.post-flow > pre,
+.post-flow > .a-tbl,
+.post-flow > .a-stats,
+.post-flow > .a-cards {
+  max-width: none;
+}
+.post-flow > * + .wide,
+.post-flow > * + figure,
+.post-flow > * + pre {
+  margin-top: 24px;
+}
+.post-flow > .wide + *,
+.post-flow > figure + * {
+  margin-top: 24px;
+}
+.post-flow > h2,
+.post-flow > .a-eyebrow {
+  margin-top: 56px;
+}
+.post-flow > .a-eyebrow + h2 {
+  margin-top: 10px;
+}
+.post-flow > h3 {
+  margin-top: 36px;
+}
+.post-flow > h3 + *,
+.post-flow > h2 + * {
+  margin-top: 12px;
+}
+.post-flow h2 {
+  font-size: 1.65rem;
+}
+.post-flow h3 {
+  font-size: 1.15rem;
+}
+.post-flow h4 {
+  font-size: 1rem;
+  margin-top: 28px;
+}
+.post-flow p,
+.post-flow li {
+  line-height: 1.65;
+}
+.post-flow ul,
+.post-flow ol {
+  padding-left: 1.2em;
+  display: grid;
+  gap: 6px;
+}
+.post-flow ul {
+  list-style: disc;
+}
+.post-flow ol {
+  list-style: decimal;
+}
+.post-flow li::marker {
+  color: var(--muted);
+}
+.post-flow a:not([class]) {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+.post-flow strong {
+  font-weight: 600;
+}
+.post-flow :not(pre) > code {
+  font-family: var(--mono);
+  font-size: 0.88em;
+  background: color-mix(in srgb, var(--line) 40%, transparent);
+  padding: 0.08em 0.35em;
+  border-radius: var(--radius-xs);
+}
+.post-flow blockquote {
+  border-left: 3px solid var(--accent);
+  padding: 4px 0 4px 18px;
+}
+.post-flow blockquote p {
+  margin: 0;
+}
+.post-flow hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin-block: 40px;
+}
+/* code: highlight.js github-dark palette on a dark block in both themes */
+.post-flow pre:not(.mermaid) {
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  overflow-x: auto;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+.post-flow pre:not(.mermaid) code {
+  font-family: var(--mono);
+  color: #e6edf3;
+  background: none;
+}
+/* images from markdown */
+.post-flow figure.blog-figure {
+  display: grid;
+  gap: 10px;
+}
+.post-flow figure.blog-figure img {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.post-flow figure.blog-figure figcaption {
+  font-size: 0.9rem;
+  color: var(--muted);
+  max-width: 80ch;
+}
+/* mermaid fallback: same frame as a diagram; colors come from the tokens at
+   render time (components/blog/content-enhancers.tsx) */
+.post-flow pre.mermaid {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px;
+  overflow-x: auto;
+  text-align: center;
+  line-height: 0; /* hide the raw source before the SVG renders */
+}
+.post-flow pre.mermaid svg {
+  max-width: 100%;
+  height: auto;
+}
+.post-flow pre.mermaid .node rect {
+  rx: 4px;
+  ry: 4px;
+}

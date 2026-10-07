@@ -75,7 +75,7 @@ export default function BlogPostPage({ params }: PageProps) {
       : null;
 
   return (
-    <div className="py-16">
+    <div className="py-10 sm:py-14">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -87,17 +87,17 @@ export default function BlogPostPage({ params }: PageProps) {
         />
       )}
       <EngagementTracker slug={post.slug} />
-      <div className="container max-w-3xl">
+      <div className="post container max-w-wide">
         <Link
           href={'/blog' as any}
-          className="mb-8 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+          className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.06em] text-muted-foreground hover:text-foreground"
         >
-          <ArrowLeft className="h-4 w-4" />
+          <ArrowLeft className="h-3.5 w-3.5" />
           All posts
         </Link>
 
-        <header className="mb-12">
-          <div className="mb-3 flex items-center gap-3 text-sm text-muted-foreground">
+        <header className="post-header">
+          <div className="a-eyebrow flex flex-wrap items-center gap-x-3 gap-y-1">
             <time dateTime={post.date}>
               {new Date(post.date).toLocaleDateString('en-US', {
                 year: 'numeric',
@@ -105,24 +105,17 @@ export default function BlogPostPage({ params }: PageProps) {
                 day: 'numeric',
               })}
             </time>
-            <span className="font-mono text-xs">
-              {post.readingTime} min read
-            </span>
-            <span className="rounded bg-secondary px-2 py-0.5 font-mono text-xs">
-              {post.category}
-            </span>
+            <span aria-hidden="true">·</span>
+            <span>{post.readingTime} min read</span>
+            <span aria-hidden="true">·</span>
+            <span>{post.category}</span>
           </div>
-          <h1 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl">
-            {post.title}
-          </h1>
-          <p className="text-lg text-muted-foreground">{post.description}</p>
+          <h1>{post.title}</h1>
+          <p className="a-lede">{post.description}</p>
           {post.keywords && post.keywords.length > 0 && (
-            <div className="mt-4 flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-1.5">
               {post.keywords.map(kw => (
-                <span
-                  key={kw}
-                  className="rounded bg-secondary px-2.5 py-1 font-mono text-xs text-secondary-foreground"
-                >
+                <span key={kw} className="a-tag">
                   {kw}
                 </span>
               ))}
@@ -130,10 +123,9 @@ export default function BlogPostPage({ params }: PageProps) {
           )}
         </header>
 
-        <hr className="my-12 border-border" />
-
-        <article className="blog-content case-study-content">
+        <article className="blog-content post-body">
           <div
+            className="post-flow"
             dangerouslySetInnerHTML={{ __html: markdownToHtml(post.content) }}
           />
           <ContentEnhancers />
@@ -141,64 +133,67 @@ export default function BlogPostPage({ params }: PageProps) {
 
         {/* Related case studies */}
         {caseStudies.length > 0 && (
-          <div className="mt-16">
-            <h2 className="mb-4 text-xl font-semibold">Related case studies</h2>
-            <div className="grid gap-3 sm:grid-cols-3">
+          <section className="post-aside">
+            <p className="a-eyebrow">Related case studies</p>
+            <div className="a-cards">
               {caseStudies.map(study => (
                 <Link
                   key={study.slug}
                   href={`/work/${study.slug}` as any}
-                  className="rounded-lg border border-border p-4 transition-colors hover:border-primary/40"
+                  className="a-card transition-colors hover:border-primary"
                 >
-                  <p className="mb-1 text-sm font-medium">{study.title}</p>
-                  <p className="text-xs text-muted-foreground">
+                  <h3>{study.title}</h3>
+                  <p className="text-muted-foreground">
                     {study.summary.slice(0, 80)}...
                   </p>
                 </Link>
               ))}
             </div>
-          </div>
+          </section>
         )}
 
         {/* Other posts */}
         {otherPosts.length > 0 && (
-          <div className="mt-12">
-            <h2 className="mb-4 text-xl font-semibold">More posts</h2>
-            <div className="space-y-3">
+          <section className="post-aside">
+            <p className="a-eyebrow">More posts</p>
+            <ul className="grid border-t border-border">
               {otherPosts.map(p => (
-                <Link
-                  key={p.slug}
-                  href={`/blog/${p.slug}` as any}
-                  className="block rounded-lg border border-border p-4 transition-colors hover:border-primary/40"
-                >
-                  <p className="mb-1 text-sm font-medium">{p.title}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {p.description.slice(0, 100)}...
-                  </p>
-                </Link>
+                <li key={p.slug} className="border-b border-border">
+                  <Link
+                    href={`/blog/${p.slug}` as any}
+                    className="group grid gap-1 py-4"
+                  >
+                    <span className="font-display text-[1.1rem] font-semibold group-hover:text-primary">
+                      {p.title}
+                    </span>
+                    <span className="text-sm text-muted-foreground">
+                      {p.description.slice(0, 100)}...
+                    </span>
+                  </Link>
+                </li>
               ))}
-            </div>
-          </div>
+            </ul>
+          </section>
         )}
 
         {/* CTA */}
-        <div className="mt-16 rounded-lg border border-primary/20 bg-card/50 p-8 text-center">
-          <h2 className="mb-2 text-xl font-semibold">
-            Want to discuss this further?
-          </h2>
-          <p className="mb-4 text-sm text-muted-foreground">
+        <section className="a-callout max-w-measure">
+          <h2 className="text-[1.25rem]">Want to discuss this further?</h2>
+          <p className="text-[0.95rem]">
             I help teams build autonomous agent systems and production AI
             infrastructure.
           </p>
-          <BookingButton
-            location={`blog_${post.slug}`}
-            label="Book Architecture Review"
-          />
-        </div>
+          <div className="pt-2">
+            <BookingButton
+              location={`blog_${post.slug}`}
+              label="Book Architecture Review"
+            />
+          </div>
+        </section>
 
         <TerminalSignup
           blurb="Field notes on agent reliability and LLM cost — new posts, no fluff."
-          className="mt-8"
+          className="max-w-measure"
         />
       </div>
     </div>
