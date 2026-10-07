@@ -1,0 +1,82 @@
+/* Design tokens: the only place colors and font stacks are defined.
+   Values are copied from the reference explainer (proof-of-green-mechanics.html,
+   :root block). Tailwind maps its color names onto these in tailwind.config.ts;
+   see docs/design/diagram-system.md.
+
+   Three ways to get the dark set, as in the reference:
+   1. the OS prefers dark and nothing forces light,
+   2. data-theme="dark" on <html>,
+   3. data-theme="dark" on any element (used by /lab/diagrams to show both
+      themes side by side). data-theme="light" works the same way. */
+
+:root,
+[data-theme='light'] {
+  --bg: #f4f6f4;
+  --surface: #ffffff;
+  --fg: #17211d;
+  --muted: #5b6862;
+  --line: #cfd8d3;
+  --accent: #0b6e55;
+  --accent-soft: #dcefe7;
+  --tier-a: #13804f;
+  --tier-b: #5f7f1a;
+  --tier-c: #b06a00;
+  --tier-d: #b3261e;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #111715;
+    --surface: #18201d;
+    --fg: #e3ebe7;
+    --muted: #95a39c;
+    --line: #2d3934;
+    --accent: #4fc79f;
+    --accent-soft: #173a2f;
+    --tier-a: #4fc485;
+    --tier-b: #a9c454;
+    --tier-c: #e9a23b;
+    --tier-d: #f07167;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme='dark'],
+[data-theme='dark'] {
+  --bg: #111715;
+  --surface: #18201d;
+  --fg: #e3ebe7;
+  --muted: #95a39c;
+  --line: #2d3934;
+  --accent: #4fc79f;
+  --accent-soft: #173a2f;
+  --tier-a: #4fc485;
+  --tier-b: #a9c454;
+  --tier-c: #e9a23b;
+  --tier-d: #f07167;
+  color-scheme: dark;
+}
+
+/* A nested themed region repaints itself; <html> and <body> do it in globals. */
+[data-theme]:not(:root) {
+  background: var(--bg);
+  color: var(--fg);
+}
+
+/* Font stacks. The --font-plex-* variables come from next/font in
+   app/layout.tsx, which downloads IBM Plex at build and serves it from our own
+   origin (no request to Google at runtime). */
+:root {
+  --display: var(--font-plex-condensed), 'IBM Plex Sans Condensed', 'Arial Narrow',
+    system-ui, sans-serif;
+  --body: var(--font-plex-sans), 'IBM Plex Sans', system-ui, -apple-system,
+    'Segoe UI', sans-serif;
+  --mono: var(--font-plex-mono), 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo,
+    monospace;
+  --radius: 6px;
+  --radius-sm: 4px;
+  --radius-xs: 3px;
+  --measure: 70ch;
+  --wide: 1000px;
+}

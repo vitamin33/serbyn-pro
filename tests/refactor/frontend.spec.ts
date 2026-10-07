@@ -2,14 +2,23 @@ import { test, expect } from '@playwright/test';
 
 // T15 — frontend polish guards (F14 404, F15 focus ring, F16 no external fonts).
 
-test('T15a — 404 page is dark and routes back to /audit', async ({ page }) => {
+test('T15a — 404 page is branded, themed, and routes back to /audit', async ({
+  page,
+}) => {
+  // The site used to be dark-only (an html.dark class). It now follows the OS
+  // scheme through the design tokens, so the 404 must paint the token
+  // background in both schemes: dark under a dark preference, light otherwise.
+  const bodyBg = () =>
+    page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+
+  await page.emulateMedia({ colorScheme: 'dark' });
   const resp = await page.goto('/this-page-does-not-exist-xyz');
   expect(resp?.status(), '404 status').toBe(404);
-  const isDark = await page.evaluate(() =>
-    document.documentElement.classList.contains('dark')
-  );
-  expect(isDark, 'html has dark theme class').toBe(true);
+  expect(await bodyBg(), 'dark token --bg #111715').toBe('rgb(17, 23, 21)');
   await expect(page.locator('a[href="/audit"]').first()).toBeVisible();
+
+  await page.emulateMedia({ colorScheme: 'light' });
+  expect(await bodyBg(), 'light token --bg #f4f6f4').toBe('rgb(244, 246, 244)');
 });
 
 test('T15b — keyboard-focused nav link shows a visible outline', async ({

@@ -45,7 +45,7 @@ export function ProjectCard({
           not a baked-in image, so the card carries no text-as-pixels. */}
       <div
         className={cn(
-          'relative overflow-hidden border-b border-border bg-[hsl(220_23%_6%)]',
+          'relative overflow-hidden border-b border-border bg-bg',
           featured && 'md:w-1/2 md:border-b-0 md:border-r'
         )}
       >

@@ -110,7 +110,7 @@ components/diagram/
   mdx.tsx          the map handed to the MDX compiler
 components/article/  page elements from the reference: Eyebrow, Short,
                    DataTable, Stats, Cards, Callout, Tag, TierBadge, Interim
-styles/tokens.css  the only place colors and font stacks are defined
+styles/theme.css  the only place colors and font stacks are defined
 styles/diagram.css SVG role classes (.dg-b, .dg-ln-acc, .dg-t-h …)
 ```
 

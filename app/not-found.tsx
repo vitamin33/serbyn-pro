@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 
-// Branded 404 (F14). Renders inside the dark AppShell (root layout) and routes
+// Branded 404 (F14). Renders inside the AppShell (root layout) in the site theme and routes
 // visitors back to the offer and the writing — never a dead end.
 export default function NotFound() {
   return (

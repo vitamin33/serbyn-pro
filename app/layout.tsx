@@ -1,5 +1,9 @@
 import type { Metadata } from 'next';
-import { Inter, JetBrains_Mono } from 'next/font/google';
+import {
+  IBM_Plex_Mono,
+  IBM_Plex_Sans,
+  IBM_Plex_Sans_Condensed,
+} from 'next/font/google';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import '../styles/globals.css';
@@ -12,18 +16,28 @@ import {
   generateWebsiteSchema,
 } from '@/lib/seo';
 
-const inter = Inter({
+// IBM Plex, downloaded by next/font at build and served from our origin (T15c).
+// The stacks that use these variables live in styles/theme.css.
+const plexSans = IBM_Plex_Sans({
   subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  style: ['normal', 'italic'],
   display: 'swap',
-  preload: true,
-  variable: '--font-sans',
+  variable: '--font-plex-sans',
 });
 
-const jetbrainsMono = JetBrains_Mono({
+const plexCondensed = IBM_Plex_Sans_Condensed({
   subsets: ['latin'],
+  weight: ['500', '600'],
   display: 'swap',
-  preload: true,
-  variable: '--font-mono',
+  variable: '--font-plex-condensed',
+});
+
+const plexMono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500'],
+  display: 'swap',
+  variable: '--font-plex-mono',
 });
 
 export const metadata: Metadata = pageMetadata.home();
@@ -36,7 +50,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`dark scroll-smooth ${inter.variable} ${jetbrainsMono.variable}`}
+      className={`scroll-smooth ${plexSans.variable} ${plexCondensed.variable} ${plexMono.variable}`}
     >
       <head>
         <script
@@ -58,7 +72,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${inter.className} antialiased`}>
+      <body className="antialiased">
         <a
           href="#main"
           className="skip-to-content"

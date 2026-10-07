@@ -12,7 +12,7 @@ export function CodePanel({
   return (
     <div
       className={cn(
-        'overflow-hidden rounded-lg border border-border bg-[hsl(220_23%_4%)]',
+        'overflow-hidden rounded-lg border border-border bg-bg',
         className
       )}
     >
