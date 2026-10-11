@@ -209,25 +209,9 @@
   }
 }
 
-/* ── Post template ─────────────────────────────────────────────────────────
+/* ── Post body flow ────────────────────────────────────────────────────────
    One reading column (70ch); figures, tables, stat strips, card rows and code
-   break out to the 1000px track. Left-aligned, as in the reference. */
-.post {
-  display: grid;
-  gap: 48px;
-}
-.post-header {
-  display: grid;
-  gap: 16px;
-  max-width: var(--measure);
-}
-.post-header h1 {
-  font-size: clamp(2rem, 5vw, 2.9rem);
-}
-.post-aside {
-  display: grid;
-  gap: 14px;
-}
+   break out into the margin column on wide screens (end of file). */
 .post-body {
   min-width: 0;
 }
