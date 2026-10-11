@@ -5,7 +5,7 @@
   font: 500 0.75rem/1 var(--mono);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--muted);
 }
 .a-lede {
   font-size: 1.15rem;
@@ -13,10 +13,12 @@
   max-width: 62ch;
 }
 .a-short {
-  border-left: 3px solid var(--accent);
-  padding: 4px 0 4px 18px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 18px 22px;
   display: grid;
-  gap: 6px;
+  gap: 8px;
   max-width: var(--measure);
 }
 .a-short p {
@@ -26,9 +28,6 @@
 
 .a-tbl {
   overflow-x: auto;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--surface);
 }
 .a-tbl table {
   border-collapse: collapse;
@@ -40,7 +39,7 @@
 .a-tbl td {
   text-align: left;
   vertical-align: top;
-  padding: 10px 14px;
+  padding: 12px 14px 12px 0;
   border-bottom: 1px solid var(--line);
 }
 .a-tbl tr:last-child td {
@@ -51,7 +50,7 @@
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--muted);
-  background: var(--bg);
+  border-bottom-color: var(--fg);
 }
 .a-tbl td:first-child {
   font-weight: 600;
@@ -79,9 +78,8 @@
 .a-stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
   overflow: hidden;
 }
 /* dividers per cell, so a short last row leaves no line-colored gap */
@@ -95,7 +93,8 @@
   align-content: start;
 }
 .a-stat b {
-  font: 600 1.6rem/1.1 var(--display);
+  font: 800 1.75rem/1.1 var(--display);
+  letter-spacing: -0.035em;
   font-variant-numeric: tabular-nums;
 }
 .a-stat > span {
@@ -150,17 +149,25 @@
 .a-tier {
   display: inline-grid;
   place-items: center;
-  width: 1.35em;
-  height: 1.35em;
-  border-radius: 50%;
-  font: 600 0.8em/1 var(--display);
-  color: var(--bg);
+  width: 1.45em;
+  height: 1.45em;
+  border: 1.5px solid currentColor;
+  border-radius: var(--radius-xs);
+  font: 800 0.78em/1 var(--display);
   vertical-align: 0.05em;
 }
-.a-tier[data-tier='a'] { background: var(--tier-a); }
-.a-tier[data-tier='b'] { background: var(--tier-b); }
-.a-tier[data-tier='c'] { background: var(--tier-c); }
-.a-tier[data-tier='d'] { background: var(--tier-d); }
+.a-tier[data-tier='a'] {
+  color: var(--tier-a);
+}
+.a-tier[data-tier='b'] {
+  color: var(--tier-b);
+}
+.a-tier[data-tier='c'] {
+  color: var(--tier-c);
+}
+.a-tier[data-tier='d'] {
+  color: var(--tier-d);
+}
 
 /* Interim numbers: the value plus a small visible "interim" tag. */
 .a-interim {
@@ -168,10 +175,13 @@
 }
 .a-interim-tag {
   margin-left: 0.25em;
-  font: 500 0.62rem/1 var(--mono);
-  letter-spacing: 0.04em;
+  font: 600 0.6rem/1.4 var(--mono);
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--tier-c);
+  color: var(--interim);
+  background: var(--interim-soft);
+  padding: 0 4px;
+  border-radius: var(--radius-bar);
   vertical-align: 0.35em;
 }
 .a-stat .a-interim-tag {
@@ -316,20 +326,51 @@
   border-top: 1px solid var(--line);
   margin-block: 40px;
 }
-/* code: highlight.js github-dark palette on a dark block in both themes */
+/* code: the warm syntax theme of the design system, both modes */
 .post-flow pre:not(.mermaid) {
-  background: #0d1117;
-  border: 1px solid #30363d;
+  background: var(--code-bg);
+  border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: 14px 16px;
+  padding: 18px 20px;
   overflow-x: auto;
-  font-size: 0.85rem;
-  line-height: 1.6;
+  font-size: 0.84rem;
+  line-height: 1.7;
 }
 .post-flow pre:not(.mermaid) code {
   font-family: var(--mono);
-  color: #e6edf3;
+  color: var(--code-fg);
   background: none;
+  padding: 0;
+}
+.post-flow pre .hljs-comment,
+.post-flow pre .hljs-quote {
+  color: var(--code-comment);
+}
+.post-flow pre .hljs-keyword,
+.post-flow pre .hljs-built_in,
+.post-flow pre .hljs-selector-tag,
+.post-flow pre .hljs-meta {
+  color: var(--code-keyword);
+  font-weight: 500;
+}
+.post-flow pre .hljs-title,
+.post-flow pre .hljs-attr,
+.post-flow pre .hljs-property,
+.post-flow pre .hljs-section {
+  color: var(--code-fn);
+}
+.post-flow pre .hljs-string,
+.post-flow pre .hljs-regexp,
+.post-flow pre .hljs-addition {
+  color: var(--code-string);
+}
+.post-flow pre .hljs-number,
+.post-flow pre .hljs-literal,
+.post-flow pre .hljs-symbol {
+  color: var(--code-literal);
+}
+.post-flow pre .hljs-deletion {
+  color: var(--tier-d);
 }
 /* images from markdown */
 .post-flow figure.blog-figure {
@@ -366,4 +407,45 @@
 .post-flow pre.mermaid .node rect {
   rx: 4px;
   ry: 4px;
+}
+
+/* ── Post template (design system) ────────────────────────────────────────
+   Header, then the reading grid: TOC | 70ch column | margin column.
+   Wide blocks (figures, code, tables, stat strips, card rows) extend into the
+   margin column at >= 1200px; margin notes float there. */
+.ds-post {
+  padding-top: 56px;
+}
+.ds-post-header {
+  max-width: 920px;
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.ds-post-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.ds-read .post-flow {
+  font-size: 17px;
+}
+.ds-read .post-flow p,
+.ds-read .post-flow li {
+  line-height: 1.65;
+}
+.ds-read .post-flow h2 {
+  font-size: 30px;
+  letter-spacing: -0.025em;
+}
+@media (min-width: 1200px) {
+  .ds-read .post-flow > :is(.wide, figure, pre, .a-tbl, .a-stats, .a-cards) {
+    margin-right: calc(-220px - 48px);
+    max-width: none;
+    clear: right;
+  }
+}
+.ds-post-end {
+  margin-top: 88px;
 }

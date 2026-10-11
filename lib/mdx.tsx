@@ -4,13 +4,20 @@ import rehypeSlug from 'rehype-slug';
 import rehypeHighlight from 'rehype-highlight';
 import { diagramComponents } from '@/components/diagram/mdx';
 import * as Article from '@/components/article';
+import { MarginNote, PullQuote } from '@/components/ds/writing';
 
 // Real MDX for posts that set `mdx: true` in frontmatter. Compiled in the
 // server component at build time, so diagrams arrive as static SVG and nothing
 // here ships to the browser. Older posts keep the markdown converter in
 // app/blog/[slug]/page.tsx.
 
-export const mdxComponents = { ...diagramComponents, ...Article };
+// MarginNote and PullQuote come from the design system (components/ds).
+export const mdxComponents = {
+  ...diagramComponents,
+  ...Article,
+  MarginNote,
+  PullQuote,
+};
 
 type HastNode = {
   type: string;

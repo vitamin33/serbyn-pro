@@ -33,6 +33,21 @@ export interface BlogPostMeta {
   exhibit?: MiniExhibitData;
   /** Screen-reader sentence for the exhibit. */
   exhibitLabel?: string;
+  /** Post hero figure: the giant number plus bars with intervals computed
+      from k/n. Every value must appear in the post body. */
+  keyNumber?: {
+    value: string;
+    unit?: string;
+    caption: string;
+    direction?: string;
+    bars: {
+      label: string;
+      k: number;
+      n: number;
+      series: 'claim' | 'baseline' | 'accent';
+    }[];
+    note: string;
+  };
 }
 
 export interface BlogPost extends BlogPostMeta {

@@ -1,19 +1,26 @@
 import { notFound } from 'next/navigation';
-import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
 import {
   draftsVisible,
   getAllBlogPosts,
   getBlogPostBySlug,
   getDraftSlugs,
+  isoDate,
 } from '@/lib/blog-posts';
 import { createMetadata, siteConfig } from '@/lib/seo';
 import { getAllCaseStudies } from '@/lib/case-studies';
 import { ContentEnhancers } from '@/components/blog/content-enhancers';
 import { EngagementTracker } from '@/components/blog/engagement-tracker';
-import { BookingButton } from '@/components/site/cta';
-import { TerminalSignup } from '@/components/lab/terminal-signup';
 import { extractFaqs } from '@/lib/blog-faq';
+import { slugify } from '@/lib/toc';
+import {
+  Chip,
+  DiscussCta,
+  Eyebrow,
+  KeyNumber,
+  Masthead,
+  RelatedList,
+  Toc,
+} from '@/components/ds';
 import { renderMdx } from '@/lib/mdx';
 
 interface PageProps {
@@ -86,8 +93,11 @@ export default async function BlogPostPage({ params }: PageProps) {
         }
       : null;
 
+  const date = isoDate(post.date);
+  const kn = post.keyNumber;
+
   return (
-    <div className="py-10 sm:py-14">
+    <div className="ds-post">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -99,130 +109,134 @@ export default async function BlogPostPage({ params }: PageProps) {
         />
       )}
       <EngagementTracker slug={post.slug} />
-      <div className="post container max-w-wide">
-        <Link
-          href={'/blog' as any}
-          className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.06em] text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft className="h-3.5 w-3.5" />
-          All posts
-        </Link>
+
+      <div className="ds-wrap">
+        <a className="ds-link ds-mono" data-tone="muted" href="/writing">
+          <span style={{ fontSize: 13 }}>← All posts</span>
+        </a>
 
         {post.draft && (
-          <p className="a-draft max-w-measure" role="status">
+          <p className="a-draft" role="status" style={{ marginTop: 24 }}>
             <strong>Draft preview</strong>
             Not listed and not routable in production. Visible on the dev server
             only.
           </p>
         )}
 
-        <header className="post-header">
-          <div className="a-eyebrow flex flex-wrap items-center gap-x-3 gap-y-1">
-            <time dateTime={post.date}>
-              {new Date(post.date).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
-            </time>
-            <span aria-hidden="true">·</span>
-            <span>{post.readingTime} min read</span>
-            <span aria-hidden="true">·</span>
-            <span>{post.category}</span>
-          </div>
-          <h1>{post.title}</h1>
-          <p className="a-lede">{post.description}</p>
+        <header className="ds-post-header">
+          <Eyebrow>
+            <time dateTime={date}>{date}</time> · {post.readingTime} min read ·{' '}
+            {post.category}
+          </Eyebrow>
+          <h1 className="ds-h1" data-size="post">
+            {post.title}
+          </h1>
+          <p className="ds-lede" style={{ color: 'var(--muted)' }}>
+            {post.description}
+          </p>
           {post.keywords && post.keywords.length > 0 && (
-            <div className="flex flex-wrap gap-1.5">
+            <div className="ds-post-tags">
               {post.keywords.map(kw => (
-                <span key={kw} className="a-tag">
+                <Chip key={kw} size="sm">
                   {kw}
-                </span>
+                </Chip>
               ))}
             </div>
           )}
         </header>
 
-        <article className="blog-content post-body">
-          {post.mdx ? (
-            <div className="post-flow">{await renderMdx(post.content)}</div>
-          ) : (
-            <div
-              className="post-flow"
-              dangerouslySetInnerHTML={{ __html: markdownToHtml(post.content) }}
+        {kn && (
+          <KeyNumber
+            value={kn.value}
+            unit={kn.unit}
+            caption={kn.caption}
+            direction={kn.direction}
+            bars={kn.bars.map(b => ({
+              label: b.label,
+              k: b.k,
+              n: b.n,
+              series: b.series,
+              display: `${b.k} / ${b.n}`,
+              tone: b.series === 'accent' ? 'accent' : undefined,
+            }))}
+            axis={
+              kn.bars.every(b => b.n === 40)
+                ? ['0', '10', '20', '30', '40']
+                : undefined
+            }
+            note={kn.note}
+          />
+        )}
+      </div>
+
+      <div className="ds-wrap" style={{ paddingTop: 64 }}>
+        <div className="ds-read">
+          <Toc jumpTo={kn ? 'key-number' : undefined} />
+          <article className="blog-content post-body">
+            {post.mdx ? (
+              <div className="post-flow">{await renderMdx(post.content)}</div>
+            ) : (
+              <div
+                className="post-flow"
+                dangerouslySetInnerHTML={{
+                  __html: markdownToHtml(post.content),
+                }}
+              />
+            )}
+            <ContentEnhancers />
+          </article>
+          <span aria-hidden="true" />
+        </div>
+      </div>
+
+      <div className="ds-wrap ds-post-end">
+        <div className="ds-cards" style={{ gap: 48 }}>
+          {caseStudies.length > 0 && (
+            <RelatedList
+              title="Related case studies"
+              metaAt="end"
+              items={caseStudies.map(study => ({
+                href: `/work/${study.slug}`,
+                title: study.title,
+                meta: PROJECT_TYPE[study.project_type ?? ''] ?? '',
+              }))}
             />
           )}
-          <ContentEnhancers />
-        </article>
-
-        {/* Related case studies */}
-        {caseStudies.length > 0 && (
-          <section className="post-aside">
-            <p className="a-eyebrow">Related case studies</p>
-            <div className="a-cards">
-              {caseStudies.map(study => (
-                <Link
-                  key={study.slug}
-                  href={`/work/${study.slug}` as any}
-                  className="a-card transition-colors hover:border-primary"
-                >
-                  <h3>{study.title}</h3>
-                  <p className="text-muted-foreground">
-                    {study.summary.slice(0, 80)}...
-                  </p>
-                </Link>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Other posts */}
-        {otherPosts.length > 0 && (
-          <section className="post-aside">
-            <p className="a-eyebrow">More posts</p>
-            <ul className="grid border-t border-border">
-              {otherPosts.map(p => (
-                <li key={p.slug} className="border-b border-border">
-                  <Link
-                    href={`/blog/${p.slug}` as any}
-                    className="group grid gap-1 py-4"
-                  >
-                    <span className="font-display text-[1.1rem] font-semibold group-hover:text-primary">
-                      {p.title}
-                    </span>
-                    <span className="text-sm text-muted-foreground">
-                      {p.description.slice(0, 100)}...
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-
-        {/* CTA */}
-        <section className="a-callout max-w-measure">
-          <h2 className="text-[1.25rem]">Want to discuss this further?</h2>
-          <p className="text-[0.95rem]">
-            I help teams build autonomous agent systems and production AI
-            infrastructure.
-          </p>
-          <div className="pt-2">
-            <BookingButton
-              location={`blog_${post.slug}`}
-              label="Book Architecture Review"
+          {otherPosts.length > 0 && (
+            <RelatedList
+              title="More posts"
+              items={otherPosts.map(p => ({
+                href: `/blog/${p.slug}`,
+                title: p.title,
+                meta: isoDate(p.date),
+              }))}
             />
-          </div>
-        </section>
+          )}
+        </div>
 
-        <TerminalSignup
-          blurb="Field notes on agent reliability and LLM cost — new posts, no fluff."
-          className="max-w-measure"
+        <DiscussCta
+          body="I help teams build autonomous agent systems and production AI infrastructure."
+          location={`blog_${post.slug}`}
+          label="Book Architecture Review"
+          secondary={{
+            href: '/audit',
+            label: 'or see the audit this method comes from',
+          }}
         />
+
+        <div style={{ margin: '48px 0 0', paddingBottom: 96 }}>
+          <Masthead variant="footer" location={`blog_${post.slug}`} />
+        </div>
       </div>
     </div>
   );
 }
+
+const PROJECT_TYPE: Record<string, string> = {
+  primary: 'R&D',
+  startup: 'Startup',
+  anonymized: 'Enterprise',
+};
 
 function escapeHtml(text: string): string {
   return text
@@ -261,12 +275,16 @@ function renderCodeFence(lang: string, code: string): string {
 function markdownToHtml(markdown: string): string {
   const lines = markdown.split('\n');
 
-  // Strip a leading H1 — the page already renders the post title as its <h1>,
-  // so a title-repeating '# …' at the top of the body would duplicate it (F29).
-  const firstContentIdx = lines.findIndex(l => l.trim() !== '');
-  if (firstContentIdx !== -1 && /^#\s+/.test(lines[firstContentIdx].trim())) {
-    lines.splice(firstContentIdx, 1);
-  }
+  // Strip the title H1 — the page already renders the post title as its <h1>,
+  // so a title-repeating '# …' near the top of the body would duplicate it
+  // (F29). Some posts open with a series note before it, so look at the first
+  // few content lines, not only the first.
+  const contentIdx = lines
+    .map((l, i) => (l.trim() ? i : -1))
+    .filter(i => i >= 0)
+    .slice(0, 4);
+  const h1Idx = contentIdx.find(i => /^#\s+/.test(lines[i].trim()));
+  if (h1Idx !== undefined) lines.splice(h1Idx, 1);
 
   const html: string[] = [];
   let inCodeBlock = false;
@@ -334,12 +352,18 @@ function markdownToHtml(markdown: string): string {
     }
     if (trimmed.startsWith('### ')) {
       closeLists();
-      html.push(`<h3>${inlineFormat(trimmed.slice(4))}</h3>`);
+      const t3 = trimmed.slice(4);
+      html.push(
+        `<h3 id="${slugify(t3.replace(/[*`]/g, ''))}">${inlineFormat(t3)}</h3>`
+      );
       continue;
     }
     if (trimmed.startsWith('## ')) {
       closeLists();
-      html.push(`<h2>${inlineFormat(trimmed.slice(3))}</h2>`);
+      const t2 = trimmed.slice(3);
+      html.push(
+        `<h2 id="${slugify(t2.replace(/[*`]/g, ''))}">${inlineFormat(t2)}</h2>`
+      );
       continue;
     }
     if (trimmed.startsWith('# ')) {

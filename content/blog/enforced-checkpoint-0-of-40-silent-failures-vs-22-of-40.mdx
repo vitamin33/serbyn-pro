@@ -27,6 +27,15 @@ exhibit:
     - { value: 6, max: 40, label: '6', series: baseline }
     - { value: 0, max: 40, label: '0', series: accent }
 exhibitLabel: 'Silent failures per 40 runs: no checkpoint 22, optional tool 6, forced checkpoint 0'
+keyNumber:
+  value: '0'
+  unit: of 40
+  caption: silent failures with the forced checkpoint, at 1.00x cost
+  bars:
+    - { label: No checkpoint, k: 22, n: 40, series: claim }
+    - { label: Optional tool, k: 6, n: 40, series: baseline }
+    - { label: Forced checkpoint, k: 0, n: 40, series: accent }
+  note: '↳ deepseek-flash · 40 runs per arm · 95% intervals from the counts'
 ---
 
 > Part of the series: [When an AI Agent Says Done: 0% vs 100% False Greens](/blog/same-model-0-and-100-where-the-verifier-gap-actually-lives)

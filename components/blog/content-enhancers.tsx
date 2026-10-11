@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect } from 'react';
-import 'highlight.js/styles/github-dark.css';
 
 /**
  * Progressive enhancement for blog post bodies (rendered server-side as HTML):
