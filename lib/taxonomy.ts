@@ -52,3 +52,10 @@ export function caseStudyCategory(category: string): PublicCategory {
 export function blogCategory(category: string): PublicCategory {
   return BLOG_MAP[category] ?? 'research';
 }
+
+/** Display label for a case study's project_type. */
+export const PROJECT_LABEL: Record<string, string> = {
+  primary: 'Primary R&D',
+  startup: 'Startup',
+  anonymized: 'Enterprise',
+};

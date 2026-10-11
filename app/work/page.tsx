@@ -1,6 +1,7 @@
 import { getAllCaseStudies } from '@/lib/case-studies';
 import { pageMetadata } from '@/lib/seo';
-import { WorkGrid } from '@/components/lab/work-grid';
+import { Eyebrow } from '@/components/ds';
+import { WorkGrid } from '@/components/site/work-grid';
 
 export const metadata = pageMetadata.work();
 
@@ -9,20 +10,21 @@ export default function WorkPage() {
   const caseStudies = getAllCaseStudies().map(s => ({ ...s, content: '' }));
 
   return (
-    <div className="py-16">
-      <div className="container">
-        <div className="mb-12 max-w-2xl">
-          <p className="label-caps mb-2 text-muted-foreground">INDEX / WORK</p>
-          <h1 className="mb-4 text-4xl font-bold tracking-tight">
+    <div style={{ padding: '80px 0 120px' }}>
+      <div className="ds-wrap">
+        <div className="ds-stack" style={{ gap: 20, maxWidth: 860 }}>
+          <Eyebrow>Index / work</Eyebrow>
+          <h1 className="ds-h1" data-size="index">
             High-performance AI systems &amp; infrastructure
           </h1>
-          <p className="text-lg text-muted-foreground">
+          <p className="ds-lede" style={{ color: 'var(--muted)' }}>
             Real projects with authentic metrics — from autonomous agent
             orchestration to multi-project enterprise delivery.
           </p>
         </div>
-
-        <WorkGrid studies={caseStudies} />
+        <div style={{ marginTop: 56 }}>
+          <WorkGrid studies={caseStudies} />
+        </div>
       </div>
     </div>
   );

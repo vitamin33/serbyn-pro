@@ -1,13 +1,16 @@
 import { notFound } from 'next/navigation';
-import Link from 'next/link';
-import { ArrowLeft, ExternalLink } from 'lucide-react';
 import { getAllCaseStudies, getCaseStudyBySlug } from '@/lib/case-studies';
+import { PROJECT_LABEL } from '@/lib/taxonomy';
 import { createMetadata } from '@/lib/seo';
-import { extractToc, slugify } from '@/lib/toc';
-import { firstCodeBlock } from '@/lib/extract-code';
-import { EssayMap } from '@/components/lab/essay-map';
-import { CodePanel } from '@/components/lab/code-panel';
-import { BookingButton } from '@/components/site/cta';
+import { slugify } from '@/lib/toc';
+import {
+  Chip,
+  DiscussCta,
+  Eyebrow,
+  SignoffStrip,
+  TextLink,
+  Toc,
+} from '@/components/ds';
 
 interface PageProps {
   params: { slug: string };
@@ -34,129 +37,80 @@ export default function CaseStudyPage({ params }: PageProps) {
   const study = getCaseStudyBySlug(params.slug);
   if (!study) notFound();
 
-  const toc = extractToc(study.content);
-  const code = firstCodeBlock(study.content);
-  const projectLabel =
-    study.project_type === 'primary'
-      ? 'Primary R&D'
-      : study.project_type === 'startup'
-        ? 'Startup'
-        : 'Enterprise';
-
   return (
-    <div className="py-12">
-      <div className="container max-w-6xl">
-        <Link
-          href={'/work' as any}
-          className="mb-8 inline-flex items-center gap-2 font-mono text-xs text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          INDEX / WORK
-        </Link>
+    <div className="ds-post">
+      <div className="ds-wrap">
+        <a className="ds-link ds-mono" data-tone="muted" href="/work">
+          <span style={{ fontSize: 13 }}>← Work</span>
+        </a>
 
-        <header className="mb-10 max-w-3xl">
-          {study.project_type && (
-            <span className="label-caps mb-3 inline-block rounded-sm border border-border px-2 py-1 text-muted-foreground">
-              {projectLabel}
-            </span>
-          )}
-          <h1 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl">
+        <header className="ds-post-header">
+          <div className="ds-post-tags" style={{ alignItems: 'center' }}>
+            <Eyebrow>Case study</Eyebrow>
+            {study.project_type && (
+              <Chip variant="claim" size="sm">
+                {PROJECT_LABEL[study.project_type]}
+              </Chip>
+            )}
+          </div>
+          <h1 className="ds-h1" data-size="post">
             {study.title}
           </h1>
-          <p className="mb-6 text-lg text-muted-foreground">{study.summary}</p>
-
-          <div className="flex flex-wrap gap-1.5">
+          <p className="ds-lede" style={{ color: 'var(--muted)' }}>
+            {study.summary}
+          </p>
+          <div className="ds-post-tags">
             {study.tech.map(t => (
-              <span
-                key={t}
-                className="rounded bg-secondary px-2.5 py-1 font-mono text-xs text-secondary-foreground"
-              >
+              <Chip key={t} size="sm">
                 {t}
-              </span>
+              </Chip>
             ))}
           </div>
-
-          {study.highlight_metrics && study.highlight_metrics.length > 0 && (
-            <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              {study.highlight_metrics.map(metric => (
-                <div
-                  key={metric}
-                  className="rounded-lg border border-border border-t-2 border-t-primary/60 bg-card p-3"
-                >
-                  <p className="font-mono text-sm text-foreground">{metric}</p>
-                </div>
-              ))}
-            </div>
-          )}
         </header>
 
-        <div
-          className={`grid gap-10 lg:grid-cols-[180px_1fr]${
-            code ? ' xl:grid-cols-[180px_1fr_340px]' : ''
-          }`}
-        >
-          <aside className="hidden lg:block">
-            <div className="sticky top-8">
-              <EssayMap items={toc} />
-            </div>
-          </aside>
+        {study.highlight_metrics && study.highlight_metrics.length > 0 && (
+          <div style={{ marginTop: 40, maxWidth: 1000 }}>
+            <SignoffStrip items={study.highlight_metrics} />
+          </div>
+        )}
+      </div>
 
-          <article className="case-study-content min-w-0">
+      <div className="ds-wrap" style={{ paddingTop: 64 }}>
+        <div className="ds-read">
+          <Toc />
+          <article>
             <div
+              className="post-flow"
               dangerouslySetInnerHTML={{
                 __html: markdownToHtml(study.content),
               }}
             />
-
-            {study.links && Object.values(study.links).some(Boolean) && (
-              <div className="mt-8 flex flex-wrap gap-3">
+            {(study.links?.repo || study.links?.demo) && (
+              <div className="ds-actions" style={{ marginTop: 32 }}>
                 {study.links.repo && (
-                  <a
-                    href={study.links.repo}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm hover:bg-accent"
-                  >
-                    GitHub
-                    <ExternalLink className="h-3.5 w-3.5" />
-                  </a>
+                  <TextLink href={study.links.repo} strong external>
+                    GitHub ↗
+                  </TextLink>
                 )}
                 {study.links.demo && (
-                  <a
-                    href={study.links.demo}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm hover:bg-accent"
-                  >
-                    Demo
-                    <ExternalLink className="h-3.5 w-3.5" />
-                  </a>
+                  <TextLink href={study.links.demo} strong external>
+                    Demo ↗
+                  </TextLink>
                 )}
               </div>
             )}
-
-            <div className="mt-16 rounded-lg border border-primary/20 bg-card/50 p-8 text-center">
-              <h2 className="mb-2 text-xl font-semibold">
-                Discuss this architecture
-              </h2>
-              <p className="mb-4 text-sm text-muted-foreground">
-                Want to explore how similar patterns could work for your system?
-              </p>
-              <BookingButton
-                location="work_case_study"
-                label="Book Architecture Review"
-              />
-            </div>
           </article>
-
-          {code && (
-            <aside className="hidden xl:block">
-              <div className="sticky top-8">
-                <CodePanel block={code} />
-              </div>
-            </aside>
-          )}
+          <span aria-hidden="true" />
         </div>
+      </div>
+
+      <div className="ds-wrap ds-post-end" style={{ paddingBottom: 96 }}>
+        <DiscussCta
+          title="Discuss this architecture"
+          body="Want to explore how similar patterns could work for your system?"
+          location="work_case_study"
+          label="Book Architecture Review"
+        />
       </div>
     </div>
   );
@@ -245,7 +199,9 @@ function markdownToHtml(markdown: string): string {
     // Headings
     if (trimmed.startsWith('### ')) {
       closeLists();
-      html.push(`<h3>${inlineFormat(trimmed.slice(4))}</h3>`);
+      html.push(
+        `<h3 id="${slugify(trimmed.slice(4))}">${inlineFormat(trimmed.slice(4))}</h3>`
+      );
       continue;
     }
     if (trimmed.startsWith('## ')) {
@@ -255,9 +211,13 @@ function markdownToHtml(markdown: string): string {
       html.push(`<h2 id="${id}">${inlineFormat(raw)}</h2>`);
       continue;
     }
+    // the page renders the title as its only <h1>; a '# ' line in the body
+    // is demoted so the page keeps one H1
     if (trimmed.startsWith('# ')) {
       closeLists();
-      html.push(`<h1>${inlineFormat(trimmed.slice(2))}</h1>`);
+      html.push(
+        `<h2 id="${slugify(trimmed.slice(2))}">${inlineFormat(trimmed.slice(2))}</h2>`
+      );
       continue;
     }
 
