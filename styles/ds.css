@@ -3461,3 +3461,24 @@ a.ds-work-card:hover {
 .ds-about-flow p {
   margin: 0;
 }
+
+/* themed images: a light and a dark render of the same chart */
+.ds-img-dark {
+  display: none !important;
+}
+:root[data-theme='dark'] .ds-img-dark,
+[data-theme='dark'] .ds-img-dark {
+  display: block !important;
+}
+:root[data-theme='dark'] .ds-img-light,
+[data-theme='dark'] .ds-img-light {
+  display: none !important;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .ds-img-dark {
+    display: block !important;
+  }
+  :root:not([data-theme='light']) .ds-img-light {
+    display: none !important;
+  }
+}

@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import { notFound } from 'next/navigation';
 import {
   draftsVisible,
@@ -238,6 +240,21 @@ const PROJECT_TYPE: Record<string, string> = {
   anonymized: 'Enterprise',
 };
 
+// A chart rendered by scripts/render-charts.mjs has a "-dark" twin next to it;
+// both are emitted and CSS shows the one that matches the active theme.
+function themedImage(src: string, alt: string): string {
+  const dark = src.replace(/\.png$/, '-dark.png');
+  const hasDark =
+    src.startsWith('/') &&
+    dark !== src &&
+    fs.existsSync(path.join(process.cwd(), 'public', dark));
+  if (!hasDark) return `<img src="${src}" alt="${alt}" loading="lazy" />`;
+  return (
+    `<img class="ds-img-light" src="${src}" alt="${alt}" loading="lazy" />` +
+    `<img class="ds-img-dark" src="${dark}" alt="${alt}" loading="lazy" />`
+  );
+}
+
 function escapeHtml(text: string): string {
   return text
     .replace(/&/g, '&amp;')
@@ -381,7 +398,7 @@ function markdownToHtml(markdown: string): string {
       const [, alt, src, caption] = imageMatch;
       const cap = caption || alt;
       html.push(
-        `<figure class="blog-figure"><img src="${src}" alt="${escapeHtml(alt)}" loading="lazy" />` +
+        `<figure class="blog-figure">${themedImage(src, escapeHtml(alt))}` +
           (cap ? `<figcaption>${inlineFormat(cap)}</figcaption>` : '') +
           `</figure>`
       );
