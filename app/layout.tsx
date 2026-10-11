@@ -1,10 +1,5 @@
 import type { Metadata } from 'next';
-import {
-  IBM_Plex_Mono,
-  IBM_Plex_Sans,
-  Manrope,
-  Newsreader,
-} from 'next/font/google';
+import localFont from 'next/font/local';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import '../styles/globals.css';
@@ -21,41 +16,52 @@ import {
   generateWebsiteSchema,
 } from '@/lib/seo';
 
-// Self-hosted by next/font: downloaded at build, served from our origin (T15c).
-// The stacks that use these variables live in styles/theme.css.
+// Self-hosted with next/font/local from app/fonts (latin subsets, all SIL OFL,
+// downloaded from Google Fonts): served from our origin, no request to Google
+// at runtime (T15c) and none at build either, so builds do not depend on the
+// network. The stacks that use these variables live in styles/theme.css.
 // Manrope 800 is the display face (headings, numerals), Newsreader italic the
 // verdict face, Plex Sans the reading face, Plex Mono labels and data.
-const plexSans = IBM_Plex_Sans({
-  subsets: ['latin'],
-  weight: ['400', '500', '600'],
-  style: ['normal', 'italic'],
+const plexSans = localFont({
+  src: [
+    { path: './fonts/plex-sans.woff2', weight: '100 700', style: 'normal' },
+    {
+      path: './fonts/plex-sans-italic.woff2',
+      weight: '100 700',
+      style: 'italic',
+    },
+  ],
   display: 'swap',
   variable: '--font-plex-sans',
 });
 
-const plexMono = IBM_Plex_Mono({
-  subsets: ['latin'],
-  weight: ['400', '500'],
+const plexMono = localFont({
+  src: [
+    { path: './fonts/plex-mono-400.woff2', weight: '400', style: 'normal' },
+    { path: './fonts/plex-mono-500.woff2', weight: '500', style: 'normal' },
+  ],
   display: 'swap',
   variable: '--font-plex-mono',
 });
 
-const manrope = Manrope({
-  subsets: ['latin'],
-  weight: ['600', '700', '800'],
+const manrope = localFont({
+  src: './fonts/manrope.woff2',
+  weight: '200 800',
   display: 'swap',
   variable: '--font-manrope',
 });
 
-const newsreader = Newsreader({
-  subsets: ['latin'],
-  weight: ['400', '500'],
-  style: ['normal', 'italic'],
+const newsreader = localFont({
+  src: [
+    { path: './fonts/newsreader.woff2', weight: '200 800', style: 'normal' },
+    {
+      path: './fonts/newsreader-italic.woff2',
+      weight: '200 800',
+      style: 'italic',
+    },
+  ],
   display: 'swap',
   variable: '--font-newsreader',
-  // next/font has no fallback metrics for Newsreader; skip the size-adjusted
-  // fallback instead of warning on every build.
-  adjustFontFallback: false,
 });
 
 export const metadata: Metadata = pageMetadata.home();
