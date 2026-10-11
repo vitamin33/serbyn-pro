@@ -3482,3 +3482,15 @@ a.ds-work-card:hover {
     display: none !important;
   }
 }
+
+/* globals.css tints every plain link on hover; these links carry their own
+   hover state (title color, underline) and keep their text color */
+a.ds-wordmark:hover,
+a.ds-mlink:hover,
+.ds-related a:hover,
+a.ds-pom:hover {
+  color: var(--fg);
+}
+a.ds-mlink:hover {
+  color: var(--accent);
+}
