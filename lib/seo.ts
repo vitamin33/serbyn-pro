@@ -141,7 +141,7 @@ export const pageMetadata = {
     createMetadata({
       title: 'About',
       description:
-        '12+ years shipping production systems. From mobile apps at EPAM/GlobalLogic to autonomous AI agent orchestration. Kyiv-based, UK LTD.',
+        '13+ years shipping production systems. From mobile apps at EPAM/GlobalLogic to autonomous AI agent orchestration. Kyiv-based, UK LTD.',
       canonicalUrl: `${siteConfig.url}/about`,
     }),
 
@@ -181,7 +181,7 @@ export const pageMetadata = {
     createMetadata({
       title: 'Resume',
       description:
-        'Agentic Systems Architect resume. 12+ years production systems, autonomous agent orchestration, MLOps.',
+        'Agentic Systems Architect resume. 13+ years production systems, autonomous agent orchestration, MLOps.',
       canonicalUrl: `${siteConfig.url}/resume`,
       // Vendor site, not a job hunt: keep the route reachable but out of the
       // index so it doesn't read as "hireable candidate" in search (D1).

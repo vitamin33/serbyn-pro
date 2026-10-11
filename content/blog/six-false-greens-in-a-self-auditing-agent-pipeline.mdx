@@ -22,6 +22,10 @@ seo_keywords:
 - trust ledger
 - headless agent failure
 - pipeline observability
+exhibit:
+  kind: num
+  value: '6'
+  caption: false greens caught
 ---
 
 A false-green is more dangerous than an outright failure because it is invisible by construction: the system tells you it succeeded, so you stop looking. Over roughly a week, my autonomous dev-loop caught **six distinct mechanisms** by which it reported success when nothing — or the wrong thing — had actually happened.

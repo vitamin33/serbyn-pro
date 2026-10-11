@@ -1,6 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
+import type { MiniExhibitData } from '@/components/ds/exhibit';
+import type { PostSummary } from '@/components/ds/writing';
 
 export interface BlogPostMeta {
   title: string;
@@ -25,6 +27,12 @@ export interface BlogPostMeta {
    * and never routable in a production build; viewable under `next dev` only.
    */
   draft?: boolean;
+
+  /** The post's headline number as a mini exhibit (writing index, home).
+      Every value must appear in the post body. */
+  exhibit?: MiniExhibitData;
+  /** Screen-reader sentence for the exhibit. */
+  exhibitLabel?: string;
 }
 
 export interface BlogPost extends BlogPostMeta {
@@ -101,4 +109,40 @@ export function getDraftSlugs(): string[] {
 
 export function getFeaturedBlogPosts(): BlogPost[] {
   return getAllBlogPosts().filter(post => post.featured);
+}
+
+/** YYYY-MM-DD, whether frontmatter gave a string or a YAML date. */
+export function isoDate(date: string | Date): string {
+  return typeof date === 'string'
+    ? date.slice(0, 10)
+    : date.toISOString().slice(0, 10);
+}
+
+/** A post as a row on the writing wall. */
+export function toPostSummary(post: BlogPost): PostSummary {
+  return {
+    slug: post.slug,
+    title: post.title,
+    date: isoDate(post.date),
+    category: post.category,
+    exhibit: post.exhibit,
+    exhibitLabel: post.exhibitLabel,
+  };
+}
+
+/** Posts grouped by month ("September 2026"), newest first. */
+export function groupPostsByMonth(posts: BlogPost[]) {
+  const groups: { month: string; posts: PostSummary[] }[] = [];
+  for (const p of posts) {
+    const d = new Date(`${isoDate(p.date)}T00:00:00Z`);
+    const month = d.toLocaleDateString('en-US', {
+      month: 'long',
+      year: 'numeric',
+      timeZone: 'UTC',
+    });
+    const last = groups[groups.length - 1];
+    if (last?.month === month) last.posts.push(toPostSummary(p));
+    else groups.push({ month, posts: [toPostSummary(p)] });
+  }
+  return groups;
 }

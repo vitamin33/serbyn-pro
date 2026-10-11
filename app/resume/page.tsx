@@ -53,7 +53,7 @@ export default function ResumePage() {
               Professional Summary
             </h3>
             <p className="text-sm leading-relaxed">
-              Senior engineer with 12+ years shipping production systems in
+              Senior engineer with 13+ years shipping production systems in
               mobile, web, and cloud. I design and run reliable LLM services
               with clear SLOs, CI/CD, MLflow registries, cost controls, and real
               observability. I have led small teams, owned release trains, and I
@@ -92,7 +92,7 @@ export default function ResumePage() {
                   <Badge variant="secondary">Canary Deployment</Badge>
                 </div>
 
-                <h4 className="font-medium mb-2">Backend & Data (12+ years)</h4>
+                <h4 className="font-medium mb-2">Backend & Data (13+ years)</h4>
                 <div className="flex flex-wrap gap-1 mb-3">
                   <Badge variant="secondary">Python</Badge>
                   <Badge variant="secondary">FastAPI</Badge>

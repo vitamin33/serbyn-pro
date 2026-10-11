@@ -252,4 +252,4 @@ export const PROTOCOL = [
   },
 ] as const;
 
-export const YEARS_EXPERIENCE = '12+';
+export const YEARS_EXPERIENCE = '13+';

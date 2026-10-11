@@ -27,7 +27,7 @@ test.describe('T2 — canonical numbers with JavaScript DISABLED, no "0" counter
     // The killed count-up counter used to render metric values as "0" before
     // animating. Every labeled metric must be plain, final text — never "0".
     const metrics = await page
-      .locator('[data-claim] .metric-lg')
+      .locator('[data-claim] [data-claim-value]')
       .allInnerTexts();
     expect(metrics.length).toBeGreaterThan(0);
     for (const m of metrics) {

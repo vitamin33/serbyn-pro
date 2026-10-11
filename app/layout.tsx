@@ -53,6 +53,9 @@ const newsreader = Newsreader({
   style: ['normal', 'italic'],
   display: 'swap',
   variable: '--font-newsreader',
+  // next/font has no fallback metrics for Newsreader; skip the size-adjusted
+  // fallback instead of warning on every build.
+  adjustFontFallback: false,
 });
 
 export const metadata: Metadata = pageMetadata.home();

@@ -19,6 +19,14 @@ seo_keywords:
 - silent failures in AI agents
 - agent evals
 - tool-calling agents
+exhibit:
+  kind: bars
+  caption: Silent failures / 40 runs
+  rows:
+    - { value: 22, max: 40, label: '22', series: claim }
+    - { value: 6, max: 40, label: '6', series: baseline }
+    - { value: 0, max: 40, label: '0', series: accent }
+exhibitLabel: 'Silent failures per 40 runs: no checkpoint 22, optional tool 6, forced checkpoint 0'
 ---
 
 > Part of the series: [When an AI Agent Says Done: 0% vs 100% False Greens](/blog/same-model-0-and-100-where-the-verifier-gap-actually-lives)

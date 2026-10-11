@@ -19,7 +19,7 @@ const principles = [
   {
     title: 'Production discipline',
     description:
-      '12 years of production systems taught me: SLOs, evaluation gates, rollback plans, and observability matter more than the model you choose.',
+      '13 years of production systems taught me: SLOs, evaluation gates, rollback plans, and observability matter more than the model you choose.',
   },
 ];
 
@@ -37,7 +37,7 @@ export default function AboutPage() {
         {/* Narrative */}
         <div className="mb-16 space-y-6 text-muted-foreground">
           <p className="text-lg">
-            I&apos;ve been shipping production systems for 12+ years. Started
+            I&apos;ve been shipping production systems for 13+ years. Started
             building Android apps at EPAM and GlobalLogic — one of them
             (Magisto) hit 100M+ users and won a Google Play award. Led teams of
             2-6 engineers, owned release trains, and learned the production
