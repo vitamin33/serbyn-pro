@@ -1,0 +1,176 @@
+---
+title: "Nine Times the Eval Tried to Lie to Me"
+slug: nine-times-the-eval-tried-to-lie-to-me
+description: "The headline metric was 'wrong things marked correct.' Nine times the harness measuring it turned out to be doing the same. A field report on attacking your own eval before you trust it."
+date: '2026-09-08'
+keywords:
+- eval harness false green
+- adversarial eval review
+- forged verdict
+- reward hacking detection
+- pre-registered threshold
+- floating point verdict
+- agent eval confound
+- attack your own eval
+seo_keywords:
+- eval harness false green
+- adversarial eval review
+- forged verdict
+- reward hacking detection
+- pre-registered threshold
+- agent eval confound
+- attack your own eval
+- self-auditing eval
+category: architecture
+author: Vitalii Serbyn
+featured: false
+---
+
+> Part of the series: [Six False-Greens: Field Notes from a Self-Auditing Agent Pipeline](/blog/six-false-greens-in-a-self-auditing-agent-pipeline)
+
+# Nine Times the Eval Tried to Lie to Me
+
+The candidate printed a well-formed passing verdict to stdout and called `sys.exit(0)`. The grader read the last line, parsed the JSON, and marked the task correct. The candidate hadn't attempted the task or defined the function. It printed a string and left.
+
+I found that on the first day of the adversarial pass, and it is the reason this post exists. The experiment measures one thing, which is how often wrong answers get marked correct. If the instrument doing the marking can be talked into a `correct` by a two-line script, the number it produces is a number about the instrument.
+
+Over the two experiments in [the previous post](/blog/same-model-0-and-100-where-the-verifier-gap-actually-lives) I found nine defects that would each have changed a figure I was about to publish. I found some by attacking the harness on purpose. The harness found others for me, since I'd built it to fail loudly. And one I found by reading a table and noticing that a sentence I'd written didn't match the number beside it.
+
+They are grouped by what they would have lied about.
+
+## The grader could be forged
+
+**One.** The `sys.exit` case. The grader ran candidate code in a subprocess and printed the verdict on stdout. A candidate that printed its own verdict and exited first won. `SystemExit` derives from `BaseException`, not `Exception`, so the `except Exception` around the `exec` never saw it leave. `os._exit(0)` did the same thing while also skipping every `finally`.
+
+The fix was a verdict file authenticated with a per-call nonce. I wrote that up in the review document as solved.
+
+**Two.** The nonce was stored in `__main__._NONCE`. The candidate code was running in that same interpreter. It could read the nonce, write the file itself, and exit. Or wrap `__main__.emit` so that whatever the grader tried to write got rewritten to `correct` on the way out. Or register an `atexit` hook that overwrote the verdict after the grader had finished.
+
+Three vectors, one root cause, and a review document that said the problem was fixed. That last part is what I keep coming back to. I had reviewed it. I'd written "authenticated with a per-call nonce" myself, and it was false while sounding rigorous. The nonce and the output path and `emit` now live only as locals of the bootstrap function, `sys.argv` is truncated before candidate code runs, and the file is created `O_EXCL`. A candidate would have to walk the frame stack to reach any of it, and the threat model says so instead of pretending the boundary is airtight.
+
+## The oracle could be satisfied without solving
+
+**Three.** Ground truth was a list of `<call> == <literal>` expressions, evaluated in the candidate's namespace. An object whose `__eq__` returns `True` unconditionally passes every one of them.
+
+```python
+class _Always:
+    def __eq__(self, other): return True
+def sort_versions(*a, **k): return _Always()
+```
+
+That passed three of ten tasks outright. It failed on the other seven only because they happened to use `is None` somewhere, which is luck, not design. My first patch was a canary. After all asserts pass, compare the first result against a sentinel string that nothing legitimate could equal. An `__eq__` that returns `True` for the real expected values and `False` for the sentinel walks straight past it.
+
+The real fix was to stop calling the candidate's `__eq__` at all. Comparisons are split by AST, the left side is evaluated in the candidate's namespace, the right in a clean one, and both are reduced to canonical values built from exactly-typed primitives:
+
+```python
+def canon(v, depth=0):
+    t = type(v)
+    if t is int or t is float:
+        return _num_key(v)          # 7 and 7.0 still agree
+    if t is list:
+        return ("list", [canon(x, depth + 1) for x in v])
+    ...
+    return ("opaque", t.__name__)   # any subclass lands here
+```
+
+`type(v) is int`, not `isinstance`. A subclass that overrides equality is the attack, so it must not canonicalise as its base.
+
+**Four.** A lookup table keyed on the exact assert inputs passed everything. This is the one I'd actually expect from a real model, because it takes no intent to cheat. You see the examples, you special-case them, the tests go green, nobody meant anything by it. The oracle could not tell "solved the requirement" from "matched the examples," which is the same silent-failure class the experiment exists to measure, and the harness had it.
+
+Every task now has held-out asserts drawn from inputs that appear nowhere in the prompt, and the SQL tasks get a second fixture. Passing the visible set and failing the held-out set is recorded as `hardcoded` and reported as its own rate beside pass@1. If that rate is high, pass@1 is measuring example-matching and should be read as nothing else. It came out 0% in the live run. Which is fine, but I wouldn't have known without the number.
+
+## The instrument scored its own artefacts as model failure
+
+**Five.** The first live record came back `truth=wrong`. The model had not refused and had not answered incorrectly. It had spent all 4,096 output tokens on reasoning, produced an empty response, and been cut off by a harness parameter. My extractor reported "empty completion," the grader called it `no_answer`, and `no_answer` is ground-truth wrong.
+
+Ten of those would have pulled baseline pass@1 down about ten points for a reason with nothing to do with the model. It surfaced on record one only because I had added a truncation-rate metric a few hours earlier, during the review pass, for this class. I stopped the run at one record and measured what each task actually needed. One of them wanted 30,579 tokens of reasoning to emit 294 tokens of code. A CSV parser.
+
+**Six.** In the trajectory experiment, task T4 submitted the correct numbers as a JSON string instead of an object. The check did `isinstance(answer, dict)` and marked it wrong. Right answer, wrong type, graded as the agent's failure. Mine. Experiment 1 had a whole section of tests proving ground truth does not depend on output format, and I had not carried the principle over. Answers are now coerced before checking, with a test that coercion cannot rescue a genuinely wrong one.
+
+## The number was decided by noise
+
+**Seven.** `100 * (0.65 - 0.55)` is `9.999999999999998` in Python. Hypothesis 2's condition was "delta under 10 percentage points." A true value of exactly 10, which does not satisfy the condition, was being reported as satisfying it, and the printed `Δ=+10.0pp` beside the threshold `< 10pp` looked like a typo rather than a bug.
+
+I rounded that one metric and moved on. Then, later, mostly out of unease, I probed the others. An ECE of exactly 0.15 computes as `0.15000000000000002`, so hypothesis 3's "ECE > 0.15" reported supported on a value that does not satisfy it either. Same class, different metric, and I had only fixed the instance I tripped over.
+
+All thresholds now go through one comparator that treats a value within `1e-9` of the line as sitting exactly on it and lets the operator decide from there. No threshold moved. A verdict decided that close to the boundary is flagged in the output so it does not read like a comfortable one.
+
+## The comparison was confounded
+
+**Eight.** This is the one I think about most, because it pushed in the opposite direction to everything else.
+
+Detection in the trajectory experiment meant "the agent re-examined the corrupted result." My first definition matched on tool name. If the injection corrupted a `get_customer` call, any later `get_customer` call counted as suspicion. On the smoke test, a trajectory where the agent had obviously noticed nothing came back `detected=True`. It had called `get_customer` again, for a different customer, because the task walks every customer.
+
+I wrote in the review document that, left in, detection would have run toward 100%. When I went to chart it for this post, the number on the full 70 trajectories was 56%. Five times the true rate, above the 50% threshold, enough to flip the hypothesis from supported to falsified. And still an overclaim on my part: I'd extrapolated from one smoke test on a task that walks every customer. The published 11.4% is what remains once detection requires re-examining the same subject: same customer id, same filter, same set of ids.
+
+![Detection rate on the same 70 trajectories under two definitions: 56% when any repeat call counts, 11% when the same subject must be re-examined](/blog/detection-two-definitions.png "Same data, two definitions. The left bar is what I'd have published without the fix; it clears the hypothesis threshold and says the opposite of the right bar.")
+
+Fifty-six percent, with an interval that clears the threshold, is a comfortable finding, and I would probably have believed it. It agreed with experiment 1.
+
+Every other defect on this list would have made the verifier look worse than it is. This one would have made it look fine. Finding it is the reason I trust the other eight, because it means the review wasn't only confirming the result I wanted.
+
+**Nine.** Stage 2 of the trajectory experiment, pooled across all tasks, showed detection at 4% for early injections and 30% for late ones. A 26-point sign reversal against my prediction, which the pre-registration had promised to report as "the more interesting result" and not bury.
+
+It was not a result. Every late injection that fired came from two tasks whose targeted tool is called once, so the "late" injection landed on the same call as the "early" one. On the tasks where the two positions genuinely differ, the late injection never fired at all. The probe measured seven calls. Under injection the agent made fewer. Restricted to trajectories where position was actually manipulated, the late arm was empty.
+
+Within one task alone, early detection was 2 of 10 and late was 5 of 10, at an identical injection point. That is sampling noise, and it was about to be filed as a position effect. The hypothesis is reported as undetermined, the pooled figure is published next to it with the disclaimer, and there is a test named `test_h5_refuses_a_pooled_comparison_that_is_a_task_effect` so the trap cannot reopen.
+
+![Detection by injection position: pooled over all tasks shows early 4% versus late 30%; restricted to tasks where the positions actually differ, the late arm is empty](/blog/position-trap.png "Left: what the pooled numbers said. Right: the same comparison restricted to tasks where late and early were different calls. The late bar is not low, it is absent.")
+
+```python
+def tasks_with_manipulated_position(records):
+    # inject_at_nth comes from a probe run, measured BEFORE any
+    # detection is observed. Membership here cannot depend on outcome.
+    return {
+        r["task_id"] for r in records
+        if r.get("injection_position") == "late"
+        and (r.get("inject_at_nth") or 1) > 1
+    }
+```
+
+The criterion for the restriction has to be something decided before the outcome, or the restriction is just selection with a straight face. That comment is in the code because I wanted to have to defend it to myself, later, when I'd forgotten why.
+
+## The asymmetry
+
+Experiment 1's headline was a 0% false-green rate. A broken harness would have had to work hard to produce that; most bugs make the model look worse.
+
+Experiment 2's headline was 100%. A broken harness produces that very easily. Make detection impossible and the agent fails every time. Mislabel one correct outcome and there's a false green for free. Or just never fire the injection you claim to have fired, and the agent looks oblivious.
+
+So the second experiment got the more suspicious review, and the review document says so in its first paragraph. Twelve attack vectors against the code grader, fourteen risks against the trajectory harness, each with a verdict and a test that would fail if the verdict stopped being true.
+
+What it does not claim is a security boundary. The candidate shares the grader's interpreter. A sufficiently determined artefact can walk the GC to the verdict channel. The defences stop shortcuts, which is what a model takes without meaning to, and they do not stop hostility, which would need a separate process and a separate uid. I'd rather write that down than have someone find it.
+
+## What finding them cost
+
+Almost nothing. That's the part that generalises. The attack probe is twelve scripts and runs in four seconds. The pilot that caught the detection bug was eight trajectories, $0.04. I found the float bug by reading a table, and the truncation one on record one of a run that would've cost $0.53 to finish wrong.
+
+Every one of these was cheaper to find than the run it would have corrupted. The expensive version is publishing the number, having someone else find the bug, and then explaining why the retraction took longer than the experiment.
+
+## FAQ
+
+**How can an eval harness produce a false green?** Any way the grading path can mark a wrong answer correct without the model being right: a forged verdict, an equality check the candidate controls, an assert set the candidate can satisfy by memorising inputs, or a harness parameter like an output cap whose effect is scored as model failure. All four appeared in this project.
+
+**What is an adversarial review of an eval?** A deliberate attempt to make the harness report a pass for a wrong answer, or a fail for a right one, before trusting its output. Here it meant writing candidate artefacts designed to cheat the grader, then converting every successful cheat into a regression test.
+
+**Why do float comparisons matter for hypothesis thresholds?** A metric that is the end of a chain of float arithmetic can land at threshold plus or minus 1e-16, and a strict comparison then decides the verdict by rounding error. `100 * (0.65 - 0.55)` is `9.999999999999998`; an ECE of exactly 0.15 is `0.15000000000000002`. Both flipped a pre-registered verdict here.
+
+**What is a task effect wearing a position label?** When a factor you think you are manipulating, like injection position, is actually confounded with which tasks contributed to each level. If all the "late" data comes from tasks where late and early are the same injection point, the comparison is between task groups, not positions, and any difference is noise or task difficulty.
+
+**Is a nonce enough to authenticate a subprocess verdict?** Not if the nonce is reachable from the code being graded. Storing it as a module global in the same interpreter makes it readable. It has to live somewhere the candidate cannot ordinarily reach, and even then the honest statement is that this raises the bar rather than closing the door.
+
+## The Transferable Lesson
+
+Attack the eval before you trust the number, and pay attention to which direction each bug would have moved it. Eight of these nine would have made the model look worse. Finding them made the result more defensible but didn't change what I believed. The other one, number eight on the list, would have made the model look fine, and it's the only reason I trust the rest. Until I found it, this wasn't a review. It was me confirming a result I already liked, one regression test at a time.
+
+## In this series
+
+- [Same Model, 0% and 100%: Where the Verifier Gap Actually Lives](/blog/same-model-0-and-100-where-the-verifier-gap-actually-lives)
+- [Six False-Greens in a Self-Auditing Agent Pipeline](/blog/six-false-greens-in-a-self-auditing-agent-pipeline)
+- [Permissive Parsing Is a False-Green Factory](/blog/permissive-parsing-is-a-false-green-factory)
+- [One-Sided Contracts Break Agent Pipelines](/blog/one-sided-contracts-break-agent-pipelines)
+- [QA Is Only as Honest as Its Coverage](/blog/qa-is-only-as-honest-as-its-coverage)
+- [False Greens: Three Structural Observations](/blog/false-greens-three-structural-observations)
+- [The Calibration Ledger: 58 Runs, 93% Pass, n Is Small](/blog/the-calibration-ledger-58-runs-93-pass-n-is-small)
+- [The Arc Since the Six Were Caught](/blog/the-arc-since-the-six-were-caught)
+
+The attack probe, the review documents, and every test named above are in [github.com/vitamin33/agent-eval-labs](https://github.com/vitamin33/agent-eval-labs).

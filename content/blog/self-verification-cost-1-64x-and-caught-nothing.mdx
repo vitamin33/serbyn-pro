@@ -1,0 +1,104 @@
+---
+title: "Self-Verification Cost 1.64x and Caught Nothing"
+slug: self-verification-cost-1-64x-and-caught-nothing
+description: "Per-call accounting for an LLM self-check: 64% more cost, zero wrong answers caught because none reached it, and false alarms that ate 37% of the budget."
+date: '2026-09-22'
+keywords:
+- LLM cost optimization
+- self-verification cost
+- agent evals
+- false positives
+- reasoning tokens
+- cost per correct answer
+category: engineering
+author: Vitalii Serbyn
+featured: false
+seo_keywords:
+- LLM cost optimization
+- self-verification cost
+- agent evals
+- reasoning tokens cost
+- cost per correct answer
+---
+
+> Part of the series: [When an AI Agent Says Done: 0% vs 100% False Greens](/blog/same-model-0-and-100-where-the-verifier-gap-actually-lives)
+
+# Self-Verification Cost 1.64x and Caught Nothing
+
+Adding a "now check your answer" turn to a coding model cost 1.64 times the baseline and improved nothing I could measure. The checker was fine. On these tasks the model was right 98% of the time on the first try, so the checker had nothing to catch, and it still charged for looking.
+
+## The Short Version
+
+- **The setup.** Ten small coding tasks, each with a trap. Fifty attempts without a self-check, fifty with one. Every API call logged with its tokens and cost.
+- **The bill.** Baseline: $0.2004 for 50 tasks, $0.00409 per correct answer. With the self-check: $0.3285, $0.00657 per correct answer. The extra $0.128 bought zero catches.
+- **The reason.** Only one of 100 first attempts was wrong, and it was in the baseline arm. The self-check arm generated 50 correct answers and then paid to re-read all of them.
+- **The hidden cost.** When shown 50 solutions that *were* correct, the checker wrongly rejected 5. Those 5 false alarms consumed 37% of that arm's spend: each took about five times longer to reason through than a normal correct verdict, 7,730 reasoning tokens against 1,423. A pattern in five cases, and not yet a rule.
+- **For anyone budgeting agents:** measure your first-try error rate before you buy a review step. If it is low, the review step is a tax with no refund.
+
+## Where the Money Went
+
+The model is `deepseek-v4-flash`. Every record in the experiment stores per-call token counts: input, output, cache hits, and reasoning tokens, which DeepSeek bills as output but never shows you. That last category is the story. Across the baseline arm, more than nine in every ten output tokens were reasoning: 146,071 of 150,465. One CSV parsing task spent 30,579 tokens thinking and 294 writing code. You are paying for deliberation. The text is a rounding error.
+
+The self-check adds a second call that re-sends the task, the answer, and a verification instruction. Cache hits make the re-sent prompt cheap. The reasoning is not cached. Caching makes the repeated prompt cheap and does nothing for the thinking, so the model redoes all of it on the second call. The verification calls alone cost $0.0996, which is 30% of the self-check arm's total.
+
+## What the Second Call Bought
+
+Here is the accounting for the self-check arm, straight from the raw records:
+
+- 0 wrong answers reached the verifier.
+- 0 were caught, so 0 were repaired.
+- 0 false greens, that is wrong answers marked correct.
+- Extra cost per wrong answer caught: undefined, since nothing was caught.
+
+The self-check arm scored 50 of 50 and the baseline 49 of 50. That two-point difference is not the verifier's work. No revision was ever applied. It is one baseline attempt at the CSV task failing on an empty-string edge case, which is what a 98% process does once in a while. In the replication a month later, the baseline also scored 50 of 50 and the difference vanished.
+
+## The Cost of Being Wrong About a Right Answer
+
+To measure the checker at all, I had to feed it wrong answers on purpose: 50 solutions with planted bugs, and 50 correct reference solutions as a control. Each planted bug follows one rule: it passes the task's obvious test and fails on one specific edge case, the shortcut a hurried engineer takes under a deadline. It rejected all 50 of them. It also rejected 5 of the 50 correct ones, with stated confidence between 80 and 100.
+
+Those 5 rejections are where the budget went. A normal "yes, this is correct" verdict cost about a fifth of a cent: 1,423 reasoning tokens, $0.00196. A false alarm cost about a cent: 7,730 reasoning tokens, $0.01048, which is 5.4 times a normal correct verdict. Every false alarm in this data took longer to reason through than a typical correct approval. Five cases are too few to call that a rule. Five records, 10% of the control arm, took 37% of its money.
+
+In a real pipeline a false alarm costs more than tokens. It is a correct change bounced back for rework, an engineer reading a confident rejection of good code, and a retry that reasons just as long the second time.
+
+## What to Do on Monday
+
+- Measure first-try accuracy before adding review. At 98%, a review step has one chance in fifty to earn its keep. At 60%, the math changes completely. You cannot know which world you are in without the number.
+- Price reasoning tokens as the main cost. If your provider bills reasoning as output and hides it from the response, log it separately. In the baseline arm it was 146,071 of 150,465 output tokens, and between 90 and 100% on every task.
+- Budget for false alarms as well as misses. The checker's expensive failure mode was rejecting good work slowly and confidently. Track the false-red rate next to the false-green rate.
+- Put review where the errors are. On single short answers this model did not need it. On [twelve-step agent tasks](/blog/same-model-0-and-100-where-the-verifier-gap-actually-lives) it noticed only 8 of 70 injected errors. Spend the review budget there.
+
+## What This Does Not Show
+
+One model, one provider's pricing. The 1.64x is a property of this tariff, where cached input is cheap and reasoning is billed as output. I did not test a provider without prompt caching. I have no number for how much higher the multiplier would go, only that cheap cache hits are doing real work to hold this one at 1.64x.
+
+Small tasks, low error rate. This experiment has no data on tasks the model often gets wrong. The arithmetic says a review step needs errors to catch to earn its cost. Whether it pays for itself at a 30% first-try error rate is a prediction from that arithmetic, and I have not measured it. This post argues for measuring before buying review.
+
+Fifty samples per arm. The 5 of 50 false-alarm rate is noisy at this size. Run it again and the true rate could sit anywhere from 4.3% to 21.4% (the 95% interval), so read "5 of 50" as a range. The replication measured 8 of 50, inside that range.
+
+## FAQ
+
+**How much does LLM self-verification cost?** In this experiment, 1.64 times the baseline: $0.3285 against $0.2004 for 50 tasks, or $0.00657 against $0.00409 per correct answer. The verification calls themselves were 30% of the self-check arm's spend. The multiplier depends on the provider's caching and reasoning-token pricing.
+
+**Did the self-check improve accuracy?** Not measurably. The self-check arm scored 50 of 50 and the baseline 49 of 50, but no revision was ever applied. The one baseline miss was ordinary sampling variance and did not recur in a replication.
+
+**What is a false red, and why does it cost so much?** A false red is a correct answer the checker rejects. Here it happened 5 times in 50, and each one cost about 5.4 times more than a correct verdict, because the model reasoned far longer before reaching the wrong conclusion. Those five consumed 37% of the control arm's budget.
+
+**Where are the numbers from?** Every figure is computed from the published raw records in the [agent-eval-labs repository](https://github.com/vitamin33/agent-eval-labs). The script that computes them also writes the per-call usage table, and a test fails if the README's numbers stop matching the data.
+
+## The Transferable Lesson
+
+A review step is insurance. Insurance is worth its premium only when the thing it covers happens. Here the premium was 64% and the covered event occurred zero times, so the honest verdict is "I paid for coverage against a risk I had not measured". Measure the risk first. Then buy the coverage where the risk is.
+
+## In this series
+
+- [The API Served a Different Model and My Check Passed](/blog/the-api-served-a-different-model-and-my-check-passed)
+- [Nine Times the Eval Tried to Lie to Me](/blog/nine-times-the-eval-tried-to-lie-to-me)
+- [The Arc Since the Six Were Caught](/blog/the-arc-since-the-six-were-caught)
+- [The Calibration Ledger: 58 Runs, 93% Pass, n Is Small](/blog/the-calibration-ledger-58-runs-93-pass-n-is-small)
+- [False Greens: Three Structural Observations](/blog/false-greens-three-structural-observations)
+- [QA Is Only as Honest as Its Coverage](/blog/qa-is-only-as-honest-as-its-coverage)
+- [One-Sided Contracts Break Agent Pipelines](/blog/one-sided-contracts-break-agent-pipelines)
+- [Permissive Parsing Is a False-Green Factory](/blog/permissive-parsing-is-a-false-green-factory)
+- [Six False-Greens in a Self-Auditing Agent Pipeline](/blog/six-false-greens-in-a-self-auditing-agent-pipeline)
+
+The experiments, raw records, and checks are public: [github.com/vitamin33/agent-eval-labs](https://github.com/vitamin33/agent-eval-labs).
