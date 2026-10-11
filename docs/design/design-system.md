@@ -1,8 +1,8 @@
 # serbyn.io design system v1: "Claim vs. proof"
 
-Status: built 2026-10-11 from the Claude Design export
-`~/Downloads/serbyn.io — Claim vs. proof.html` (15 boards). Pages are not
-migrated yet; this document is the hand-off for that step.
+Status: built and rolled out site-wide on 2026-10-11, from the Claude Design
+export `~/Downloads/serbyn.io — Claim vs. proof.html` (15 boards). Every page
+now renders on this system; §8 lists what was done and what is still open.
 
 - Tokens: `styles/theme.css`
 - Component styles: `styles/ds.css` (prefix `ds-`)
@@ -250,116 +250,94 @@ With JS off it shows the settled D state and hides the controls.
   - Every control is at least 44px.
   - The focus ring is the accent outline.
 
-## 6. Verified on 2026-10-11
+## 6. Verification
 
-- `tsc --noEmit` passes, and `next lint` passes on the new files.
-- `next build` passes; `/lab/design-system` ships 11.7 kB of JS.
-- Playwright suite: **62 / 62 passed.**
-  - T15a and the diagram dark-theme check had the old background colors
-    pinned. I updated them to the new tokens: `#151513` → rgb(21, 21, 19) and
-    `#f5f3ee` → rgb(245, 243, 238).
-- Gallery screenshots at 1440 light and dark, at 390, and with JS disabled:
-  - horizontal overflow is 0 everywhere;
-  - no console errors, apart from the Vercel analytics scripts, which return
-    404 locally;
-  - the claim check plays D and then A, threads draw on hover, and the
-    palette opens on ⌘K;
-  - with JS off, the claim shows struck through with D and the intervals are
-    settled.
+Each step below was checked before it was committed:
+- `tsc --noEmit` and `next lint` pass, and `next build` passes.
+- The Playwright suite passes (62 / 62).
+- Screenshots at 1440 light, 1440 dark and 390, with horizontal overflow at
+  0px and no console errors. The Vercel analytics scripts return 404 locally;
+  that is expected.
 
-The site-wide token and font change is live on this branch. Existing pages
-already render in the new palette and fonts, but with their old layouts until
-they are migrated.
+Tests changed on purpose:
+- **T15a and the diagram dark check:** expect the new `--bg` values,
+  `#151513` and `#f5f3ee`.
+- **T15a:** looks for the `/audit` link inside `<main>`, since the header
+  menu now also links there.
+- **Home T2/T5:** reads `[data-claim] [data-claim-value]` instead of
+  `.metric-lg`.
+- **T10:** accepts either card background (paper or darkroom) as the opaque
+  OG corner.
 
-## 7. Where the build departs from the boards (decide or note)
+## 7. Where the build departs from the boards
 
-1. **The storyboard says "claim types in".** The brief rules out typing
-   effects, and the home prototype itself does not type. I built a fade, with
-   no typing.
-2. **The Offers menu on the board includes "Advisory · hourly".** No
-   `/advisory` page exists, so I left it out. Advisory stays in the offers
-   footnote and on `/fractional`.
-3. **The post board shows "In this series · 12 of 12" and slot placeholders.**
-   A series needs a `series:` field in frontmatter (name and order). Until
-   then, `SeriesNav` is not rendered.
-4. **Mini exhibits on `/writing`.** Their numbers (22/6/0, 1.64x, 200/200,
-   0% vs 100%, ~58 runs ~93%, 9 eval defects, 6 false greens) need an
-   `exhibit:` frontmatter field on each post, checked against the post body.
-   Posts without the field show no exhibit.
-5. **"13+ years" appears on the board.** The site still says 12+
-   (`YEARS_EXPERIENCE` plus about 6 copy spots). The change is approved and
-   happens during home migration. The gallery shows no years figure.
-6. **The footer links `/newsletter`.** That route exists only on
-   `origin/main`; merge main before migrating.
-7. **The proof-of-method card copy "client-anonymized"** must change when the
-   real sample is built from my own systems (decided 2026-10-10).
-8. **The board's home page has no newsletter section.** False Green appears
-   in the footer link, the `/writing` masthead and the post footer.
-9. **OG templates are not built.** `next/og` needs literal colors, not CSS
-   variables. Implementation: four templates (home, offer, post, case study)
-   in `lib/og-card.tsx`, using the hex values from §1. The T10 test checks
-   that the corner is dark, so the light home and offer cards need that test
-   updated.
-10. **Hero A and Hero C** are not built; B was chosen. `CostExhibit` is the
-    Hero C content, placed below the fold as the board's home shows.
+1. **No typing effect on the claim.** The storyboard says "claim types in",
+   but the brief rules typing out and the home prototype does not type, so
+   the claim fades in.
+2. **No Advisory entry in the Offers menu.** There is no `/advisory` page.
+   Advisory stays in the offers footnote and on `/fractional`.
+3. **No series bar on posts yet.** "In this series · N of M" needs a
+   `series:` frontmatter field (name and order), so `SeriesNav` is built but
+   not rendered.
+4. **Proof-of-method cards stay hidden** until `public/sample-audit-report.pdf`
+   exists or `PROOF_LOOM_URL` is set. Their copy no longer says
+   "client-anonymized".
+5. **No newsletter section on the home page,** as on the board. False Green
+   is in the footer link, the `/writing` masthead and the post footer.
+6. **Hero A and Hero C are not built;** B was chosen. The Hero C content is
+   the `CostExhibit`, placed below the fold as on the home board.
+7. **Offer pages render the cost exhibit still** (`CostExhibit still`), to
+   keep the motion budget for pages that sell at zero.
+8. **Case studies drop the right-rail code panel and the essay map.** They
+   use the post reading layout (TOC, post typography).
 
-## 8. Implementation plan (next step)
+## 8. Implementation record and open items
 
-Each step is one commit, verified with `tsc`, `lint`, `build` and the
-Playwright suite, plus screenshots at 390 and 1440 in light and dark.
+**Done, in commit order:**
+- **Shell.** SiteHeader (Offers menu, Work, Writing, About, theme switch, ⌘K
+  palette with every post, Contact), the compact reading header on posts,
+  SiteFooter (compact on offer pages). The old AppShell, navbar,
+  footer-legal and case-study header/footer were removed.
+- **Home.** Every section on the system.
+  - Years changed to 13+ in facts, About, résumé and the SEO copy.
+  - Seven posts gained `exhibit:` frontmatter, each value checked against
+    the post body.
+- **Fonts.** Self-hosted from `app/fonts` with `next/font/local`; builds no
+  longer fetch from Google Fonts.
+- **Offer pages.** Price card (price once), deliverables, method chain or
+  grid, timeline bar and chain, fit boxes, FAQ, method-demonstrated cards,
+  advisory card.
+- **`/writing`.** The wall of exhibits, grouped by month, with the False
+  Green masthead. The unreachable `app/blog/page.tsx` was removed.
+- **Post template.**
+  - Header, key number from `keyNumber:` frontmatter (on the checkpoint post
+    today), TOC, the 70ch column with the margin column, warm code theme,
+    restyled article blocks, related lists, discuss card, masthead.
+  - `MarginNote` and `PullQuote` in MDX.
+  - The title H1 is dropped even after a series note.
+- **`/work` and case studies.** Filter and sort without impact scores, cards
+  in the exhibit style, case studies on the reading layout. The lab work
+  components were removed.
+- **About, methodology** (with a flow diagram of one DW run), **legal** and
+  **404**. Shadows removed from the shadcn card, button and badge. Résumé
+  team size aligned to 2–6.
+- **Charts.** `scripts/render-charts.mjs` renders the four charts the posts
+  use, light and dark. The post renderer shows the one that matches the
+  theme.
+- **OG and icons.** Four templates in `lib/og-card.tsx` (TTFs in
+  `lib/og-fonts`). `scripts/render-icons.mjs` renders the favicon set, logo
+  and manifest colors from the mark.
+- **Cleanup.** The old CTA, Stat and Reveal components, the legacy utility
+  classes and the old post layout CSS were removed.
 
-0. **Merge `origin/main`** (5 September posts, `/newsletter`, middleware,
-   chart PNGs). Resolve conflicts in `content/blog`.
-1. **Shell.**
-   - Replace `components/lab/app-shell.tsx` with `SiteHeader` and
-     `SiteFooter` in `app/layout.tsx`.
-   - Pass the posts to the palette.
-   - Work goes into the header and footer.
-   - Posts use `SiteHeader reading`.
-   - Delete the unused `components/case-study-header.tsx`,
-     `components/case-study-footer.tsx` and `components/navbar.tsx` if
-     `/resume` no longer needs them.
-   - Update T15b if its nav-link selector changes.
-2. **Home** (`app/(marketing)/page.tsx`), in this section order: hero with
-   `ClaimCheck`; credibility via `CapabilityColumns`; `ResultTiles`;
-   `CostExhibit`; systems via `SystemCard`; `OfferColumns`; protocol via
-   `Chain`; `TermsList`; writing teaser via `PostWall size="sm"`; `FinalCta`.
-   - Change `YEARS_EXPERIENCE` to 13+.
-   - Hide impact scores.
-   - Update the home test selector from `[data-claim] .metric-lg` to
-     `[data-claim] [data-claim-value]`.
-3. **Offer pages** (`components/site/offer-page.tsx`), fed from
-   `lib/offer-content.ts`.
-   - Blocks: `PriceCard` (the only price), `Deliverables`, `Chain`,
-     `TimelineBar` and `Chain`, `FitBoxes`, `NoteRow`, `Faq`, and
-     `FieldReportCard` (keep ≥2 `/blog/` links for T12).
-   - Then `FinalCta` and `SiteFooter compact`.
-   - No motion.
-4. **`/writing`.** `Masthead` (False Green), then `PostWall` grouped by month.
-   - Add an `exhibit:` frontmatter field to each post with a headline number;
-     every value is checked against the post body.
-   - Retire `terminal-signup.tsx`.
-5. **Post template** (`app/blog/[slug]/page.tsx`, `styles/article.css`).
-   - Layout: `.ds-read` grid with `Toc`, `.post-flow` and the margin column.
-   - Key number: `KeyNumber`, when frontmatter carries `keyNumber:`.
-   - Map the MDX components: `Short` → `ShortVersion`, `Callout` →
-     `Callout`, `Stats` → `StatStrip`, `DataTable` → `DataTable`, blockquote →
-     `PullQuote`.
-   - Add a `MarginNote` MDX tag.
-   - Code blocks get the `ds-code` warm theme, replacing github-dark.
-   - Footer: `RelatedList` ×2, `DiscussCta`, then `Masthead variant="footer"`.
-6. **`/work` and `/work/[slug]`.** Cards in the exhibit style;
-   `HeadToHead`/`BarChart` where a case study has numbers; FLIP filter
-   (optional, low motion budget).
-7. **About, methodology, résumé, legal, 404:** type and tokens only, no
-   motion.
-8. **Charts.** Re-render the 5 PNGs in `public/blog/` with the new palette,
-   or replace them with `BarChart`, `ColumnChart` and `Waffle` in the MDX.
-   Same numbers as Appendix D.
-9. **OG images** (§7.9) and favicons from `Mark` (16, 32, 180, 512).
-10. **Clean up.**
-    - Remove the old `.a-*` article classes that have DS replacements, plus
-      `.blueprint-grid` and `.metric-lg`.
-    - Remove the unused tier colors in `diagram.css`, if any.
-    - Remove the `/lab/design-system` scaffolding only if it is no longer
-      wanted; it is noindex.
+**Open items (need a decision or an artifact):**
+- **Series.** Add `series:` frontmatter if posts should show "In this series
+  · N of M".
+- **Key numbers on more posts.** Add `keyNumber:` to the verifier-gap and
+  self-verification posts; the same rule applies: every value from the body.
+- **Proof of method.** The sample audit PDF and the Loom walkthrough (see
+  the brief, Part 0).
+- **`contamination-depth.png`** is unused by any post and still in the old
+  palette. Re-render it from the raw records if a post needs it.
+- **`/lab/design-system`** stays as the living gallery (noindex, not
+  linked).
