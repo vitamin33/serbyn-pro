@@ -15,11 +15,17 @@ export const metadata = createMetadata({
 export default function AuditPage() {
   return (
     <>
-      <OfferPage content={AUDIT_CONTENT} />
-      <MethodDemonstrated />
-      {sampleAuditReportExists() && (
-        <SampleReportCTA href={SAMPLE_REPORT_HREF} />
-      )}
+      <OfferPage
+        content={AUDIT_CONTENT}
+        after={
+          <>
+            <MethodDemonstrated />
+            {sampleAuditReportExists() && (
+              <SampleReportCTA href={SAMPLE_REPORT_HREF} />
+            )}
+          </>
+        }
+      />
     </>
   );
 }

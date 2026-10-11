@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ArrowDownToLine } from 'lucide-react';
+import { Eyebrow } from '@/components/ds';
 
 type State = 'idle' | 'loading' | 'ok' | 'error';
 
@@ -29,50 +29,57 @@ export function SampleReportCTA({ href }: { href: string }) {
   }
 
   return (
-    <section className="section border-t border-border">
-      <div className="container max-w-2xl">
-        <div className="rounded-lg border border-border bg-card p-8">
-          <h2 className="headline-sm mb-2">
+    <section className="ds-sec" data-size="offer" aria-labelledby="h-sample">
+      <div className="ds-wrap">
+        <div
+          className="ds-card"
+          style={{ padding: 28, display: 'grid', gap: 14, maxWidth: 680 }}
+        >
+          <Eyebrow>Sample report</Eyebrow>
+          <h2 id="h-sample" className="ds-h3">
             See the deliverable before you book
           </h2>
-          <p className="body-md mb-5 text-muted-foreground">
+          <p style={{ margin: 0, color: 'var(--muted)' }}>
             Get the sanitized sample audit report — the exact format you
             receive: findings, severity, evidence, and a prioritized fix list.
           </p>
-
           {state === 'ok' ? (
             <a
               href={href}
               download
-              className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+              className="ds-btn"
+              style={{ justifySelf: 'start' }}
             >
-              Download the sample report
-              <ArrowDownToLine className="h-4 w-4" />
+              Download the sample report ↓
             </a>
           ) : (
-            <form
-              onSubmit={onSubmit}
-              className="flex flex-col gap-2 sm:flex-row"
-            >
+            <form className="ds-field" onSubmit={onSubmit}>
+              <label htmlFor="sample-email" className="sr-only">
+                Email
+              </label>
               <input
+                id="sample-email"
                 type="email"
                 required
+                autoComplete="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 placeholder="you@company.com"
-                className="flex-1 rounded-md border border-input bg-background px-3 py-2 font-mono text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
               />
               <button
                 type="submit"
+                className="ds-btn"
                 disabled={state === 'loading'}
-                className="rounded-md bg-primary px-5 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
               >
-                {state === 'loading' ? '…' : 'Send it'}
+                {state === 'loading' ? 'sending…' : 'Send it'}
               </button>
+              {state === 'loading' && (
+                <span className="ds-field-scan" aria-hidden="true" />
+              )}
             </form>
           )}
           {state === 'error' && (
-            <p className="code-md mt-2 text-warning">
+            <p className="ds-field-err" role="alert">
               something went wrong — email serbyn.vitalii@gmail.com and
               I&apos;ll send it.
             </p>

@@ -1,15 +1,24 @@
-import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { FieldReportCard, SectionHeader } from '@/components/ds';
 import { getBlogPostBySlug } from '@/lib/blog-posts';
+import type { MiniExhibitData } from '@/components/ds/exhibit';
 
 // /audit — "Method, demonstrated" (F18). The offer page describes the method;
-// this strip links the field reports that show it running on my own systems,
-// plus the methodology, so the buyer deciding on the $3,500 page can reach the
-// evidence (and an LLM summarizing /audit can cite it).
+// these cards link the field reports that show it running on my own systems,
+// plus the methodology, so the buyer deciding on the audit page can reach the
+// evidence (T12 needs at least two /blog/ links here). Each card's number is
+// the post's own exhibit from frontmatter.
 const POST_SLUGS = [
   'six-false-greens-in-a-self-auditing-agent-pipeline',
   'the-calibration-ledger-58-runs-93-pass-n-is-small',
 ];
+
+function figureOf(ex?: MiniExhibitData): string {
+  if (!ex) return '';
+  if (ex.kind === 'num') return ex.value;
+  if (ex.kind === 'ledger') return `${ex.sub} · ${ex.value}`;
+  if (ex.kind === 'cost') return ex.value;
+  return '';
+}
 
 export function MethodDemonstrated() {
   const posts = POST_SLUGS.map(slug => getBlogPostBySlug(slug)).filter(
@@ -17,46 +26,40 @@ export function MethodDemonstrated() {
   );
 
   return (
-    <section className="section border-t border-border">
-      <div className="container">
-        <div className="mb-8">
-          <p className="label-caps mb-2 text-muted-foreground">
-            method, demonstrated
-          </p>
-          <h2 className="headline-lg">The same method, in the open</h2>
-          <p className="mt-3 max-w-2xl body-md text-muted-foreground">
-            The audit runs the discipline these field reports describe — applied
-            to my own systems first.
-          </p>
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-3">
+    <section className="ds-sec" data-tone="surface" aria-labelledby="h-demo">
+      <div className="ds-wrap">
+        <SectionHeader
+          id="h-demo"
+          eyebrow="Method, demonstrated"
+          title="The same method, in the open"
+          intro="The audit runs the discipline these field reports describe — applied to my own systems first."
+        />
+        <div
+          className="ds-cards ds-mt-40"
+          style={{
+            gridTemplateColumns:
+              'repeat(auto-fit, minmax(min(280px, 100%), 1fr))',
+            gap: 16,
+          }}
+        >
           {posts.map(post => (
-            <Link
+            <FieldReportCard
               key={post.slug}
-              href={`/blog/${post.slug}` as never}
-              className="group flex flex-col rounded-lg border border-border bg-card p-5 transition-colors hover:border-primary/50"
-            >
-              <h3 className="headline-sm mb-3 flex-1">{post.title}</h3>
-              <span className="inline-flex items-center gap-1.5 font-mono text-xs text-primary group-hover:underline">
-                Read the field report
-                <ArrowRight className="h-3.5 w-3.5" />
-              </span>
-            </Link>
+              href={`/blog/${post.slug}`}
+              kind="Field report"
+              title={post.title}
+              figure={figureOf(post.exhibit)}
+              figureTone="claim"
+              cta="Read the field report"
+            />
           ))}
-
-          <Link
+          <FieldReportCard
             href="/methodology"
-            className="group flex flex-col rounded-lg border border-border bg-card p-5 transition-colors hover:border-primary/50"
-          >
-            <h3 className="headline-sm mb-3 flex-1">
-              How runs &amp; passes are counted
-            </h3>
-            <span className="inline-flex items-center gap-1.5 font-mono text-xs text-primary group-hover:underline">
-              See the methodology
-              <ArrowRight className="h-3.5 w-3.5" />
-            </span>
-          </Link>
+            kind="Methodology"
+            title="How runs & passes are counted"
+            figure="101 · 0.94"
+            cta="See the methodology"
+          />
         </div>
       </div>
     </section>

@@ -1,24 +1,48 @@
-import { Check, X, ChevronRight } from 'lucide-react';
-import { BookingButton, EmailButton } from '@/components/site/cta';
+import {
+  Chain,
+  Deliverables,
+  Eyebrow,
+  Faq,
+  FitBoxes,
+  NoteRow,
+  PriceCard,
+  SectionHeader,
+  TimelineBar,
+} from '@/components/ds';
+import { BookingCta, EmailCta } from '@/components/ds/cta';
 import { OFFERS, TRUST_CHIPS } from '@/lib/facts';
 import { generateServiceSchema, generateFaqSchema } from '@/lib/seo';
 import { slugify } from '@/lib/toc';
 import type { OfferPageContent } from '@/lib/offer-content';
 
-// Shared renderer for the offer pages. The canonical price renders EXACTLY ONCE
-// (in the hero), pulled from OFFERS by id, so T8 holds. `extra` slots in
-// offer-specific content (e.g. the own-platform cost case on the teardown page)
-// between method and timeline.
+// Shared renderer for the offer pages (board "/audit · offer template").
+// Pages that sell stay still: no entrance motion, price and scope are there at
+// once. The canonical price renders EXACTLY ONCE, in the hero card, pulled
+// from OFFERS by id (T8). `extra` slots offer-specific content between the
+// method and the timeline; `after` goes before the closing call to action.
+
+// Proportional phase bar above the timeline, only where the phases are
+// stretches of one fixed engagement.
+const TIMELINE_WEIGHTS: Record<string, number[]> = {
+  audit: [2, 5, 5],
+  'llm-cost-teardown': [2, 2, 1],
+};
+
 export function OfferPage({
   content,
   extra,
+  after,
 }: {
   content: OfferPageContent;
   extra?: React.ReactNode;
+  after?: React.ReactNode;
 }) {
   const offer = OFFERS.find(o => o.id === content.offerId)!;
   const serviceSchema = generateServiceSchema(content.offerId);
   const faqSchema = generateFaqSchema(content.faq);
+  const loc = (where: string) => `offer_${content.offerId}_${where}`;
+  const weights = TIMELINE_WEIGHTS[content.offerId];
+  const numbered = (i: number) => String(i + 1).padStart(2, '0');
 
   return (
     <div>
@@ -35,190 +59,147 @@ export function OfferPage({
         />
       )}
 
-      {/* HERO — quantified-mechanism promise + price (once) */}
-      <section className="relative overflow-hidden py-20 sm:py-24">
-        <div className="blueprint-grid pointer-events-none absolute inset-0 opacity-40" />
-        <div className="container relative">
-          <div className="max-w-3xl">
-            <p className="label-caps mb-5 text-primary">{content.kicker}</p>
-            <h1 className="text-balance text-4xl font-bold tracking-tight sm:text-5xl">
-              {content.h1}
-            </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-              {content.promise}
-            </p>
-            <div className="mt-8 flex flex-wrap items-baseline gap-3">
-              <span className="metric-lg text-foreground">{offer.price}</span>
-              <span className="font-mono text-sm text-muted-foreground">
-                {offer.terms}
-              </span>
+      <section className="ds-offer-hero" aria-labelledby="h-offer">
+        <div className="ds-wrap">
+          <a className="ds-link ds-mono" data-tone="muted" href="/#h-off">
+            <span style={{ fontSize: 12.5 }}>← Offers</span>
+          </a>
+          <div className="ds-offer-hero-grid">
+            <div className="ds-stack" style={{ gap: 24 }}>
+              <Eyebrow>{content.kicker}</Eyebrow>
+              <h1 id="h-offer" className="ds-h1" data-size="offer">
+                {content.h1}
+              </h1>
+              <p className="ds-lede">{content.promise}</p>
             </div>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <BookingButton location={`offer_${content.offerId}_hero`} />
-              <EmailButton location={`offer_${content.offerId}_hero`} />
-            </div>
-            <p className="mt-6 font-mono text-xs text-muted-foreground">
-              {TRUST_CHIPS.join(' · ')}
-            </p>
+            <PriceCard
+              price={offer.price}
+              terms={offer.terms}
+              location={loc('hero')}
+              trust={TRUST_CHIPS}
+            />
           </div>
         </div>
       </section>
 
-      {/* WHAT YOU GET */}
-      <section className="section border-t border-border">
-        <div className="container">
-          <h2 className="headline-lg mb-8">{content.deliverablesHeading}</h2>
-          <div className="grid gap-6 md:grid-cols-2">
-            {content.deliverables.map(d => (
-              <div key={d.title} className="border-l-2 border-primary/40 pl-6">
-                <h3 className="headline-sm mb-1.5">{d.title}</h3>
-                <p className="body-md leading-relaxed text-muted-foreground">
-                  {d.detail}
-                </p>
-              </div>
-            ))}
+      <section className="ds-sec" data-size="offer" aria-labelledby="h-deliv">
+        <div className="ds-wrap">
+          <SectionHeader
+            id="h-deliv"
+            eyebrow="01 · Deliverables"
+            title={content.deliverablesHeading}
+          />
+          <div className="ds-mt-40">
+            <Deliverables
+              items={content.deliverables.map(d => ({
+                title: d.title,
+                body: d.detail,
+              }))}
+            />
           </div>
         </div>
       </section>
 
-      {/* METHOD / LEVERS */}
-      <section className="section border-t border-border">
-        <div className="container">
-          <h2 className="headline-lg mb-2">{content.methodHeading}</h2>
-          {content.methodIntro && (
-            <p className="mb-8 max-w-2xl body-md text-muted-foreground">
-              {content.methodIntro}
-            </p>
-          )}
-          <div className="grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2">
-            {content.method.map(m => (
-              <div key={m.name} className="bg-card p-5">
-                <h3 className="headline-sm mb-1.5 font-mono">{m.name}</h3>
-                <p className="body-md leading-relaxed text-muted-foreground">
-                  {m.detail}
-                </p>
-              </div>
-            ))}
+      <section className="ds-sec" data-size="offer" aria-labelledby="h-method">
+        <div className="ds-wrap">
+          <SectionHeader
+            id="h-method"
+            eyebrow="02 · Method"
+            title={content.methodHeading}
+            intro={content.methodIntro}
+          />
+          <div className="ds-mt-40">
+            {content.method.length <= 4 ? (
+              <Chain
+                steps={content.method.map((m, i) => ({
+                  k: numbered(i),
+                  title: m.name,
+                  body: m.detail,
+                }))}
+              />
+            ) : (
+              <Deliverables
+                items={content.method.map(m => ({
+                  title: m.name,
+                  body: m.detail,
+                }))}
+              />
+            )}
           </div>
         </div>
       </section>
 
       {extra}
 
-      {/* TIMELINE */}
-      <section className="section border-t border-border">
-        <div className="container">
-          <h2 className="headline-lg mb-8">Timeline</h2>
-          <ol className="space-y-px overflow-hidden rounded-lg border border-border bg-border">
-            {content.timeline.map((t, i) => (
-              <li
-                key={t.phase}
-                className="flex flex-col gap-1 bg-card p-5 sm:flex-row sm:items-baseline sm:gap-6"
-              >
-                <span className="metric-lg shrink-0 text-primary/70">
-                  {String(i + 1).padStart(2, '0')}
-                </span>
-                <div>
-                  <div className="flex flex-wrap items-baseline gap-x-3">
-                    <h3 className="headline-sm">{t.phase}</h3>
-                    <span className="font-mono text-xs text-muted-foreground">
-                      {t.when}
-                    </span>
-                  </div>
-                  <p className="mt-1 body-md leading-relaxed text-muted-foreground">
-                    {t.detail}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ol>
+      <section className="ds-sec" data-size="offer" aria-labelledby="h-time">
+        <div className="ds-wrap">
+          <SectionHeader id="h-time" eyebrow="03 · Timeline" title="Timeline" />
+          {weights && <TimelineBar weights={weights} />}
+          <div style={{ marginTop: weights ? 4 : 40 }}>
+            <Chain
+              rule={!weights}
+              keyTone="muted"
+              steps={content.timeline.map(t => ({
+                k: t.when,
+                title: t.phase,
+                body: t.detail,
+              }))}
+            />
+          </div>
         </div>
       </section>
 
-      {/* WHO IT'S FOR / NOT FOR */}
-      <section className="section border-t border-border">
-        <div className="container">
-          <h2 className="headline-lg mb-8">Who it’s for</h2>
-          <div className="grid gap-6 md:grid-cols-2">
-            <ul className="space-y-3">
-              {content.forYou.map(f => (
-                <li
-                  key={f}
-                  className="flex gap-3 body-md text-muted-foreground"
-                >
-                  <Check
-                    className="mt-0.5 h-4 w-4 shrink-0 text-success"
-                    strokeWidth={2}
-                  />
-                  {f}
-                </li>
-              ))}
-            </ul>
-            <ul className="space-y-3">
-              {content.notForYou.map(f => (
-                <li
-                  key={f}
-                  className="flex gap-3 body-md text-muted-foreground"
-                >
-                  <X
-                    className="mt-0.5 h-4 w-4 shrink-0 text-warning"
-                    strokeWidth={2}
-                  />
-                  {f}
-                </li>
-              ))}
-            </ul>
+      <section className="ds-sec" data-size="offer" aria-labelledby="h-fit">
+        <div className="ds-wrap">
+          <SectionHeader id="h-fit" eyebrow="04 · Fit" title="Who it’s for" />
+          <div className="ds-mt-40">
+            <FitBoxes forYou={content.forYou} notFit={content.notForYou} />
           </div>
           {content.scopingNote && (
-            <p className="mt-8 rounded-lg border border-border bg-card p-5 body-md leading-relaxed text-muted-foreground">
-              <span className="label-caps mr-2 text-primary/80">Scope</span>
-              {content.scopingNote}
-            </p>
+            <div style={{ marginTop: 24 }}>
+              <NoteRow label="Scope">{content.scopingNote}</NoteRow>
+            </div>
           )}
         </div>
       </section>
 
-      {/* FAQ */}
-      <section className="section border-t border-border">
-        <div className="container">
-          <h2 className="headline-lg mb-8">FAQ</h2>
-          <div className="space-y-6">
-            {content.faq.map(f => {
-              const id = `faq-${slugify(f.q)}`;
-              return (
-                <div
-                  key={f.q}
-                  id={id}
-                  className="scroll-mt-24 border-l-2 border-primary/40 pl-6"
-                >
-                  <h3 className="headline-sm mb-1.5 flex items-start gap-2">
-                    <ChevronRight className="mt-1 h-4 w-4 shrink-0 text-primary" />
-                    <a href={`#${id}`} className="hover:underline">
-                      {f.q}
-                    </a>
-                  </h3>
-                  <p className="body-md leading-relaxed text-muted-foreground">
-                    {f.a}
-                  </p>
-                </div>
-              );
-            })}
+      <section className="ds-sec" data-size="offer" aria-labelledby="h-faq">
+        <div
+          className="ds-wrap"
+          style={{
+            display: 'grid',
+            gridTemplateColumns:
+              'repeat(auto-fit, minmax(min(300px, 100%), 1fr))',
+            gap: 48,
+          }}
+        >
+          <SectionHeader id="h-faq" eyebrow="05 · FAQ" title="FAQ" />
+          <div style={{ gridColumn: 'span 2', minWidth: 0 }}>
+            <Faq
+              items={content.faq.map(f => ({
+                id: `faq-${slugify(f.q)}`,
+                q: f.q,
+                a: f.a,
+              }))}
+            />
           </div>
         </div>
       </section>
 
-      {/* CTA (no price — keeps pricing to exactly one occurrence) */}
-      <section className="section border-t border-border">
-        <div className="container">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 className="headline-lg mb-4">Ready to start?</h2>
-            <p className="mb-8 body-lg text-muted-foreground">
-              Book a 30-minute systems call and we’ll confirm scope and timing.
-            </p>
-            <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-              <BookingButton location={`offer_${content.offerId}_cta`} />
-              <EmailButton location={`offer_${content.offerId}_cta`} />
-            </div>
+      {after}
+
+      {/* closing CTA: no price, so the price stays at exactly one occurrence */}
+      <section className="ds-final" aria-labelledby="h-start">
+        <div className="ds-wrap">
+          <h2 id="h-start" className="ds-display">
+            Ready to start?
+          </h2>
+          <p>
+            Book a 30-minute systems call and we’ll confirm scope and timing.
+          </p>
+          <div className="ds-actions">
+            <BookingCta location={loc('cta')} />
+            <EmailCta location={loc('cta')} />
           </div>
         </div>
       </section>

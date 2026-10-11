@@ -157,6 +157,7 @@ export function CostExhibit({
   strip,
   topic = 'LLM cost engineering',
   eyebrow = 'Exhibit · LLM bill',
+  still = false,
 }: {
   before: { value: number; label: string };
   after: { value: number; label: string };
@@ -170,6 +171,8 @@ export function CostExhibit({
   strip?: string[];
   topic?: string;
   eyebrow?: string;
+  /** pages that sell stay still: settled state, no sequence, no replay */
+  still?: boolean;
 }) {
   const { ref, seen, revealProps } = useReveal<HTMLElement>(0.35);
   const { run, replay } = useReplay();
@@ -186,14 +189,14 @@ export function CostExhibit({
   });
 
   useEffect(() => {
-    if (!seen) return;
+    if (!seen || still) return;
     clear();
     const t = window.setTimeout(
       () => show([0]),
       prefersReducedMotion() ? 0 : 1900
     );
     return () => window.clearTimeout(t);
-  }, [seen, run, show, clear]);
+  }, [seen, run, show, clear, still]);
 
   const b = before.value / max;
   const a = after.value / max;
@@ -209,14 +212,16 @@ export function CostExhibit({
       data-size="lg"
       data-claim={delta}
       style={{ '--from': before.value / after.value } as React.CSSProperties}
-      {...revealProps}
+      {...(still ? {} : revealProps)}
     >
       <div className="ds-exhibit-head">
         <div>
           <Eyebrow tone="fg">{eyebrow}</Eyebrow>
           <Chip variant="claim">{topic}</Chip>
         </div>
-        <ReplayButton onClick={replay} label="Replay the cost exhibit" />
+        {!still && (
+          <ReplayButton onClick={replay} label="Replay the cost exhibit" />
+        )}
       </div>
       <div className="ds-cx-grid" key={run}>
         <div className="ds-cx-num">

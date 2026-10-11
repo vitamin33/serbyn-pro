@@ -1,3 +1,4 @@
+import { Eyebrow, Price } from '@/components/ds';
 import { ADVISORY } from '@/lib/facts';
 
 // Advisory option surfaced on the /fractional page — a lighter, no-commitment
@@ -6,20 +7,24 @@ import { ADVISORY } from '@/lib/facts';
 // is unaffected.
 export function AdvisoryNote() {
   return (
-    <section className="section border-t border-border">
-      <div className="container">
-        <div className="rounded-lg border border-dashed border-border bg-card p-6">
-          <p className="label-caps mb-2 text-primary/80">
-            prefer something lighter?
-          </p>
-          <h2 className="headline-md mb-3">{ADVISORY.name}</h2>
-          <div className="mb-3 flex flex-wrap items-baseline gap-3">
-            <span className="metric-lg text-foreground">{ADVISORY.price}</span>
-            <span className="font-mono text-sm text-muted-foreground">
-              {ADVISORY.terms}
-            </span>
-          </div>
-          <p className="max-w-2xl body-md leading-relaxed text-muted-foreground">
+    <section className="ds-sec" data-size="offer" aria-labelledby="h-adv">
+      <div className="ds-wrap">
+        <div
+          className="ds-card"
+          style={{
+            padding: 28,
+            borderStyle: 'dashed',
+            display: 'grid',
+            gap: 14,
+            maxWidth: 760,
+          }}
+        >
+          <Eyebrow tone="accent">Prefer something lighter?</Eyebrow>
+          <h2 id="h-adv" className="ds-h3" style={{ fontSize: 26 }}>
+            {ADVISORY.name}
+          </h2>
+          <Price price={ADVISORY.price} terms={ADVISORY.terms} size="card" />
+          <p style={{ margin: 0, color: 'var(--muted)' }}>
             {ADVISORY.summary} No monthly commitment — a direct line to
             architectural advice on agent reliability and LLM cost when you need
             it.
