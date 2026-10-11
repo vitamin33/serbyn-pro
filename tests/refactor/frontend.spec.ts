@@ -14,11 +14,11 @@ test('T15a — 404 page is branded, themed, and routes back to /audit', async ({
   await page.emulateMedia({ colorScheme: 'dark' });
   const resp = await page.goto('/this-page-does-not-exist-xyz');
   expect(resp?.status(), '404 status').toBe(404);
-  expect(await bodyBg(), 'dark token --bg #111715').toBe('rgb(17, 23, 21)');
+  expect(await bodyBg(), 'dark token --bg #151513').toBe('rgb(21, 21, 19)');
   await expect(page.locator('a[href="/audit"]').first()).toBeVisible();
 
   await page.emulateMedia({ colorScheme: 'light' });
-  expect(await bodyBg(), 'light token --bg #f4f6f4').toBe('rgb(244, 246, 244)');
+  expect(await bodyBg(), 'light token --bg #f5f3ee').toBe('rgb(245, 243, 238)');
 });
 
 test('T15b — keyboard-focused nav link shows a visible outline', async ({

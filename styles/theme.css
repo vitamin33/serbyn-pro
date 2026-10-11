@@ -1,60 +1,125 @@
-/* Design tokens: the only place colors and font stacks are defined.
-   Values are copied from the reference explainer (proof-of-green-mechanics.html,
-   :root block). Tailwind maps its color names onto these in tailwind.config.ts;
-   see docs/design/diagram-system.md.
+/* Design tokens: the only place colors, font stacks and motion values are
+   defined. Values come from the Claude Design boards "serbyn.io — Claim vs.
+   proof" (design system v1); the spec is docs/design/design-system.md.
+   Tailwind maps its color names onto these in tailwind.config.ts.
 
-   Three ways to get the dark set, as in the reference:
+   Semantic color, one mapping on every page:
+   --claim     terracotta, the thing under test, the failure, "before", A-side
+               bars. Fills and borders only; text uses --claim-text.
+   --baseline  slate, the comparison arm, "after", B-side bars.
+   --accent    evergreen, proven, fixed, the action to take: primary buttons,
+               links, ticks, the focus ring.
+
+   Three ways to get the dark set ("darkroom"):
    1. the OS prefers dark and nothing forces light,
-   2. data-theme="dark" on <html>,
-   3. data-theme="dark" on any element (used by /lab/diagrams to show both
-      themes side by side). data-theme="light" works the same way. */
+   2. data-theme="dark" on <html> (the header theme switch sets it),
+   3. data-theme="dark" on any element, so a figure or a gallery cell can force
+      its own theme. data-theme="light" works the same way. */
 
 :root,
 [data-theme='light'] {
-  --bg: #f4f6f4;
-  --surface: #ffffff;
-  --fg: #17211d;
-  --muted: #5b6862;
-  --line: #cfd8d3;
-  --accent: #0b6e55;
-  --accent-soft: #dcefe7;
-  --tier-a: #13804f;
-  --tier-b: #5f7f1a;
+  --bg: #f5f3ee;
+  --surface: #fdfbf6;
+  --fg: #1c1b19;
+  --muted: #6b665d;
+  --line: #e5e0d7;
+  --line-strong: #d3ccbf;
+  --chip: #ebe6dc;
+  --accent: #496a62;
+  --accent-strong: #3a564f;
+  --accent-soft: #dfe8e3;
+  --on-accent: #ffffff;
+  --claim: #cc7c5e;
+  --claim-text: #9e5136;
+  --claim-soft: #f5e3da;
+  --baseline: #4f5b77;
+  --baseline-soft: #e3e6ee;
+  --tier-a: #3d6b4f;
+  --tier-b: #6b7a2a;
   --tier-c: #b06a00;
   --tier-d: #b3261e;
+  --interim: #8a5300;
+  --interim-soft: #f6e7c9;
+  /* warm syntax theme (board 07) */
+  --code-bg: #efebe3;
+  --code-fg: #1c1b19;
+  --code-comment: #7a7468;
+  --code-keyword: #3a564f;
+  --code-fn: #4f5b77;
+  --code-string: #9e5136;
+  --code-literal: #8a5300;
+  --scrim: rgba(21, 21, 19, 0.42);
   color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --bg: #111715;
-    --surface: #18201d;
-    --fg: #e3ebe7;
-    --muted: #95a39c;
-    --line: #2d3934;
-    --accent: #4fc79f;
-    --accent-soft: #173a2f;
-    --tier-a: #4fc485;
-    --tier-b: #a9c454;
+    --bg: #151513;
+    --surface: #1d1c1a;
+    --fg: #ece8df;
+    --muted: #a39d92;
+    --line: #2e2c28;
+    --line-strong: #403c36;
+    --chip: #2a2825;
+    --accent: #7fb3a4;
+    --accent-strong: #9cc9bb;
+    --accent-soft: #1f302b;
+    --on-accent: #121211;
+    --claim: #e0906f;
+    --claim-text: #e0906f;
+    --claim-soft: #3a251c;
+    --baseline: #8f9fc6;
+    --baseline-soft: #232838;
+    --tier-a: #7fc49a;
+    --tier-b: #b5c46a;
     --tier-c: #e9a23b;
     --tier-d: #f07167;
+    --interim: #e9a23b;
+    --interim-soft: #33270f;
+    --code-bg: #1d1c1a;
+    --code-fg: #ece8df;
+    --code-comment: #8d877c;
+    --code-keyword: #7fb3a4;
+    --code-fn: #8f9fc6;
+    --code-string: #e0906f;
+    --code-literal: #e9a23b;
+    --scrim: rgba(0, 0, 0, 0.55);
     color-scheme: dark;
   }
 }
 
 :root[data-theme='dark'],
 [data-theme='dark'] {
-  --bg: #111715;
-  --surface: #18201d;
-  --fg: #e3ebe7;
-  --muted: #95a39c;
-  --line: #2d3934;
-  --accent: #4fc79f;
-  --accent-soft: #173a2f;
-  --tier-a: #4fc485;
-  --tier-b: #a9c454;
+  --bg: #151513;
+  --surface: #1d1c1a;
+  --fg: #ece8df;
+  --muted: #a39d92;
+  --line: #2e2c28;
+  --line-strong: #403c36;
+  --chip: #2a2825;
+  --accent: #7fb3a4;
+  --accent-strong: #9cc9bb;
+  --accent-soft: #1f302b;
+  --on-accent: #121211;
+  --claim: #e0906f;
+  --claim-text: #e0906f;
+  --claim-soft: #3a251c;
+  --baseline: #8f9fc6;
+  --baseline-soft: #232838;
+  --tier-a: #7fc49a;
+  --tier-b: #b5c46a;
   --tier-c: #e9a23b;
   --tier-d: #f07167;
+  --interim: #e9a23b;
+  --interim-soft: #33270f;
+  --code-bg: #1d1c1a;
+  --code-fg: #ece8df;
+  --code-comment: #8d877c;
+  --code-keyword: #7fb3a4;
+  --code-fn: #8f9fc6;
+  --code-string: #e0906f;
+  --code-literal: #e9a23b;
+  --scrim: rgba(0, 0, 0, 0.55);
   color-scheme: dark;
 }
 
@@ -64,19 +129,62 @@
   color: var(--fg);
 }
 
-/* Font stacks. The --font-plex-* variables come from next/font in
-   app/layout.tsx, which downloads IBM Plex at build and serves it from our own
-   origin (no request to Google at runtime). */
+/* Font stacks. The --font-* variables come from next/font in app/layout.tsx,
+   which downloads the families at build and serves them from our own origin
+   (no request to Google at runtime, T15c).
+   Grotesk for verdicts in numbers (Manrope 800), serif for verdicts in words
+   (Newsreader italic), Plex Sans for reading, Plex Mono for labels and data. */
 :root {
-  --display: var(--font-plex-condensed), 'IBM Plex Sans Condensed', 'Arial Narrow',
-    system-ui, sans-serif;
-  --body: var(--font-plex-sans), 'IBM Plex Sans', system-ui, -apple-system,
+  --display:
+    var(--font-manrope), 'Manrope', 'Helvetica Neue', Arial, sans-serif;
+  --body:
+    var(--font-plex-sans), 'IBM Plex Sans', system-ui, -apple-system,
     'Segoe UI', sans-serif;
-  --mono: var(--font-plex-mono), 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo,
+  --mono:
+    var(--font-plex-mono), 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo,
     monospace;
+  --serif:
+    var(--font-newsreader), 'Newsreader', 'Iowan Old Style', Georgia, serif;
+
+  /* radius: 2 bars, 3 chips, 4 diagram boxes and small controls,
+     6 cards and buttons, 8 the command palette */
   --radius: 6px;
   --radius-sm: 4px;
   --radius-xs: 3px;
+  --radius-bar: 2px;
+  --radius-lg: 8px;
+
+  /* layout tracks: 1240 container, 12 col, 24 gutter, 70ch reading measure,
+     1000px breakout for exhibits, tables and figures, margin column >= 1200 */
+  --container: 1240px;
+  --page-pad: 32px;
+  --gutter: 24px;
   --measure: 70ch;
   --wide: 1000px;
+  --header-h: 60px;
+
+  /* motion: a small named set, used everywhere (board "Motion system") */
+  --dur-instant: 80ms; /* press, tap feedback */
+  --dur-quick: 160ms; /* hover, focus ring, underline draw */
+  --dur-base: 260ms; /* entrances, chips, badges */
+  --dur-slow: 420ms; /* bars, scans, morphs, theme */
+  --dur-story: 900ms; /* hero and signature sequences only (700-1200) */
+  --ease-settle: cubic-bezier(0.2, 0, 0, 1); /* most entrances */
+  --ease-scan: linear; /* the scan line only */
+  --ease-stamp: cubic-bezier(
+    0.34,
+    1.56,
+    0.64,
+    1
+  ); /* badges, ticks, ~8% overshoot */
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1); /* exits, faster than entrances */
+  --stagger: 50ms; /* lists, bars, ledger rows (40-60) */
+  --travel: 6px; /* max entrance distance (4-8) */
+}
+
+@media (max-width: 600px) {
+  :root {
+    --page-pad: 16px;
+    --header-h: 56px;
+  }
 }

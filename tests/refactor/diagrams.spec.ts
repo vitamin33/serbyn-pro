@@ -80,7 +80,7 @@ test('T16e — dark-mode screenshot for review', async ({ page }) => {
   const bg = await page.evaluate(
     () => getComputedStyle(document.body).backgroundColor
   );
-  expect(bg, 'dark token --bg #111715').toBe('rgb(17, 23, 21)');
+  expect(bg, 'dark token --bg #151513').toBe('rgb(21, 21, 19)');
   await page.screenshot({
     path: '.playwright-artifacts/diagram-gallery-dark.png',
     fullPage: true,
