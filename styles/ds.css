@@ -3187,6 +3187,7 @@ a.ds-dd-item:hover {
   }
 }
 @media print {
+  .ds-footer,
   .ds-scan-x,
   .ds-scan-y,
   .ds-threads,

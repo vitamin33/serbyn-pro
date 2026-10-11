@@ -10,15 +10,22 @@ export function ReadingProgress({
   minutes,
   target = 'article',
 }: {
-  minutes: number;
+  /** whole-post read time; measured from the target's text when omitted */
+  minutes?: number;
   target?: string;
 }) {
   const bar = useRef<HTMLSpanElement>(null);
-  const [left, setLeft] = useState(minutes);
+  const [left, setLeft] = useState<number | null>(minutes ?? null);
 
   useEffect(() => {
     let raf = 0;
     const el = document.querySelector(target);
+    const total =
+      minutes ??
+      Math.max(
+        1,
+        Math.round((el?.textContent ?? '').split(/\s+/).length / 230)
+      );
     const update = () => {
       raf = 0;
       if (!el) return;
@@ -26,7 +33,7 @@ export function ReadingProgress({
       const total = r.height - window.innerHeight;
       const p = total > 0 ? Math.min(1, Math.max(0, -r.top / total)) : 1;
       bar.current?.style.setProperty('--p', String(p));
-      setLeft(Math.max(0, Math.ceil(minutes * (1 - p))));
+      setLeft(Math.max(0, Math.ceil(total * (1 - p))));
     };
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(update);
@@ -44,7 +51,7 @@ export function ReadingProgress({
   return (
     <>
       <span className="ds-reading" aria-hidden="true">
-        {left} min left
+        {left === null ? '' : `${left} min left`}
       </span>
       <div className="ds-progress" aria-hidden="true">
         <span ref={bar} />

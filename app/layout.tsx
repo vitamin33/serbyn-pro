@@ -8,9 +8,12 @@ import {
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import '../styles/globals.css';
-import { AppShell } from '@/components/lab/app-shell';
 import { PostHogProvider } from '@/components/analytics/posthog-provider';
 import { ThemeScript } from '@/components/ds/theme-script';
+import { SiteShell } from '@/components/ds/site-shell';
+import { SiteFooter } from '@/components/ds/footer';
+import type { PaletteItem } from '@/components/ds/nav';
+import { getAllBlogPosts } from '@/lib/blog-posts';
 import {
   pageMetadata,
   generatePersonSchema,
@@ -54,6 +57,16 @@ const newsreader = Newsreader({
 
 export const metadata: Metadata = pageMetadata.home();
 
+// Posts for the command palette (⌘K), newest first.
+function palettePosts(): PaletteItem[] {
+  return getAllBlogPosts().map(p => ({
+    kind: 'Post',
+    label: p.title,
+    hint: p.date.slice(5),
+    href: `/blog/${p.slug}`,
+  }));
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -88,14 +101,16 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased">
-        <a
-          href="#main"
-          className="skip-to-content"
-          aria-label="Skip to main content"
-        >
+        <a href="#main" className="ds-skip">
           Skip to content
         </a>
-        <AppShell>{children}</AppShell>
+        <SiteShell
+          palette={palettePosts()}
+          footer={<SiteFooter />}
+          compactFooter={<SiteFooter variant="compact" />}
+        >
+          {children}
+        </SiteShell>
         <PostHogProvider />
         <Analytics />
         <SpeedInsights />

@@ -321,7 +321,7 @@ export function SiteHeader({
   /** posts for the command palette */
   palette?: PaletteItem[];
   /** post variant: compact header with "N min left" and a progress rule */
-  reading?: { minutes: number };
+  reading?: { minutes?: number };
 }) {
   const [pal, setPal] = useState(false);
   const close = useCallback(() => setPal(false), []);
