@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { pageMetadata } from '@/lib/seo';
+import { Eyebrow } from '@/components/ds';
 
 export const metadata = pageMetadata.terms();
 
@@ -9,10 +10,11 @@ export default function TermsPage() {
   return (
     <div className="min-h-screen py-16">
       <div className="container">
-        <div className="mx-auto max-w-4xl">
+        <div className="max-w-4xl">
           {/* Header */}
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold tracking-tight mb-4">
+          <div className="mb-12 grid gap-4">
+            <Eyebrow>Legal</Eyebrow>
+            <h1 className="ds-h1" data-size="index">
               Terms of Service
             </h1>
             <p className="text-muted-foreground">Last updated: {lastUpdated}</p>

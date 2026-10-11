@@ -199,7 +199,7 @@ export default function ResumePage() {
               </div>
               <ul className="list-disc list-inside text-sm space-y-1 ml-4">
                 <li>
-                  Led teams of 3–4 engineers, owned release trains with 99.5+
+                  Led teams of 2–6 engineers, owned release trains with 99.5+
                   uptime for mobile apps (5M+ MAU)
                 </li>
                 <li>

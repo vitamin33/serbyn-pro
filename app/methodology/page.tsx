@@ -1,7 +1,6 @@
-import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
 import { createMetadata, siteConfig } from '@/lib/seo';
-import { Stat } from '@/components/site/stat';
+import { Eyebrow, SourceLabel, TextLink } from '@/components/ds';
+import { FlowDiagram } from '@/components/diagram';
 
 // Methodology note backing the DW "101 logged runs · 0.94 pass rate" figure
 // (linked from the home DW card). Defines what a run and a pass are so the
@@ -16,75 +15,104 @@ export const metadata = createMetadata({
 
 export default function MethodologyPage() {
   return (
-    <div className="py-16">
-      <div className="container max-w-3xl">
-        <p className="label-caps mb-2 text-muted-foreground">
-          methodology note
-        </p>
-        <h1 className="mb-4 text-4xl font-bold tracking-tight">
-          How DW runs and passes are counted
-        </h1>
-        <p className="mb-10 text-lg text-muted-foreground">
-          DW is an autonomous, spec-driven development pipeline I designed and
-          built. A short definition of the numbers so they mean something.
-        </p>
+    <div style={{ padding: '80px 0 120px' }}>
+      <div className="ds-wrap">
+        <div className="ds-stack" style={{ gap: 20, maxWidth: 860 }}>
+          <Eyebrow>Methodology note</Eyebrow>
+          <h1 className="ds-h1" data-size="index">
+            How DW runs and passes are counted
+          </h1>
+          <p className="ds-lede" style={{ color: 'var(--muted)' }}>
+            DW is an autonomous, spec-driven development pipeline I designed and
+            built. A short definition of the numbers so they mean something.
+          </p>
+        </div>
 
-        <div className="mb-10 rounded-lg border border-border bg-card p-6">
-          <Stat
-            claim={{
-              value: '101 · 0.94',
-              caption: 'logged runs · pass rate',
-              label: 'on DW, a system I designed and built',
-            }}
+        <div
+          className="ds-card"
+          data-claim="101 · 0.94"
+          style={{
+            marginTop: 40,
+            padding: '24px 28px',
+            maxWidth: 560,
+            display: 'grid',
+            gap: 6,
+          }}
+        >
+          <span
+            className="ds-display ds-num"
+            data-claim-value=""
+            style={{ fontSize: 56, letterSpacing: '-0.05em' }}
+          >
+            101 · 0.94
+          </span>
+          <span>logged runs · pass rate</span>
+          <SourceLabel label="on DW, a system I designed and built" />
+        </div>
+
+        <div className="ds-about-flow" style={{ marginTop: 56 }}>
+          <h2 className="ds-h3" style={{ fontSize: 26 }}>
+            What counts as a run
+          </h2>
+          <p>
+            A <strong>run</strong> is one specification submitted to the
+            pipeline and executed end to end to a terminal state — planning,
+            change, and verification — without a human taking over mid-way. Each
+            run is logged, which is why the count is exact rather than
+            estimated. Aborted or half-completed attempts are logged too; they
+            simply don’t count as passes.
+          </p>
+          <h2 className="ds-h3" style={{ fontSize: 26, marginTop: 20 }}>
+            What counts as a pass
+          </h2>
+          <p>
+            A <strong>pass</strong> is a run whose output satisfies the spec’s
+            acceptance checks — it builds, the tests and evals it was asked to
+            meet are green, and the result matches what the spec described —
+            with <strong>no human edits</strong> to the produced change. A run
+            that needs a person to finish or fix it is recorded as a non-pass,
+            even if the final code eventually shipped.
+          </p>
+        </div>
+
+        <div style={{ marginTop: 40, maxWidth: 1000 }}>
+          <FlowDiagram
+            title="one DW run"
+            label="A spec is planned, the change is made, acceptance checks run, and the ledger records a pass only when no human edited the change."
+            caption="A run that needs a person to finish it is recorded as a non-pass, even if the final code eventually shipped."
+            emphasis={['checks']}
+            steps={[
+              { id: 'spec', title: 'Spec', sub: 'submitted' },
+              { id: 'plan', title: 'Planning', sub: 'by the pipeline' },
+              { id: 'change', title: 'Change', sub: 'by the pipeline' },
+              {
+                id: 'checks',
+                title: 'Acceptance checks',
+                sub: 'build, tests, evals',
+              },
+              { id: 'ledger', title: 'Ledger', sub: 'pass = no human edits' },
+            ]}
           />
         </div>
 
-        <div className="space-y-8">
-          <section>
-            <h2 className="headline-md mb-2">What counts as a run</h2>
-            <p className="body-md leading-relaxed text-muted-foreground">
-              A <strong className="text-foreground">run</strong> is one
-              specification submitted to the pipeline and executed end to end to
-              a terminal state — planning, change, and verification — without a
-              human taking over mid-way. Each run is logged, which is why the
-              count is exact rather than estimated. Aborted or half-completed
-              attempts are logged too; they simply don’t count as passes.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="headline-md mb-2">What counts as a pass</h2>
-            <p className="body-md leading-relaxed text-muted-foreground">
-              A <strong className="text-foreground">pass</strong> is a run whose
-              output satisfies the spec’s acceptance checks — it builds, the
-              tests and evals it was asked to meet are green, and the result
-              matches what the spec described — with{' '}
-              <strong className="text-foreground">no human edits</strong> to the
-              produced change. A run that needs a person to finish or fix it is
-              recorded as a non-pass, even if the final code eventually shipped.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="headline-md mb-2">Why the honesty matters</h2>
-            <p className="body-md leading-relaxed text-muted-foreground">
-              A pass rate is only worth quoting if a “pass” can’t quietly
-              include work a human rescued. Counting human-touched runs as
-              non-passes is the same discipline I bring to client agents: a
-              green has to be earned and has to point at its evidence, or it
-              isn’t a green. This figure is measured on my own system, not a
-              client’s.
-            </p>
-          </section>
+        <div className="ds-about-flow" style={{ marginTop: 56 }}>
+          <h2 className="ds-h3" style={{ fontSize: 26 }}>
+            Why the honesty matters
+          </h2>
+          <p>
+            A pass rate is only worth quoting if a “pass” can’t quietly include
+            work a human rescued. Counting human-touched runs as non-passes is
+            the same discipline I bring to client agents: a green has to be
+            earned and has to point at its evidence, or it isn’t a green. This
+            figure is measured on my own system, not a client’s.
+          </p>
         </div>
 
-        <Link
-          href={'/writing' as any}
-          className="mt-10 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
-        >
-          More on false greens and evidence-binding
-          <ArrowRight className="h-3.5 w-3.5" />
-        </Link>
+        <p style={{ marginTop: 40 }}>
+          <TextLink href="/writing" strong>
+            More on false greens and evidence-binding →
+          </TextLink>
+        </p>
       </div>
     </div>
   );

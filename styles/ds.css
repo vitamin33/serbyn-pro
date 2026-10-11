@@ -3448,3 +3448,16 @@ a.ds-work-card:hover {
 .ds-work-card:hover .ds-link {
   background-size: 100% 1px;
 }
+
+/* About narrative: one 70ch reading column */
+.ds-about-flow {
+  max-width: var(--measure);
+  margin-top: 40px;
+  display: grid;
+  gap: 20px;
+  font-size: 17px;
+  line-height: 1.65;
+}
+.ds-about-flow p {
+  margin: 0;
+}

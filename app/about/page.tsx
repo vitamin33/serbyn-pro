@@ -1,7 +1,6 @@
-import Link from 'next/link';
-import { Download } from 'lucide-react';
 import { pageMetadata } from '@/lib/seo';
-import { BookingButton } from '@/components/site/cta';
+import { Chain, Eyebrow, SectionHeader, TextLink } from '@/components/ds';
+import { BookingCta } from '@/components/ds/cta';
 
 export const metadata = pageMetadata.about();
 
@@ -25,18 +24,17 @@ const principles = [
 
 export default function AboutPage() {
   return (
-    <div className="py-16">
-      <div className="container max-w-3xl">
-        <p className="mb-2 font-mono text-sm text-muted-foreground">
-          {'// About'}
-        </p>
-        <h1 className="mb-8 text-4xl font-bold tracking-tight">
-          Vitalii Serbyn
-        </h1>
+    <div style={{ padding: '80px 0 120px' }}>
+      <div className="ds-wrap">
+        <div className="ds-stack" style={{ gap: 20 }}>
+          <Eyebrow>About</Eyebrow>
+          <h1 className="ds-h1" data-size="index">
+            Vitalii Serbyn
+          </h1>
+        </div>
 
-        {/* Narrative */}
-        <div className="mb-16 space-y-6 text-muted-foreground">
-          <p className="text-lg">
+        <div className="ds-about-flow">
+          <p className="ds-lede" style={{ maxWidth: 'none' }}>
             I&apos;ve been shipping production systems for 13+ years. Started
             building Android apps at EPAM and GlobalLogic — one of them
             (Magisto) hit 100M+ users and won a Google Play award. Led teams of
@@ -88,34 +86,32 @@ export default function AboutPage() {
           </p>
         </div>
 
-        {/* Principles */}
-        <section className="mb-16">
-          <h2 className="mb-8 text-2xl font-bold tracking-tight">
-            Design principles
-          </h2>
-          <div className="grid gap-6 md:grid-cols-3">
-            {principles.map(p => (
-              <div
-                key={p.title}
-                className="rounded-lg border border-border bg-card p-6"
-              >
-                <h3 className="mb-2 font-semibold">{p.title}</h3>
-                <p className="text-sm text-muted-foreground">{p.description}</p>
-              </div>
-            ))}
+        <section className="ds-mt-56" aria-labelledby="h-principles">
+          <SectionHeader
+            id="h-principles"
+            eyebrow="Principles"
+            title="Design principles"
+          />
+          <div className="ds-mt-40">
+            <Chain
+              steps={principles.map((p, i) => ({
+                k: String(i + 1).padStart(2, '0'),
+                title: p.title,
+                body: p.description,
+              }))}
+            />
           </div>
         </section>
 
-        {/* CTAs — booking is primary; resume demoted to a text link (D1) */}
-        <section className="flex flex-col items-start gap-3">
-          <BookingButton location="about" label="Book a Call" />
-          <Link
-            href="/resume"
-            className="inline-flex items-center gap-1.5 font-mono text-xs text-muted-foreground hover:text-foreground"
-          >
-            <Download className="h-3.5 w-3.5" />
-            View résumé
-          </Link>
+        {/* booking is primary; the résumé is a text link (D1) */}
+        <section
+          className="ds-actions ds-mt-56"
+          style={{ alignItems: 'center', gap: 24 }}
+        >
+          <BookingCta location="about" label="Book a Call" />
+          <TextLink href="/resume" className="ds-mono">
+            <span style={{ fontSize: 13 }}>View résumé →</span>
+          </TextLink>
         </section>
       </div>
     </div>
