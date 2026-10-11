@@ -1,11 +1,10 @@
-import Link from 'next/link';
 import { createMetadata, siteConfig } from '@/lib/seo';
-import { getAllBlogPosts } from '@/lib/blog-posts';
-import { TerminalSignup } from '@/components/lab/terminal-signup';
+import { getAllBlogPosts, groupPostsByMonth } from '@/lib/blog-posts';
+import { Eyebrow, Masthead, PostWall } from '@/components/ds';
 
-// /writing — vendor-framed index over the SAME posts as /blog (the blog system
-// and its routes/RSS/SEO are untouched, R5). SITE STRUCTURE lists /writing as a
-// first-class page.
+// /writing — the wall of exhibits (board "/writing"). Posts grouped by month;
+// each row shows the post's headline number from its `exhibit:` frontmatter.
+// Low motion budget: the mini bars draw once. /blog redirects here.
 export const metadata = createMetadata({
   title: 'Writing',
   description:
@@ -14,61 +13,31 @@ export const metadata = createMetadata({
 });
 
 export default function WritingPage() {
-  const posts = getAllBlogPosts();
+  const groups = groupPostsByMonth(getAllBlogPosts());
 
   return (
-    <div className="py-12 sm:py-16">
-      <div className="container grid max-w-wide gap-12">
-        <header className="grid max-w-measure gap-4">
-          <p className="a-eyebrow">index / writing</p>
-          <h1>Writing on agent reliability and LLM cost</h1>
-          <p className="a-lede text-muted-foreground">
-            How I think about making agents trustworthy and affordable in
-            production — the same methods behind the audits and teardowns.
-          </p>
-        </header>
-
-        <TerminalSignup
-          blurb="Field notes on agent reliability and LLM cost — new posts, no fluff."
-          className="max-w-measure"
-        />
-
-        {posts.length === 0 ? (
-          <p className="text-muted-foreground">First articles coming soon.</p>
-        ) : (
-          <ol className="grid border-t border-border">
-            {posts.map(post => (
-              <li key={post.slug} className="border-b border-border">
-                <article className="group">
-                  <Link
-                    href={`/blog/${post.slug}` as any}
-                    className="grid gap-2 py-6 sm:grid-cols-[11rem_1fr] sm:gap-8"
-                  >
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs text-muted-foreground sm:flex-col sm:items-start">
-                      <time dateTime={post.date}>
-                        {new Date(post.date).toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                        })}
-                      </time>
-                      <span>{post.readingTime} min read</span>
-                      <span className="a-tag">{post.category}</span>
-                    </div>
-                    <div className="grid max-w-measure gap-2">
-                      <h2 className="text-[1.4rem] transition-colors group-hover:text-primary">
-                        {post.title}
-                      </h2>
-                      <p className="text-[0.95rem] text-muted-foreground">
-                        {post.description}
-                      </p>
-                    </div>
-                  </Link>
-                </article>
-              </li>
-            ))}
-          </ol>
-        )}
+    <div style={{ padding: '80px 0 120px' }}>
+      <div className="ds-wrap">
+        <div className="ds-offer-hero-grid" style={{ marginTop: 0 }}>
+          <div className="ds-stack" style={{ gap: 20 }}>
+            <Eyebrow>Index / writing</Eyebrow>
+            <h1 className="ds-h1" data-size="index">
+              Writing on agent reliability and LLM cost
+            </h1>
+            <p className="ds-lede" style={{ color: 'var(--muted)' }}>
+              How I think about making agents trustworthy and affordable in
+              production — the same methods behind the audits and teardowns.
+            </p>
+          </div>
+          <Masthead location="writing_index" />
+        </div>
+        <div style={{ marginTop: 56 }}>
+          {groups.length === 0 ? (
+            <p style={{ color: 'var(--muted)' }}>No posts published yet.</p>
+          ) : (
+            <PostWall groups={groups} />
+          )}
+        </div>
       </div>
     </div>
   );
