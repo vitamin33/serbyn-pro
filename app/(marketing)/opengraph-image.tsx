@@ -1,4 +1,5 @@
 import { ogCard, OG_SIZE, OG_CONTENT_TYPE } from '@/lib/og-card';
+import { TRUST_CHIPS } from '@/lib/facts';
 
 // Home OG card.
 export const alt =
@@ -8,8 +9,9 @@ export const contentType = OG_CONTENT_TYPE;
 
 export default function Image() {
   return ogCard({
-    eyebrow: 'Agentic Systems Architect',
+    kind: 'home',
+    eyebrow: 'Agentic systems architect',
     title: 'I make AI agents reliable enough to run in production.',
-    priceLine: 'Fixed-scope audits from $3,500',
+    strip: [...TRUST_CHIPS],
   });
 }

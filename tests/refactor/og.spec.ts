@@ -30,7 +30,7 @@ test.describe('T10 — money-page OG cards are 1200×630 and opaque', () => {
       ).toContain('image');
 
       // dimensions + opacity via canvas (same-origin, no taint)
-      const probe = await page.evaluate(async (src) => {
+      const probe = await page.evaluate(async src => {
         const img = new Image();
         img.src = src;
         await img.decode();
@@ -45,13 +45,15 @@ test.describe('T10 — money-page OG cards are 1200×630 and opaque', () => {
 
       expect(probe.w, `${path} og width`).toBe(1200);
       expect(probe.h, `${path} og height`).toBe(630);
-      // corner pixel must be fully opaque and dark (the card background), not the
-      // transparent square-logo of the old asset
+      // corner pixel must be fully opaque and be a card background (paper
+      // #f5f3ee or darkroom #151513), not the transparent square logo of the
+      // old asset
       expect(probe.tl[3], `${path} corner alpha (transparent bg?)`).toBe(255);
+      const bg = probe.tl.slice(0, 3).join(',');
       expect(
-        probe.tl[0] + probe.tl[1] + probe.tl[2],
-        `${path} corner should be dark card bg`
-      ).toBeLessThan(120);
+        ['245,243,238', '21,21,19'],
+        `${path} corner should be a card background, got ${bg}`
+      ).toContain(bg);
     });
   }
 });

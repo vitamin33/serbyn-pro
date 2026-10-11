@@ -1,1 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#2563eb"/><text x="50" y="50" text-anchor="middle" dominant-baseline="middle" fill="white" font-family="monospace" font-size="40" font-weight="bold">$</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28">
+  <style>
+    .r { stroke: #1c1b19 } .t { stroke: #496a62 }
+    @media (prefers-color-scheme: dark) { .r { stroke: #ece8df } .t { stroke: #7fb3a4 } }
+  </style>
+  <path class="r" d="M2 23h24" stroke-width="1.5" fill="none"/>
+  <path class="t" d="M6.5 14.5 11 23 23 5" stroke-width="2.8" fill="none"/>
+</svg>

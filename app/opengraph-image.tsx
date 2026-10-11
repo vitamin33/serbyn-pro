@@ -1,4 +1,5 @@
 import { ogCard, OG_SIZE, OG_CONTENT_TYPE } from '@/lib/og-card';
+import { TRUST_CHIPS } from '@/lib/facts';
 
 // Site-wide default OG card (about, methodology, writing, work, legal). Route
 // segments with their own opengraph-image.tsx (home, offers, blog, work detail)
@@ -9,8 +10,9 @@ export const contentType = OG_CONTENT_TYPE;
 
 export default function Image() {
   return ogCard({
-    eyebrow: 'Agentic Systems Architect',
+    kind: 'home',
+    eyebrow: 'Agentic systems architect',
     title: 'AI agents, reliable enough to run in production.',
-    priceLine: 'Agent reliability · LLM cost engineering',
+    strip: [...TRUST_CHIPS],
   });
 }

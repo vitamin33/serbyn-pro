@@ -4,28 +4,28 @@
   "description": "I make AI agents reliable enough to run in production — agent reliability engineering and LLM cost engineering.",
   "icons": [
     {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
       "src": "/favicon.ico",
-      "sizes": "32x32",
+      "sizes": "16x16 32x32",
       "type": "image/x-icon"
     },
     {
-      "src": "/logo.png",
-      "sizes": "192x192",
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
       "type": "image/png"
     },
     {
       "src": "/logo.png",
       "sizes": "512x512",
       "type": "image/png"
-    },
-    {
-      "src": "/apple-touch-icon.png",
-      "sizes": "180x180",
-      "type": "image/png"
     }
   ],
-  "theme_color": "#0A0C10",
-  "background_color": "#0A0C10",
+  "theme_color": "#151513",
+  "background_color": "#151513",
   "display": "standalone",
   "start_url": "/",
   "scope": "/"

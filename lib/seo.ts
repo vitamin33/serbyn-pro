@@ -116,7 +116,10 @@ export function createMetadata({
       // site. [VS-TODO:twitter-handle] add back once a real handle is confirmed.
     },
     icons: {
-      icon: '/favicon.ico',
+      icon: [
+        { url: '/favicon.svg', type: 'image/svg+xml' },
+        { url: '/favicon.ico', sizes: '16x16 32x32' },
+      ],
       shortcut: '/favicon.ico',
       apple: '/apple-touch-icon.png',
     },
