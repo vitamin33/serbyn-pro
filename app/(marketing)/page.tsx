@@ -316,8 +316,7 @@ export default function HomePage() {
             ))}
           </div>
           <p className="ds-note ds-mt-40" style={{ fontSize: 12.5 }}>
-            Built with Python, LangGraph, FastAPI, PostgreSQL, Redis, and
-            Docker.
+            Built with Python, FastAPI, Celery, PostgreSQL, Redis, and Docker.
           </p>
         </div>
       </section>

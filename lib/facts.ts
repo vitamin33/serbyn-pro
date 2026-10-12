@@ -121,10 +121,12 @@ export const SYSTEMS: BuiltSystem[] = [
     id: 'crest',
     name: 'Crest',
     tagline:
-      'LangGraph-based content engine: multi-stage pipeline with multi-model routing and multi-platform publishing.',
+      'Content marketing engine: a research engine that ranks topics, drafting with editorial and fabrication checks, tiered multi-model routing, and publishing to LinkedIn and X.',
+    // crest approved_facts fact-crest-content-scale, as_of 2026-08-17:
+    // 1,455 generated (never "shipped"), 109 published
     metric: {
-      value: 'LangGraph',
-      caption: 'multi-stage content engine',
+      value: '109 published',
+      caption: '1,455 posts generated · as of Aug 2026',
       label: 'a system I designed and built',
     },
     repo: 'https://usecrest.io',

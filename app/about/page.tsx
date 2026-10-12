@@ -46,10 +46,11 @@ export default function AboutPage() {
             through my UK company (Easelect LTD). Ascend is an orchestration
             daemon with 27 agents (18 mature) and 1,178 automated tests,
             managing code review, deployments, monitoring, and client reports —
-            all trust-gated with L0-L4 policy enforcement. Crest is an AI
-            content platform with a 6-stage LangGraph pipeline, Thompson
-            Sampling for variant optimization, multi-model routing, and
-            multi-platform publishing — deployed live with 91+ tests.
+            all trust-gated with L0-L4 policy enforcement. Crest is my content
+            marketing engine, live at usecrest.io: a research engine that ranks
+            topics, drafting with editorial and fabrication checks, tiered model
+            routing, and Thompson Sampling for variant choice. It publishes to
+            LinkedIn and X.
           </p>
           <p>
             On the client side, I solo-architected a Web3 token launchpad on

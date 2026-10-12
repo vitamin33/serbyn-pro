@@ -170,8 +170,9 @@ export default function ResumePage() {
                   reducing costs from $82 to $34/mo (58% reduction)
                 </li>
                 <li>
-                  Created Crest signal-driven AI platform with 8-agent pipeline,
-                  Thompson Sampling, multi-model routing ($500 → $50/mo)
+                  Built Crest, a content marketing engine live at usecrest.io:
+                  tiered multi-model routing, Thompson Sampling, editorial and
+                  fabrication checks, publishing to LinkedIn and X
                 </li>
                 <li>
                   Delivered 3 concurrent client projects (healthcare, Web3,

@@ -1,73 +1,66 @@
 ---
-title: 'Crest: AI Content Platform with Signal-Driven Optimization'
+title: 'Crest: AI Content Marketing Engine'
 slug: crest-signal-driven-platform
-summary: 'AI content platform with a 6-stage LangGraph pipeline, Thompson Sampling for variant optimization, tiered multi-model routing, and multi-platform publishing. Deployed live with 91+ tests.'
-description: 'Production AI content platform with LangGraph AI pipeline, tiered multi-model routing across Claude, OpenAI and open-weight models, Thompson Sampling for content optimization, MLflow experiment tracking, and multi-platform publishing to Twitter, LinkedIn, and Telegram.'
+summary: 'Content marketing engine live at usecrest.io: a research engine that ranks topics, drafting with editorial and fabrication checks, tiered multi-model routing, and Thompson Sampling for variant choice. Publishes to LinkedIn and X.'
+description: 'AI content marketing platform on FastAPI, Celery and PostgreSQL: Reddit and Hacker News research, editorial and fabrication checks, tiered model routing across Claude, OpenAI and open-weight models, Thompson Sampling, Langfuse cost tracking, and publishing to LinkedIn and X.'
 category: platform
 project_type: startup
 highlight_metrics:
-  - '6-stage LangGraph pipeline'
   - 'Tiered routing, 6 providers'
-  - 'Thompson Sampling A/B'
-  - '91+ unit tests'
-impact_score: 94
+  - 'Thompson Sampling, 165 tests'
+  - '109 posts published (Aug 2026)'
+  - 'Live at usecrest.io'
 tech:
   - Python
   - FastAPI
-  - LangGraph
-  - Docker
+  - Celery
+  - APScheduler
   - PostgreSQL
   - Redis
-  - RabbitMQ
   - Qdrant
-  - MLflow
-  - Prometheus
+  - Next.js
+  - Docker
+  - Langfuse
 outcomes:
-  - '6-stage LangGraph pipeline with multi-model routing'
-  - 'Multi-model routing by job: Claude for published posts, GPT-4o as an independent reviewer, free open-weight models for extraction'
-  - 'Thompson Sampling variant optimization with 91+ unit tests'
-  - 'Live production deployment with multi-platform publishing (Twitter, LinkedIn, Telegram)'
-date: '2024-10-01'
+  - 'Live at usecrest.io on AWS Lightsail'
+  - '1,455 marketing posts generated and scored, 109 published (as of August 2026)'
+  - 'Tiered model routing: Claude for published posts, GPT-4o as an independent reviewer, free open-weight models for internal work'
+  - 'Editorial and fabrication checks before anything is published'
+date: '2025-07-06'
 links:
   repo: 'https://github.com/vitamin33/threads-agent'
+  demo: 'https://usecrest.io'
 cover: ''
 featured: true
 portfolio_ready: true
 seo_keywords:
-  - LangGraph
-  - Thompson Sampling
+  - AI content marketing engine
   - multi-model routing
-  - MLflow
-  - AI platform
+  - Thompson Sampling
+  - LLM cost tracking
+  - editorial gates
   - AI content pipeline
 ---
 
 ## The Challenge
 
-Building a content generation platform that optimizes itself. The system needed to research trends, generate content across multiple personas, post to social media, and learn which content patterns work — all automatically. Traditional A/B testing was too slow for this scale, and running inference on expensive models for every task would make the platform unsustainable.
+Crest is built as a content marketing platform for indie hackers. Today it runs my own LinkedIn and X marketing. The job: find topics worth writing about, draft posts, publish them, and learn which posts work.
 
-Three constraints had to be solved simultaneously: inference cost control, content quality optimization, and operational observability across the platform.
+Two things make this hard. Model costs add up fast when every step calls an LLM. And a content engine that invents numbers is worse than no engine at all, because it publishes claims nobody can back up.
 
 ## Architecture
 
-### Platform Architecture
+### Platform
 
-The platform runs as a Docker Compose-based system with core services working together: an Orchestrator (FastAPI gateway with rate limiting and circuit breakers), Persona Runtime (LangGraph AI workflow engine), Celery workers for async task processing via RabbitMQ, AI/ML services (RAG pipeline, pattern analysis, learning flywheel), and supporting infrastructure (monitoring, cost tracking, dashboards).
+Crest is one FastAPI service plus Celery workers on Redis, with APScheduler for the scheduled jobs. Data lives in PostgreSQL, and Qdrant handles duplicate detection. A Next.js 15 app is the admin. Everything runs as Docker Compose on AWS Lightsail, at api.usecrest.io and usecrest.io.
 
-Each service is independently deployable and communicates through well-defined APIs and message queues. The system is deployed live and serving requests in production.
+The first version, started in July 2025, was a set of separate services with a LangGraph drafting pipeline. As the product settled, the services were folded into one API and the workers.
 
-### LangGraph AI Pipeline
+### From research to a published post
 
-Content generation uses a structured 6-stage LangGraph workflow with observable state transitions:
+A scheduled research engine pulls posts from Reddit and Hacker News, removes duplicates, then scores and ranks the topics. This step uses no LLM generation.
 
-- **Brief**: Receive persona config and topic signals
-- **Ideas**: Query SearXNG for real-time trend data and generate content angles
-- **Hook**: Generate the opening line
-- **Body**: Generate the full post
-- **Guardrail**: Prompt injection detection and AI safety checks
-- **Publish**: Final formatting, variant tagging, and multi-platform distribution
-
-Each node tracks latency, token usage, and cost metrics. The pipeline supports SSE streaming for real-time progress updates. End-to-end workflow is verified through automated E2E tests covering Brief → Ideas → Content → Publication.
+From the ranked list I pick what gets written, through a tool call or the approval queue in Telegram. Before any draft is written, a check looks at the brief. The draft then goes through editorial checks, including the fabrication checks below. Approved posts go to LinkedIn and X. Telegram only carries alerts and approvals.
 
 ### Multi-Model Routing
 
@@ -79,49 +72,30 @@ Each call goes to a model picked for the job. The first version had two models: 
 
 A provider that runs out of quota goes on a cooldown, and the next one in the chain takes the call. Every call records its model and cost.
 
-### Thompson Sampling for Variant Optimization
+### Fabrication checks
 
-Content variants are optimized using Thompson Sampling (multi-armed bandit) instead of traditional A/B testing. The implementation uses Beta distribution sampling:
+Drafts are scored by an evaluator that runs blind, with two independent judges. In a calibration run it failed a draft with invented numbers ("847" and "12%") and passed a fully grounded one. That check matters more than any style score: a wrong number in a published post costs more than a dull sentence.
 
-- Each variant tracks impressions and successes
-- Selection samples from Beta(successes + 1, impressions - successes + 1)
-- 70% exploitation of proven variants, 30% exploration of new ones
-- Cold start handling returns random variants when no history exists
-- Fatigue detection prevents pattern staleness through diversity selection
+### Thompson Sampling for variant choice
 
-This converges faster than fixed-split testing — critical when testing across many personas with thin per-variant traffic. The implementation is backed by 91+ unit tests.
+Which variant, post type and posting hour to use is picked by Thompson Sampling. Each option keeps a Beta distribution of its past results, and the system samples from them, so options that did well get picked more often. By default 30% of picks go to exploration. While there are fewer than 20 observations, it uses UCB1 instead, which handles the cold start. Results from published posts update the distributions.
 
-### Multi-Platform Publishing
+The bandit code has 165 tests across 18 test files. It can only learn as fast as engagement data comes back from the platforms.
 
-The platform publishes content across multiple social platforms:
+### Cost and observability
 
-- **Twitter/X**: Thread formatting with hook-first structure
-- **LinkedIn**: Professional formatting with engagement optimization
-- **Telegram**: Channel posting with rich media support
-
-Each platform adapter handles API integration, rate limiting, and format-specific content optimization.
-
-### Observability Stack
-
-Prometheus + Grafana + Jaeger infrastructure:
-
-- **Prometheus metrics**: Token usage tracking, per-model cost metrics, pipeline latency
-- **Jaeger distributed tracing**: End-to-end latency breakdown across the full request chain
-- **Health monitoring**: Endpoint health checks with circuit breaker patterns
+Every LLM call lands in a cost ledger with its model, tokens and cost. Langfuse traces the calls and has dashboards for the cost trend, cost per feature and the quality trend, with alerts on daily cost and quality drops. The API also exposes Prometheus metrics.
 
 ## Results
 
-- **Live production deployment** — system deployed and serving production requests
-- **6-stage LangGraph pipeline** with end-to-end automated testing
-- **Tiered multi-model routing**: paid models where the text gets published, free models for internal work
-- **Thompson Sampling** with 91+ unit tests for variant optimization
-- **Multi-platform publishing** to Twitter, LinkedIn, and Telegram
-- **CI/CD pipelines** via GitHub Actions with automated testing
+As of August 2026, Crest has generated and scored 1,455 marketing posts, and 109 of them are published. Behind them are 9,001 judge scores and 205 research runs. It runs live at usecrest.io on AWS Lightsail.
+
+Premium content never falls back to a free model. A provider outage stops the post instead.
 
 ## Key Learnings
 
 **Route by job.** Published text goes to the strongest writer, and review goes to a model from a different family. Extraction and other internal work runs on free open-weight models. When the premium providers are down, the call fails loudly instead of quietly posting weaker text.
 
-**Thompson Sampling beats A/B for thin traffic.** When traffic per variant is thin, Thompson Sampling starts exploiting winners immediately while traditional A/B testing needs weeks to reach significance.
+**Check the engine for fabrication before trusting it.** The calibration run with an invented "847" and "12%" is the test I trust most. A judge that passes made-up numbers is worse than no judge.
 
-**Test the algorithm, not just the system.** The 91+ unit tests on Thompson Sampling caught edge cases (cold start, fatigue, exploration rate) that would have silently degraded content quality in production.
+**Simplify when the product settles.** The first version had separate services and a LangGraph pipeline. One API plus workers is less to deploy and less to watch.

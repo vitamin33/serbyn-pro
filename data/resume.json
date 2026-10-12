@@ -33,7 +33,7 @@
       "highlights": [
         "Designed and built Ascend: a 27-agent (18 mature) multi-agent orchestration daemon with trust-tiered L0-L4 execution, policy gates, budget guards, and 1,178 automated tests",
         "Built DW, an autonomous spec-driven development pipeline: 101 logged runs at a 0.94 pass rate, gated by acceptance checks",
-        "Built Crest, a LangGraph content engine with multi-model routing and multi-platform publishing",
+        "Built Crest, a content marketing engine with tiered multi-model routing, editorial and fabrication checks, and publishing to LinkedIn and X",
         "Cut own-platform LLM spend 58% ($82 to $34/month) via multi-model routing and semantic caching, without lowering output quality",
         "Deliver fixed-scope agent production-readiness audits and LLM cost teardowns for US/UK/EU teams"
       ]
