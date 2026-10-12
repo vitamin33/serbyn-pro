@@ -62,11 +62,11 @@ export default function AboutPage() {
           </p>
           <p>
             Across all projects, I build the same infrastructure: multi-model
-            routing by task complexity (GPT-4o for critical decisions, GPT-3.5
-            for bulk work — 70% cost reduction), full observability with
-            Prometheus/Grafana/Jaeger/Sentry, and cost controls from day one.
-            Every system has health checks, circuit breakers, and graceful
-            degradation built in.
+            routing by job (in Crest: Claude for published text, GPT-4o as an
+            independent reviewer, free open-weight models for internal work),
+            full observability with Prometheus/Grafana/Jaeger/Sentry, and cost
+            controls from day one. Every system has health checks, circuit
+            breakers, and graceful degradation built in.
           </p>
           <p>
             I also build my own AI development tooling. Every project runs on a

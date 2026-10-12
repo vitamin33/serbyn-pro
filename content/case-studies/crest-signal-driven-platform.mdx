@@ -1,13 +1,13 @@
 ---
 title: 'Crest: AI Content Platform with Signal-Driven Optimization'
 slug: crest-signal-driven-platform
-summary: 'AI content platform with a 6-stage LangGraph pipeline, Thompson Sampling for variant optimization, multi-model routing (GPT-4o/3.5), and multi-platform publishing. Deployed live with 91+ tests.'
-description: 'Production AI content platform with LangGraph AI pipeline, multi-model routing (GPT-4o/GPT-3.5), Thompson Sampling for content optimization, MLflow experiment tracking, and multi-platform publishing to Twitter, LinkedIn, and Telegram.'
+summary: 'AI content platform with a 6-stage LangGraph pipeline, Thompson Sampling for variant optimization, tiered multi-model routing, and multi-platform publishing. Deployed live with 91+ tests.'
+description: 'Production AI content platform with LangGraph AI pipeline, tiered multi-model routing across Claude, OpenAI and open-weight models, Thompson Sampling for content optimization, MLflow experiment tracking, and multi-platform publishing to Twitter, LinkedIn, and Telegram.'
 category: platform
 project_type: startup
 highlight_metrics:
   - '6-stage LangGraph pipeline'
-  - 'GPT-4o/3.5 model routing'
+  - 'Tiered routing, 6 providers'
   - 'Thompson Sampling A/B'
   - '91+ unit tests'
 impact_score: 94
@@ -24,7 +24,7 @@ tech:
   - Prometheus
 outcomes:
   - '6-stage LangGraph pipeline with multi-model routing'
-  - 'Multi-model routing: GPT-4o for creative hooks, GPT-3.5 for body generation'
+  - 'Multi-model routing by job: Claude for published posts, GPT-4o as an independent reviewer, free open-weight models for extraction'
   - 'Thompson Sampling variant optimization with 91+ unit tests'
   - 'Live production deployment with multi-platform publishing (Twitter, LinkedIn, Telegram)'
 date: '2024-10-01'
@@ -62,8 +62,8 @@ Content generation uses a structured 6-stage LangGraph workflow with observable 
 
 - **Brief**: Receive persona config and topic signals
 - **Ideas**: Query SearXNG for real-time trend data and generate content angles
-- **Hook**: Generate attention-grabbing opening (GPT-4o — creative decisions need the best model)
-- **Body**: Generate full content (GPT-3.5-turbo — significantly cheaper, sufficient quality for body text)
+- **Hook**: Generate the opening line
+- **Body**: Generate the full post
 - **Guardrail**: Prompt injection detection and AI safety checks
 - **Publish**: Final formatting, variant tagging, and multi-platform distribution
 
@@ -71,12 +71,13 @@ Each node tracks latency, token usage, and cost metrics. The pipeline supports S
 
 ### Multi-Model Routing
 
-Instead of using one model for everything, tasks are routed by complexity:
+Each call goes to a model picked for the job. The first version had two models: GPT-4o for hooks and GPT-3.5-turbo for the body. The router today has three tiers and six providers:
 
-- **GPT-4o**: Hook generation, creative decisions, complex reasoning
-- **GPT-3.5-turbo**: Content body generation, formatting, summarization
+- **Published posts and replies**: Claude, Sonnet 4.5 by default and Sonnet 5 for comments. This tier never falls back to a free model. If Claude and OpenAI both fail, the call errors and nothing weaker gets posted.
+- **Independent review**: GPT-4o checks the text Claude wrote. A reviewer from a different model family does not share the writer's blind spots.
+- **Extraction and internal jobs**: gpt-oss-120b on the free Groq and Cerebras tiers first, then DeepSeek and GPT-4o-mini as cheap paid fallbacks. Gemini 2.5 Flash handles structured JSON extraction.
 
-This routing reduces inference costs by routing expensive model calls only to tasks where quality difference is measurable (hooks drive engagement, bodies need to be good enough).
+A provider that runs out of quota goes on a cooldown, and the next one in the chain takes the call. Every call records its model and cost.
 
 ### Thompson Sampling for Variant Optimization
 
@@ -112,14 +113,14 @@ Prometheus + Grafana + Jaeger infrastructure:
 
 - **Live production deployment** — system deployed and serving production requests
 - **6-stage LangGraph pipeline** with end-to-end automated testing
-- **Multi-model routing** reducing inference costs on body generation vs. creative hooks
+- **Tiered multi-model routing**: paid models where the text gets published, free models for internal work
 - **Thompson Sampling** with 91+ unit tests for variant optimization
 - **Multi-platform publishing** to Twitter, LinkedIn, and Telegram
 - **CI/CD pipelines** via GitHub Actions with automated testing
 
 ## Key Learnings
 
-**Route by task, not by budget.** Multi-model routing works best when tied to task complexity, not cost targets. GPT-4o for hooks is worth the premium because hooks drive engagement. GPT-3.5 for bodies saves money without quality loss.
+**Route by job.** Published text goes to the strongest writer, and review goes to a model from a different family. Extraction and other internal work runs on free open-weight models. When the premium providers are down, the call fails loudly instead of quietly posting weaker text.
 
 **Thompson Sampling beats A/B for thin traffic.** When traffic per variant is thin, Thompson Sampling starts exploiting winners immediately while traditional A/B testing needs weeks to reach significance.
 
