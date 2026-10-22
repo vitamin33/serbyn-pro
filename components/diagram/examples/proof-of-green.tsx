@@ -556,7 +556,13 @@ export function PogBlindSpots({ caption }: { caption: ReactNode }) {
             <Text x={x0 - 14} y={y + 15} cls="t" anchor="end">
               {lab}
             </Text>
-            <rect x={x0} y={y} width={w1} height={BAR_H} className="dg-rg-acc" />
+            <rect
+              x={x0}
+              y={y}
+              width={w1}
+              height={BAR_H}
+              className="dg-rg-acc"
+            />
             <rect
               x={x0 + w1 + 2}
               y={y}
