@@ -7,6 +7,7 @@ import {
   Divider,
   Note,
   SectionLabel,
+  Text,
 } from '../primitives';
 import { SwimlaneDiagram } from '../presets/swimlane';
 
@@ -416,6 +417,162 @@ export function PogEvalVsGuardrail({ caption }: { caption: ReactNode }) {
         ]}
         tone="accent"
       />
+    </Diagram>
+  );
+}
+
+// ── Result diagrams for the observe-week write-up (2026-10) ───────────────
+// Single-hue bars: magnitude only, so no categorical palette and no validator run.
+// Values are the ones in docs/REVIEW-week1.md and analysis/audit.py of the plugin repo.
+
+const BAR_H = 22;
+
+function HBar({
+  x,
+  y,
+  w,
+  accent,
+}: {
+  x: number;
+  y: number;
+  w: number;
+  accent?: boolean;
+}) {
+  // Rounded at the data end, square at the baseline (clip the left corners).
+  const ww = Math.max(w, 4);
+  const d = `M${x} ${y} H${x + ww - 4} a4 4 0 0 1 4 4 v${BAR_H - 8} a4 4 0 0 1 -4 4 H${x} Z`;
+  return <path d={d} className={accent ? 'dg-rg-acc' : 'dg-rg'} />;
+}
+
+/** 4 · From every claim to the flags that held up. */
+export function PogFlagFunnel({ caption }: { caption: ReactNode }) {
+  const x0 = 300;
+  const full = 560;
+  const rows: [string, string, number, boolean][] = [
+    ['completion claims, one week', '948', 948, false],
+    ['flagged: no test run after the last code edit', '315', 315, false],
+    ['flags read one by one, with the full session', '46', 46, false],
+    ['held up as a real problem', '3', 3, true],
+  ];
+  return (
+    <Diagram
+      height={200}
+      caption={caption}
+      label="Four bars, each shorter than the last: 948 completion claims in one week, 315 flagged by the rule, 46 flags read by hand, 3 that held up."
+    >
+      <SectionLabel x={16} y={18}>
+        one week of my own sessions, two agents
+      </SectionLabel>
+      {rows.map(([lab, val, n, acc], i) => {
+        const y = 40 + i * 38;
+        const w = (n / 948) * full;
+        return (
+          <g key={lab}>
+            <Text x={x0 - 14} y={y + 15} cls="t-s" anchor="end">
+              {lab}
+            </Text>
+            <HBar x={x0} y={y} w={w} accent={acc} />
+            <Text x={x0 + Math.max(w, 4) + 10} y={y + 15} cls="t-m">
+              {val}
+            </Text>
+          </g>
+        );
+      })}
+      <Note
+        x={x0}
+        y={190}
+        lines="the 46 were sampled from two months of flags, not only from this week"
+      />
+    </Diagram>
+  );
+}
+
+/** 5 · Why the flags were wrong: 43 unfair flags, grouped by what the reader found. */
+export function PogWhyWrong({ caption }: { caption: ReactNode }) {
+  const x0 = 340;
+  const full = 480;
+  const rows: [string, number][] = [
+    ['tests did run, the rule did not see them', 22],
+    ['the claim was about a document, data or a review', 12],
+    ['the "code edit" was a throwaway script or a note', 4],
+    ['deployed another way (merge, docker compose)', 3],
+    ['the failing run was meant to fail', 2],
+  ];
+  return (
+    <Diagram
+      height={232}
+      caption={caption}
+      label="Five bars: of 43 flags that did not hold up, 22 had tests the rule did not recognise, 12 were claims about documents or data, 4 were throwaway scripts, 3 were deploys done another way, 2 were runs meant to fail."
+    >
+      <SectionLabel x={16} y={18}>
+        43 flags that did not hold up
+      </SectionLabel>
+      {rows.map(([lab, n], i) => {
+        const y = 40 + i * 36;
+        const w = (n / 22) * full;
+        return (
+          <g key={lab}>
+            <Text x={x0 - 14} y={y + 15} cls="t-s" anchor="end">
+              {lab}
+            </Text>
+            <HBar x={x0} y={y} w={w} accent={i === 0} />
+            <Text x={x0 + Math.max(w, 4) + 10} y={y + 15} cls="t-m">
+              {String(n)}
+            </Text>
+          </g>
+        );
+      })}
+    </Diagram>
+  );
+}
+
+/** 6 · What the hooks could not see, in two months of Claude Code history. */
+export function PogBlindSpots({ caption }: { caption: ReactNode }) {
+  const x0 = 250;
+  const full = 600;
+  const rows: [string, number, number, string, string][] = [
+    ['code edits', 3137, 1576, '67% through shell commands', '33% Edit tool'],
+    ['test runs', 3163, 2508, '56% output unreadable', '44% counted'],
+  ];
+  return (
+    <Diagram
+      height={168}
+      caption={caption}
+      label="Two full-width bars split in two. Code edits: 67% made through shell commands, 33% through the Edit tool. Test runs: 56% with output the parser could not read, 44% counted."
+      legend={[
+        { encoding: 'accent', label: 'not seen by the first version' },
+        { encoding: 'muted', label: 'seen' },
+      ]}
+    >
+      <SectionLabel x={16} y={18}>
+        two months of Claude Code history, 4,713 code edits and 5,671 test runs
+      </SectionLabel>
+      {rows.map(([lab, hidden, seen, l1, l2], i) => {
+        const y = 44 + i * 48;
+        const w1 = (hidden / (hidden + seen)) * full;
+        const w2 = full - w1 - 2;
+        return (
+          <g key={lab}>
+            <Text x={x0 - 14} y={y + 15} cls="t" anchor="end">
+              {lab}
+            </Text>
+            <rect x={x0} y={y} width={w1} height={BAR_H} className="dg-rg-acc" />
+            <rect
+              x={x0 + w1 + 2}
+              y={y}
+              width={w2}
+              height={BAR_H}
+              className="dg-rg"
+            />
+            <Text x={x0 + 10} y={y + 15} cls="t-m">
+              {l1}
+            </Text>
+            <Text x={x0 + full - 10} y={y + 15} cls="t-m" anchor="end">
+              {l2}
+            </Text>
+          </g>
+        );
+      })}
     </Diagram>
   );
 }

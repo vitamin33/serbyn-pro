@@ -167,3 +167,11 @@ This authentic positioning is **much stronger** than fake enterprise metrics and
 ---
 
 **Updated Status**: Portfolio now positioned for authentic senior-level applications with real project foundation and clear enhancement path for maximum credibility.
+
+<!-- ascend:task-continuation:start -->
+## Task completion and continuation
+
+Continue until the agreed task is complete, including relevant verification. Ask the user only when their decision is needed or the next action would go beyond the agreed scope or existing authorization.
+
+Do not pause merely to ask whether to perform an already-authorized next step. Preserve explicit approval requirements and user stop requests. If blocked or a configured limit is reached, report the blocker instead of continuing indefinitely.
+<!-- ascend:task-continuation:end -->

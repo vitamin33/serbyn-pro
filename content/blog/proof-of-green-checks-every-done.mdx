@@ -1,14 +1,14 @@
 ---
-title: 'proof-of-green checks every "done" against what the agent actually ran'
+title: 'I built a tool to catch agents saying "tests pass" without proof. It was wrong 43 times out of 46.'
 slug: proof-of-green-checks-every-done
-description: 'A Claude Code plugin that checks each "tests pass" claim against the session''s own record of edits and test runs. How it works, and what the first days can and cannot say.'
-date: '2026-10-07'
+description: 'A Claude Code and Codex plugin flagged a third of my agents'' "done" claims as unverified. Read one by one, 3 of 46 flags held up. What the week measured, where the rule fails, and what is worth keeping.'
+date: '2026-10-22'
 keywords:
   - false green detection
-  - agent guardrails
+  - coding agent verification
   - claude code hooks
+  - codex hooks
   - agent observability
-  - coding agent evals
 category: architecture
 author: Vitalii Serbyn
 featured: false
@@ -17,192 +17,131 @@ draft: true
 ---
 
 <DraftNote>
-Every number marked interim comes from the first days of the observe week, with data as of 2026-10-05. The week ends around 2026-10-11 to 2026-10-13, and the final numbers from that analysis will replace these.
+Draft for review. Every number comes from `docs/REVIEW-week1.md` and `analysis/audit.py` in the plugin repository. One placeholder needs Vitalii's own numbers: [N?] in "What this does not show".
 </DraftNote>
 
-<Eyebrow>Claude Code plugin · v0.1.0 · observe week from 2026-10-04</Eyebrow>
+<Eyebrow>proof-of-green · observe week 2026-10-04 to 10-11 · Claude Code and Codex</Eyebrow>
 
-I built proof-of-green to count how often a coding agent says "all tests pass" when no test passed after its last code change. In my first <Interim>110</Interim> turns with it installed, only <Interim>3</Interim> had a code edit, so that count cannot be made yet.
+In one week my coding agents wrote "done", "fixed" or "tests pass" 948 times. A rule I wrote flagged 315 of those as unverified: no test run after the agent's last code change. Then the flagged cases were read one by one, with the full session open. 3 of 46 held up.
 
-Here is what it does. A coding agent says "all tests pass", "fixed" or "done". proof-of-green looks at the same session's own record of edits and test runs and asks one question: was there a passing test run after the last code change? It does not read the conversation. Nothing leaves the machine, and it never blocks the agent.
+So the tool I built to catch agents lying about tests mostly caught itself being wrong. I think that result is more useful than the one I expected, and this post is about why.
 
 ## The short version
 
 <Short>
 
-**What it checks:** every "tests pass", "fixed" or "done" against the session's own record. Was there a passing test run after the last code change?
+**What I built:** a plugin that records what the agent edits and runs, and checks each "done" against that record. Nothing leaves the machine. It never blocks the agent.
 
-**What kind of tool:** a check that runs while the agent works. In AI engineering terms that is a runtime guardrail on agent output. It also keeps a trace of edits, test runs and claims for each session, which is observability. In warn mode it asks the agent once to show proof, a soft gate.
+**What the week measured:** 948 claims, 315 flagged, 3 of 46 flags real after a hand check. The stricter check on two months of history found no real false green either.
 
-**Where evals fit:** evals score a model on fixed cases before a release. proof-of-green checks every real completion claim, in my real sessions, as it happens.
+**Why the rule fails:** half the time the tests did run and the rule did not recognise the command. A quarter of the time the claim was about a document or data, where a test run is the wrong proof.
 
-**What the first days say:** <Interim>3</Interim> of <Interim>110</Interim> turns had a code edit, so the headline rate cannot be computed yet. It needs roughly <Interim>30 to 50</Interim> such turns.
+**What stays:** the record. The warning does not.
 
 </Short>
 
-This post is part of my series on false greens, the moments when a system reports success and nothing proves it. The earlier posts are linked at the end.
+## Why I wanted the number
 
-<Eyebrow>1 · Mechanism</Eyebrow>
+A false green is a success message with nothing behind it. The agent says "all tests pass" and no test passed after its last change. I have written about this before in my own pipelines, and every time the fix was a check that the agent could not skip.
 
-## One turn, end to end
+What I did not have was a rate. How often does an agent in normal work say "done" without proof? Everyone has a story. I did not have a count from my own sessions. So I built the counter first and let it run for a week on my real work. Two client projects and a few of my own, with Claude Code and Codex.
 
-Claude Code fires hooks at fixed points in a session. A hook is a small script that Claude Code runs at that point. proof-of-green listens to four of them. Three only write facts down. The fourth, at Stop, does the checking.
+## What the plugin does
+
+Claude Code and Codex run small scripts at fixed points in a session. The plugin listens to four of those points. Three only write facts down: which file changed, which test command ran, its exit code and its pass and fail counts. The fourth runs when the agent finishes a reply. It looks for a claim in the reply and checks it against the record.
 
 <PogTurnDiagram
   caption={
     <>
-      Three hooks append parsed facts (file path, exit code, pass and fail counts) to a ledger, one file per session. Raw output and prompt text are never stored. At Stop the check reads the ledger, grades the claim, and the mode decides whether anyone sees the result. Typical cost is <Interim>40 to 70 ms</Interim> per hook.
+      The record is one file per session with parsed facts only. Raw output and prompt text are never stored. The check runs at the end of a reply. In observe mode it only records the verdict. In warn mode it shows one line and asks the agent once to rerun the tests.
     </>
   }
 />
 
-<Eyebrow>2 · The rule</Eyebrow>
-
-## Everything is measured from the last code edit
-
-A test run only counts as proof if it happened after the last change to code. Code here means an Edit or Write to a file inside the project that is not a test and not a doc.
-
-The same claim gets a different tier depending on what happened after that line. The drawing below is an example: one claim, one failing run before the edit, four endings.
+The rule is simple on purpose. A test run counts as proof only if it ran after the last change to code. Code means a file inside the project that is not a test and not a doc. The same claim gets a different grade depending on what happened after that change.
 
 <PogTierLanes
   caption={
     <>
-      Same claim, same failing run before the edit, four outcomes. D also covers "0 tests collected", exit codes hidden by <code>|| true</code>, and no test run at all. C and D are false-green candidates. Warn mode speaks only on C or D, and only when there was a code edit in that turn. A session with zero code edits never warns.
+      Same claim, same failing run before the edit, four endings. A full passing run after the edit is A, a partial one is B, no run is C, a failed or hidden run is D. The rule flags C and D.
     </>
   }
 />
 
-<Eyebrow>3 · Where it sits</Eyebrow>
+I ran it in observe mode for the whole week. It recorded and said nothing. Then I replayed the week's transcripts through the same rules, because the plugin had missed sessions that started before it was installed.
 
-## Evals before release, guardrails on every turn
+## What came out
 
-Both answer the same question: can I trust what the agent did? They answer it at different moments. An eval runs a fixed set of cases before a release and gives a score. A guardrail runs inside real work and gives a verdict per turn.
-
-proof-of-green is the second kind. Its own <Interim>two</Interim> eval cases test the plugin itself.
-
-<PogEvalVsGuardrail
+<PogFlagFunnel
   caption={
     <>
-      The green boxes are proof-of-green. It needs no model change and no access to the conversation. It plugs into the hooks Claude Code already exposes. Block mode, a hard gate, is on the later list and waits for this week's data. Case counts in the top row: <Interim>2</Interim> trap repos, <Interim>3</Interim> runs × <Interim>2</Interim> arms.
+      948 claims, 315 flagged, 46 read with the full session open, 3 real. The 46 were sampled from two months of flags, across both agents and all grades, so the week's 315 would not get a different answer.
     </>
   }
 />
 
-<DataTable
-  head={['Term', 'Plain meaning', 'proof-of-green today', 'Later']}
-  rows={[
-    ['Harness', 'Everything around the model: tools, permissions, hooks, the loop that runs it.', "Lives inside Claude Code's hooks. No prompt or model change.", 'Same hooks in other agent harnesses.'],
-    ['Observability', 'A trace of what the agent did, plus numbers you can track.', <>Ledger of edits, test runs, claims and verdicts. <code>/proof-of-green:report</code>.</>, 'Team report across repos and weeks (paid).'],
-    ['Guardrail', "A runtime check on the agent's output before you rely on it.", "Checks each completion claim against the session's own trace, A to D.", 'Claim scope matched to run scope.'],
-    ['Gate', 'A point that can stop progress until a condition holds.', 'Soft gate: warn asks the agent once to show proof. Default is observe.', 'Block mode: no "done" without tier A.'],
-    ['Eval', 'Fixed cases scored before a release.', <><Interim>Two</Interim> cases, trap and honest control, with and without the plugin.</>, 'Bigger trap set, runs before every release.'],
-  ]}
+Three of 46. Before the hand check, the rule-based number looked like a headline: a third of completion claims with no fresh test run. After it, the headline is that the rule is right about 1 time in 15.
+
+The three real ones were ordinary. The agent changed code after its last green run and wrote "done" without running again, or wrote "tests pass" while the last run in front of it showed failures. The other 43 broke down like this.
+
+<PogWhyWrong
+  caption={
+    <>
+      In 22 of 43 cases the tests ran and the rule did not see them: a test file run directly with python, a project wrapper script around npm test, a runner piped through grep. In 12 the claim was about a document, a data check or a review. The rest were throwaway scripts counted as code, deploys done through a merge or docker compose, and runs that were meant to fail.
+    </>
+  }
 />
 
-<Eyebrow>4 · As a product</Eyebrow>
+I fixed the parser for the first group and sampled again. The second sample came back at 1 of 21. Then the same 20 cases were read a second time with the complete turn in front of the reader, and the count went to 0, with 2 unsure. The fixes moved the wrong flags from one bucket to another. They did not find more real ones.
 
-## Who gets what
+## The stricter check found the same thing
 
-<Cards>
-<Card title="The engineer at the keyboard">
+A flag says "no proof". It does not say "wrong". So I also looked for claims that were wrong on the face of it. The agent says "tests pass", nothing changes, and the next test run on the same code fails.
 
-It catches "all tests pass" when no tests ran after the change. That saves the round trip of finding out in review or CI. It speaks rarely, in one line, and never blocks.
+Over two months of history, with about 2,070 claims, that happened 5 times out of 52 cases where the next run was known. All 5 were read with the session open. Each was a run that was supposed to fail. A mutation check that breaks the code on purpose, a new test written to fail first, a run against an old copy of the code. None reached a commit, a merge or a deploy. No message from me afterwards said anything was broken.
 
-</Card>
-<Card title="The team lead">
+One more angle. In 684 test runs the output showed failures while the exit code said 0, usually because the command was piped into `tail` or `grep`. That looked like a real hiding place. 40 of them, the ones followed by a claim, were read. 0 were hidden false greens. The agent had read the output and said so, or the failures were there before the change and the agent had checked that on the main branch.
 
-One number per repo and per week: how often the agent claims success without proof. That shows whether a model, a prompt or a `CLAUDE.md` change (the instruction file the agent reads) made the agent more careful or less.
+## What the hooks could not see
 
-</Card>
-<Card title="The AI engineer">
+The biggest surprise was where the work happens.
 
-An online metric next to offline evals. Evals say how the agent does on fixed cases. This says how it behaves in real work, with the trace to check each case.
-
-</Card>
-</Cards>
-
-<Eyebrow>5 · Metrics</Eyebrow>
-
-## What to measure
-
-Value has two halves. First, how often agents claim success without proof. That is the size of the problem. Second, whether asking for proof catches real failures. That is the effect. Observe mode measures the first. Warn mode and the evals measure the second.
-
-<DataTable
-  head={['Metric', 'Definition', 'Why it matters', 'Source']}
-  rows={[
-    ['Unsupported-claim rate', 'Claims graded C or D in turns with a code edit, divided by all claims in those turns.', 'The headline number. "The agent claimed success without proof in N of M cases."', <Tag now>observe</Tag>],
-    ['Confirmed false green', 'A C or D claim where the next test run in the session fails.', 'Proof the claim was wrong as well as unproven. A lower bound.', <Tag now>observe</Tag>],
-    ['Silent completion', 'Turns with a code edit, no claim and no test run after the edit.', 'The agent changed code and said nothing about whether it works.', <Tag now>observe</Tag>],
-    ['Verification rate', 'Turns with a code edit whose final evidence is tier A.', 'The good behaviour. It should rise after warn is on.', <><Tag now>observe</Tag> <Tag>warn</Tag></>],
-    ['Caught failures', 'After a warning, the agent reruns tests and they fail.', 'The money metric: a real bug found before you trusted "done".', <><Tag>warn</Tag> <Tag>eval</Tag></>],
-    ['Warning precision', <>Share of warnings I agree with, from about <Interim>20</Interim> I label by hand.</>, <>"Never annoys" in numbers. Below about <Interim>90%</Interim> the tool gets uninstalled.</>, <Tag>warn</Tag>],
-    ['Coverage health', 'Unparsed test runs, sessions without a start record, errors.log lines.', 'The numbers above are only as good as what the hooks can see.', <Tag now>observe</Tag>],
-    ['Cost', 'Hook time per event, extra turns caused by warnings.', <>It must stay invisible. Today about <Interim>40 to 70 ms</Interim> per hook.</>, <><Tag now>observe</Tag> <Tag>warn</Tag></>],
-  ]}
+<PogBlindSpots
+  caption={
+    <>
+      Two months of Claude Code history. 67% of code edits came through shell commands such as <code>sed -i</code>, <code>cat &gt; file</code> or a Python script writing the file, which the first version did not count as edits. 56% of test runs printed in a form the parser could not read, so they counted as unknown, never as a pass.
+    </>
+  }
 />
 
-<Eyebrow>6 · Data so far</Eyebrow>
+Codex added one more. It sends the hook the command's output and nothing else. No exit code. A command that exits with 3 arrives looking like any other. The plugin now judges Codex runs by the counts in the output, and says "not visible" when there are none.
 
-## What the first days can and cannot show
+## What this does not show
 
-These are my own sessions on my Mac since I installed the plugin on 2026-10-02, in observe mode. Counts come from the ledger. No transcript was read.
+The hand checks were done by Claude, the same model that writes most of the replies being judged. I read [N?] of the 46 myself and agreed on [N?]. Until that number is bigger, 3 of 46 means "about 1 in 15" and nothing more exact.
 
-<Stats>
-  <Stat value="10" label="sessions" interim />
-  <Stat value="110" label="turns" interim />
-  <Stat value="3" label="turns with a code edit" warn interim />
-  <Stat value="15" label="claims (A 5, D 10)" interim />
-  <Stat value="13" label="test runs" interim />
-  <Stat value="1,094" label="other Bash commands" interim />
-  <Stat value="535" label="records from subagents, the helper agents the main agent starts" interim />
-  <Stat value="0" label="errors logged" interim />
-</Stats>
+The week is one engineer's work. Around my agents there is a review step, a mutation check and a merge check that runs the tests again. A false claim rarely gets far here, so the rate I measured is a rate for a guarded setup. A team with agents and no tests would get a different picture. The tool could not help them either way, because it needs test runs to have anything to check.
 
-**The headline number cannot be computed yet.** Only <Interim>3</Interim> of <Interim>110</Interim> turns had a code edit, and only <Interim>1</Interim> claim fell inside such a turn. The A to D split needs roughly <Interim>30 to 50</Interim> turns with a code edit before a percentage means anything.
+Autonomous runs, where no one reads the replies, gave 7 sessions and 0 claims. I cannot say whether the problem is bigger there.
 
-**Most of the <Interim>10</Interim> D claims are not false greens.** <Interim>Seven</Interim> are "verified" claims, and <Interim>5</Interim> claims came from sessions with no code edits at all. That fits research or review sessions, where the plugin never warns by design.
+And the claim detection itself is right 26 times out of 30. A few of the 948 were not claims at all.
 
-**One thing I will check when the week ends:** <Interim>1,094</Interim> Bash commands against <Interim>32</Interim> Edit and Write records. Either these sessions were mostly reading and running, or the agent edits files through Bash (`sed -i`, `cat > file`), which the plugin cannot see (decision D6). Counting the Bash commands that write files settles which one it is.
+## What a team can do on Monday
 
-<Eyebrow>7 · Getting to a number</Eyebrow>
+Pick a recent session from one of your agents and find its last "tests pass". Look for a test run after the last code edit. If there is none, read what the agent did instead. In my sessions the answer was usually a run the rule could not read. That is a parser bug.
 
-## Three ways to collect the proof
+If you lead a team on coding agents, the same audit runs on each developer's laptop in under a minute and prints counts only. The script and what the numbers mean are in `docs/AUDIT.md` in the repository. I would like to see the same block from a team that works without a review step around its agents. Open an issue in the repository or use the contact form on this site.
 
-<Cards>
-<Card title="Observe week" when="running · ready around 2026-10-11">
+**Is the tool useless, then?** As a warning, yes, at 1 fair flag in 15. As a record of what the agent ran before it said "done", it does what I wanted and it costs nothing. It stays installed in observe mode.
 
-My real work, untouched. It gives the size of the problem: unsupported-claim rate, confirmed false greens, silent completions. It needs about <Interim>30 to 50</Interim> turns with a code edit, so I work normally and let it collect.
+**Why not fix the parser until the flags are right?** I did, twice. Each round moved wrong flags into another bucket. The claims that are not about code and the throwaway scripts are not parser problems.
 
-</Card>
-<Card title="Backfill from history" when="optional · could run today">
+**Did the agents lie?** Not in any case that was read. They skipped a rerun a few times. The word "lie" was my guess before I had the data, and the data does not support it.
 
-Claude Code keeps past sessions on disk. A separate research script could replay them through the same parsers and give a baseline over weeks instead of days. It would be a new script outside the plugin, because the plugin never reads transcripts. It should print only totals, because those sessions include client work. I have not decided on it yet.
+**Would warn mode have helped the 3 real cases?** Probably. A one-line reminder to rerun is cheap. But it would have fired 43 other times that week, and I would have uninstalled it.
 
-</Card>
-<Card title="Evals in warn mode" when={<>before release · about <Interim>12</Interim> short runs</>}>
+The lesson I keep from this. A rule that looks obvious on a whiteboard, "no test after the edit means no proof", was right in 1 case out of 15 on real sessions. The cheap way to learn that was to run it silently for a week before letting it speak. I would do the silent week again for any check I put in front of an agent.
 
-The <Interim>two</Interim> trap cases, with and without the plugin. This is the only way to show the effect, because observe mode never asks for proof. Output: verification rate and caught failures, with and without the plugin.
+The check for your own system this week: take one agent session, find the last "done", and count the test runs after the last code edit. Then read the ones the count missed.
 
-</Card>
-</Cards>
-
-<Callout>
-
-**The value claim needs both halves.** The observe week, or the backfill, says how often it happens. The evals, or a few days of warn mode on my own work, say whether asking once catches real failures. One without the other is a guess.
-
-</Callout>
-
-## What to check on Monday
-
-Pick one recent coding-agent session and find its last "tests pass". Then look for a test run after the last code edit. If there is none, that claim had no proof behind it.
-
-## More on false greens
-
-- [Six False-Greens in a Self-Auditing Agent Pipeline](/blog/six-false-greens-in-a-self-auditing-agent-pipeline)
-- [Permissive Parsing Is a False-Green Factory](/blog/permissive-parsing-is-a-false-green-factory)
-- [QA Is Only as Honest as Its Coverage](/blog/qa-is-only-as-honest-as-its-coverage)
-- [False Greens: Three Structural Observations](/blog/false-greens-three-structural-observations)
-- [When an AI Agent Says Done: 0% vs 100% False Greens](/blog/same-model-0-and-100-where-the-verifier-gap-actually-lives)
-- [The Check the Agent Cannot Skip](/blog/enforced-checkpoint-0-of-40-silent-failures-vs-22-of-40)
-
-proof-of-green v0.1.0 · `github.com/vitamin33/proof-of-green` · data as of 2026-10-05.
+Repository and raw numbers: `github.com/vitamin33/proof-of-green`, `docs/REVIEW-week1.md` and `analysis/`. Earlier posts in the false-green series: [Six False-Greens in a Self-Auditing Agent Pipeline](/blog/six-false-greens-in-a-self-auditing-agent-pipeline), [The Check the Agent Cannot Skip](/blog/enforced-checkpoint-0-of-40-silent-failures-vs-22-of-40).

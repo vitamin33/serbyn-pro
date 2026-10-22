@@ -1,8 +1,11 @@
 import * as Diagrams from './index';
 import {
+  PogBlindSpots,
   PogEvalVsGuardrail,
+  PogFlagFunnel,
   PogTierLanes,
   PogTurnDiagram,
+  PogWhyWrong,
 } from './examples/proof-of-green';
 
 // Everything a post can use as <Name …/> in MDX. Handed to the compiler in
@@ -34,4 +37,7 @@ export const diagramComponents = {
   PogTurnDiagram,
   PogTierLanes,
   PogEvalVsGuardrail,
+  PogFlagFunnel,
+  PogWhyWrong,
+  PogBlindSpots,
 };
