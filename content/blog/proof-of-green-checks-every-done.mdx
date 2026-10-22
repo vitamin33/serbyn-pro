@@ -13,12 +13,8 @@ category: architecture
 author: Vitalii Serbyn
 featured: false
 mdx: true
-draft: true
+draft: false
 ---
-
-<DraftNote>
-Draft for review. Every number comes from `docs/REVIEW-week1.md` and `analysis/audit.py` in the plugin repository. One placeholder needs Vitalii's own numbers: [N?] in "What this does not show".
-</DraftNote>
 
 <Eyebrow>proof-of-green · observe week 2026-10-04 to 10-11 · Claude Code and Codex</Eyebrow>
 
@@ -118,7 +114,7 @@ Codex added one more. It sends the hook the command's output and nothing else. N
 
 ## What this does not show
 
-The hand checks were done by Claude, the same model that writes most of the replies being judged. I read [N?] of the 46 myself and agreed on [N?]. Until that number is bigger, 3 of 46 means "about 1 in 15" and nothing more exact.
+The hand checks were done by Claude, the same model that writes most of the replies being judged. I have not yet gone through the 46 myself. Until I do, 3 of 46 means "about 1 in 15" and nothing more exact.
 
 The week is one engineer's work. Around my agents there is a review step, a mutation check and a merge check that runs the tests again. A false claim rarely gets far here, so the rate I measured is a rate for a guarded setup. A team with agents and no tests would get a different picture. The tool could not help them either way, because it needs test runs to have anything to check.
 
