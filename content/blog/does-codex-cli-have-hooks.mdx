@@ -1,0 +1,47 @@
+---
+title: 'Does Codex CLI have hooks? What they send, and what they leave out'
+slug: does-codex-cli-have-hooks
+description: 'Yes. Codex runs plugin hooks at session start, on each prompt, after each tool call and at the end of a reply. What the payload contains, what it does not, and how I found out by recording it.'
+date: '2026-10-25'
+keywords:
+  - does codex cli have hooks
+  - codex cli hooks
+  - openai codex cli hooks
+  - codex plugin hooks
+  - codex posttooluse
+category: engineering
+author: Vitalii Serbyn
+featured: false
+---
+
+Yes. Codex CLI runs plugin hooks at four points: when a session starts, when you send a prompt, after each tool call, and when the agent finishes a reply. The hook is a shell command that reads a JSON payload on stdin. The same hooks.json that works in Claude Code works in Codex, with two differences that matter. Codex sends a shell command's output text only, with no exit code. And it sends a file patch as the text of a `command` field. I learned both by recording the payloads.
+
+## Where this comes from
+
+I run a small plugin, proof-of-green, in both Claude Code and Codex. It writes down which files the agent edited and which test commands it ran, and checks each "done" or "tests pass" against that record. The first Codex version recorded nothing useful. In two days of real work it missed 24 file patches and counted every command as exit 0. So I added an opt-in diagnostic that records the shape of each payload, field names and types only, and ran Codex on a scratch task.
+
+## What Codex sends
+
+Codex runs the four hook events from the same hooks.json: SessionStart, UserPromptSubmit, PostToolUse and Stop. Each payload carries a `turn_id`. Claude Code payloads do not, so that one field is enough to tell the two agents apart.
+
+Codex does not hand the hook its own tool call as one event. It splits the nested calls and sends each one under a Claude-style tool name. A shell command arrives as a `Bash` call with a `command` string. A patch arrives as `apply_patch` with the whole patch text in the `command` field, and a text response such as "Success. Updated the following files".
+
+The response is the part that cost me the most time. For a shell command Codex sends the output text and nothing else. There is no exit code and no separate failure event. A command that exits with 3 looks the same as one that exits with 0. If your hook reads pass or fail from the exit code, as mine did, every Codex run looks like a pass.
+
+One more detail. Codex runs only the `command` string of a hook entry and ignores an `args` list. A hooks.json written with `command: python3` and `args: [script]` runs a bare `python3` in Codex and records nothing. Write the full command in one string.
+
+## How the plugin copes
+
+Since version 0.2.1 proof-of-green judges a Codex test run by the counts in its output. "4 passed" is a pass. "1 failed, 3 passed" is a fail. No counts at all means the result is not visible, and the claim gets a middle grade with that reason instead of a pass. A patch in the `command` field is recorded as an edit of each file the patch names. I checked this live with one Codex session: a failing test, a patch, a passing test, and the final claim graded as backed by a run.
+
+Two limits. Codex starts the hooks only after you confirm them in the app, and that can happen in the middle of a turn. The plugin then has no record of the earlier edits in that turn, so it marks those claims as partial. And Codex changed its payload format once during the week I was observing, so anything here can change again.
+
+## FAQ
+
+**Does Codex CLI support the same hooks as Claude Code?** The same four events and the same hooks.json file worked for me: SessionStart, UserPromptSubmit, PostToolUse and Stop. The payloads differ in content. Codex adds a `turn_id`, sends shell output without an exit code, and sends patches in a `command` field.
+
+**How do I get the exit code of a command in a Codex hook?** I could not. The PostToolUse payload has the output text only, and a failing command arrives as an ordinary PostToolUse. Read pass and fail counts from the output instead, and treat no counts as unknown, never as a pass.
+
+**Why did my hook work in Claude Code and do nothing in Codex?** The most common cause I hit: Codex runs the `command` string only and ignores `args`. Put the whole command, interpreter and script path, into one string. Then confirm the hook in the Codex app, because hooks stay off until you do.
+
+The full record of what the hooks saw during one week is in [the proof-of-green post](/blog/proof-of-green-checks-every-done). If you want the same counts for your own Codex and Claude Code history, the local audit is described at [/audit](/audit) and in the repository, `github.com/vitamin33/proof-of-green`.

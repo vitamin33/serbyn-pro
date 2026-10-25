@@ -1,0 +1,47 @@
+---
+title: 'What is a false green in an AI coding agent''s work?'
+slug: what-is-a-false-green-ai-coding-agent
+description: 'A false green is a success message with no passing run behind it. The three shapes it takes in real Claude Code and Codex sessions, how often each one showed up in 948 claims, and why "lying" is the wrong word.'
+date: '2026-10-25'
+keywords:
+  - false green
+  - ai coding agent says tests pass
+  - why do ai coding agents say tests pass when they fail
+  - false green test
+  - coding agent done claims
+category: architecture
+author: Vitalii Serbyn
+featured: false
+---
+
+A false green is a success message with nothing behind it. The agent writes "all tests pass" or "done", and no passing test run happened after its last change to the code. The green comes from the agent's reply alone. In one week of my own Claude Code and Codex sessions the agents made 948 such claims. A rule flagged 315 of them as unverified. When 46 flags were read one by one with the full session open, 3 were real. The rest were cases the rule got wrong.
+
+## The three shapes
+
+The first shape is the plain one. The agent runs the tests, sees a failure, changes the code, and writes "fixed, tests pass" without running again. The last run it saw was red. Those were the real cases in my data, and they were rare.
+
+The second shape is a run that was meant to fail. A mutation check that breaks the code on purpose. A new test written to fail before the fix. A run against an old copy of the code. The output says "1 failed", the agent says "tests pass" two steps later, and both are right. Over two months, with about 2,070 claims, there were 5 cases where a "tests pass" claim was followed by a failing run on the same code. All 5 were runs of this kind. None reached a commit, a merge or a deploy.
+
+The third shape hides in the shell. The agent pipes the test command into `tail` or `grep`, so the exit code belongs to `tail`, and a run with failures exits 0. In my history 684 test runs looked like this. 40 of them, the ones followed by a claim, were read. The agent had missed the failure in none of them. It had read the output and said so, or the failures were already there before its change.
+
+## What the flags were instead
+
+Of the 43 flags that did not hold up, 22 were test runs the rule could not see. A test file run directly with python, a project wrapper script around npm test, a runner piped through grep. 12 were claims about a document, a data check or a review, where a test run is the wrong kind of proof. The rest were throwaway scripts counted as code edits, deploys done through a merge, and runs that were meant to fail.
+
+So the honest rate from my sessions is about 1 real false green in 15 flags. That is one engineer, with a review step and a merge check around the agents. A team without tests would get a different picture.
+
+## Why "lying" is the wrong word
+
+Before the data I called this lying. The data did not support it. In every case that was read, the agent had either run something the rule did not recognise, or skipped a rerun after a small change. Skipping a rerun is a habit, and a cheap reminder fixes it. The word "lie" assumes the agent knew the tests failed and said otherwise. I did not find one such case.
+
+The hand checks were done by Claude, the same model that wrote most of the replies, and I have not yet gone through the 46 myself. Until then "3 of 46" means "about 1 in 15" and nothing more exact.
+
+## FAQ
+
+**How is a false green different from a false positive test?** A false positive test is a test that passes when the code is wrong. A false green is a claim that passes when no test ran. The test suite can be perfect and the claim can still be empty, because the agent did not run it after its last edit.
+
+**How do I check for false greens in my own sessions?** Take one session, find the agent's last "tests pass" or "done", and look for a test run after its last code edit. If there is none, read what the agent did instead. In my sessions the answer was usually a run in a form my parser could not read.
+
+**Do AI coding agents say tests pass when they actually fail?** In my data, almost never in the plain sense. Over two months, 5 of 52 "tests pass" claims with a known next run were followed by a failure on the same code. Every one of the 5 was a run that was supposed to fail. The common case is a skipped rerun after a small change.
+
+The full week, with the diagrams and the breakdown of the 46, is in [the proof-of-green post](/blog/proof-of-green-checks-every-done). To get the same counts from your team's sessions without sending anything anywhere, see [/audit](/audit).
