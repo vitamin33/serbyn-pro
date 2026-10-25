@@ -12,6 +12,7 @@ keywords:
 category: architecture
 author: Vitalii Serbyn
 featured: false
+updated: '2026-10-25'
 mdx: true
 draft: false
 ---
@@ -141,3 +142,13 @@ The lesson I keep from this. A rule that looks obvious on a whiteboard, "no test
 The check for your own system this week: take one agent session, find the last "done", and count the test runs after the last code edit. Then read the ones the count missed.
 
 Repository and raw numbers: `github.com/vitamin33/proof-of-green`, `docs/REVIEW-week1.md` and `analysis/`. Earlier posts in the false-green series: [Six False-Greens in a Self-Auditing Agent Pipeline](/blog/six-false-greens-in-a-self-auditing-agent-pipeline), [The Check the Agent Cannot Skip](/blog/enforced-checkpoint-0-of-40-silent-failures-vs-22-of-40).
+
+## FAQ
+
+**How many "done" claims did the plugin flag, and how many were real?** In one week my agents made 948 completion claims. The rule flagged 315 of them as having no test run after the last code change. I read 46 of the flags with the full session open, and 3 of the 46 held up.
+
+**What is observe mode?** In observe mode the plugin records what the agent edited and ran, and writes down a verdict for each claim. It shows nothing to the agent and never blocks it. I ran the whole week this way.
+
+**Did hidden test failures turn out to be false greens?** I looked at 684 test runs where the exit code was 0 but the output showed failures. I read the 40 that were followed by a claim. None of them was a hidden false green. The agent had read the output and said so, or the failures were already there before the change.
+
+**Does the plugin send my sessions anywhere?** No. Nothing leaves the machine. The record is one file per session and holds parsed facts only, such as which file changed and which test command ran. Raw output and prompt text are never stored.

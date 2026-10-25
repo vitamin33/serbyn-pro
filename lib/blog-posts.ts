@@ -9,6 +9,8 @@ export interface BlogPostMeta {
   slug: string;
   description: string;
   date: string;
+  /** Last material edit (YYYY-MM-DD). Feeds sitemap lastmod and dateModified. */
+  updated?: string;
   keywords: string[];
   category: 'architecture' | 'engineering' | 'operations' | 'strategy';
   author: string;

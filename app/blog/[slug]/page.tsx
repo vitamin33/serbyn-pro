@@ -48,7 +48,11 @@ export async function generateMetadata({ params }: PageProps) {
     description: post.description,
     image: null, // use the dynamic opengraph-image.tsx card
     canonicalUrl: `${siteConfig.url}/blog/${post.slug}`,
-    article: { publishedTime: post.date, tags: post.keywords },
+    article: {
+      publishedTime: post.date,
+      modifiedTime: post.updated,
+      tags: post.keywords,
+    },
     ...(post.draft ? { noIndex: true } : {}),
   });
 }
@@ -70,9 +74,14 @@ export default async function BlogPostPage({ params }: PageProps) {
     '@type': 'BlogPosting',
     headline: post.title,
     description: post.description,
-    datePublished: post.date,
-    dateModified: post.date,
+    datePublished: isoDate(post.date),
+    dateModified: isoDate(post.updated ?? post.date),
     author: { '@id': 'https://serbyn.io/#person' },
+    image: `${siteConfig.url}/blog/${post.slug}/opengraph-image`,
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `${siteConfig.url}/blog/${post.slug}`,
+    },
     publisher: { '@id': 'https://serbyn.io/#organization' },
     url: `${siteConfig.url}/blog/${post.slug}`,
     keywords: post.keywords?.join(', '),

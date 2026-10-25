@@ -1,6 +1,7 @@
 import { OFFERS, ADVISORY, UPSELL, CONTACT } from '@/lib/facts';
 import { siteConfig } from '@/lib/seo';
 import { getAllBlogPosts } from '@/lib/blog-posts';
+import { getAllCaseStudies } from '@/lib/case-studies';
 
 // /llms.txt — a canonical, extractable summary for answer engines (AEO). Built
 // from lib/facts so offers/prices/identity never drift from the site. Adoption
@@ -12,9 +13,15 @@ export function GET() {
   const offerLines = OFFERS.map(
     o => `- [${o.name}](${url}${o.href}): ${o.price}, ${o.terms}. ${o.summary}`
   ).join('\n');
-  const posts = getAllBlogPosts().slice(0, 3);
-  const postLines = posts
-    .map(p => `- [${p.title}](${url}/blog/${p.slug})`)
+  const oneLine = (t: string) => t.replace(/\s+/g, ' ').trim();
+  const postLines = getAllBlogPosts()
+    .map(
+      p => `- [${p.title}](${url}/blog/${p.slug}): ${oneLine(p.description)}`
+    )
+    .join('\n');
+  const caseLines = getAllCaseStudies()
+    .filter(s => s.portfolio_ready)
+    .map(s => `- [${s.title}](${url}${s.url}): ${oneLine(s.summary)}`)
     .join('\n');
 
   const body = `# Vitalii Serbyn — serbyn.io
@@ -37,9 +44,17 @@ ${offerLines}
 - Employed-role history: a consumer app with 100M+ downloads (Google Play Editor's Choice); an 80–90% RPC cost reduction on a Web3 platform.
 - Every quantified claim carries its source label; no client metrics are borrowed.
 
-## Key writing
+## Pages
+- [Audit](${url}/audit): the agent reliability audit and how it works
+- [Work](${url}/work): case studies
+- [Writing](${url}/writing): all posts, RSS at ${url}/feed.xml
+
+## Case studies
+${caseLines}
+
+## Writing (all posts)
 ${postLines}
-- Full index: ${url}/writing · RSS: ${url}/feed.xml
+- Full text of every post in one file: ${url}/llms-full.txt
 
 ## Verification
 - GitHub: ${CONTACT.github} (Ascend core: ${CONTACT.github}/ascend-core)

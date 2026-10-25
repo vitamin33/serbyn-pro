@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 import { siteConfig } from '@/lib/seo';
 import { getAllCaseStudies } from '@/lib/case-studies';
-import { getAllBlogPosts } from '@/lib/blog-posts';
+import { getAllBlogPosts, isoDate } from '@/lib/blog-posts';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = siteConfig.url;
@@ -22,7 +22,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const blogPosts = getAllBlogPosts();
   const blogRoutes = blogPosts.map(post => ({
     url: `${baseUrl}${post.url}`,
-    lastModified: post.date,
+    lastModified: isoDate(post.updated ?? post.date),
     changeFrequency: 'monthly' as const,
     priority: 0.6,
   }));
