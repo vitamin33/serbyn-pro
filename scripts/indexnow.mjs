@@ -78,7 +78,7 @@ async function main() {
   console.log(
     `[indexnow] submitted ${urlList.length} URLs: HTTP ${post.status}`
   );
-  if (post.status >= 400) process.exitCode = 1;
+  if (post.status >= 400 && !fromBuild) process.exitCode = 1;
 }
 
 main().catch(err => {
