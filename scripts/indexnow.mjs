@@ -25,7 +25,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const HOST = 'serbyn.io';
-const KEY = '3d40b1ad44886b9950c3fb0356cf6ebc';
+const KEY = '9b2cc94f75734fdbad0f12e7cd94d7bd';
 const SITEMAP_URL = `https://${HOST}/sitemap.xml`;
 const ENDPOINT = 'https://api.indexnow.org/indexnow';
 

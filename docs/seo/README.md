@@ -15,13 +15,13 @@ Bing Webmaster Tools
 1. Sign in at bing.com/webmasters.
 2. Choose "Import from GSC" so the site and its sitemap come across with the Google verification.
 3. Check that https://serbyn.io/sitemap.xml is listed under Sitemaps. If not, submit it.
-4. Under IndexNow, confirm the key is found at https://serbyn.io/3d40b1ad44886b9950c3fb0356cf6ebc.txt.
+4. Under IndexNow, confirm the key is found at https://serbyn.io/9b2cc94f75734fdbad0f12e7cd94d7bd.txt.
 
 ## IndexNow
 
 IndexNow tells Bing, Yandex, Naver and Seznam that URLs changed. Bing's index feeds ChatGPT search and Copilot. Google does not use it.
 
-- Key file: `public/3d40b1ad44886b9950c3fb0356cf6ebc.txt`. The key is public by design.
+- Key file: `public/9b2cc94f75734fdbad0f12e7cd94d7bd.txt`. The key is public by design.
 - Script: `scripts/indexnow.mjs`. No dependencies. It reads the sitemap and POSTs `{host, key, keyLocation, urlList}` to https://api.indexnow.org/indexnow.
 - `npm run indexnow` submits the live sitemap URLs by hand.
 - `node scripts/indexnow.mjs --dry-run` prints the payload and sends nothing.
