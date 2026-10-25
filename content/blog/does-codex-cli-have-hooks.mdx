@@ -14,11 +14,11 @@ author: Vitalii Serbyn
 featured: false
 ---
 
-Yes. Codex CLI runs plugin hooks at four points: when a session starts, when you send a prompt, after each tool call, and when the agent finishes a reply. The hook is a shell command that reads a JSON payload on stdin. The same hooks.json that works in Claude Code works in Codex, with two differences that matter. Codex sends a shell command's output text only, with no exit code. And it sends a file patch as the text of a `command` field. I learned both by recording the payloads.
+Yes. Codex CLI runs plugin hooks at four points: when a session starts, when you send a prompt, after each tool call, and when the agent finishes a reply. The hook is a shell command that reads a JSON payload on stdin. The same hooks.json that works in Claude Code works in Codex, with two differences that matter. Codex sends a shell command's output text only, with no exit code. And it sends a file patch as the text of a `command` field. Both came out of recording the payloads, which Claude did for me as part of the plugin work.
 
 ## Where this comes from
 
-I run a small plugin, proof-of-green, in both Claude Code and Codex. It writes down which files the agent edited and which test commands it ran, and checks each "done" or "tests pass" against that record. The first Codex version recorded nothing useful. In two days of real work it missed 24 file patches and counted every command as exit 0. So I added an opt-in diagnostic that records the shape of each payload, field names and types only, and ran Codex on a scratch task.
+I run a small plugin, proof-of-green, in both Claude Code and Codex. It writes down which files the agent edited and which test commands it ran, and checks each "done" or "tests pass" against that record. The first Codex version recorded nothing useful. In two days of real work it missed 24 file patches and counted every command as exit 0. So an opt-in diagnostic was added that records the shape of each payload, field names and types only, and Codex ran on a scratch task.
 
 ## What Codex sends
 
