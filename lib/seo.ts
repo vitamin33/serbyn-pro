@@ -125,6 +125,10 @@ export function createMetadata({
     },
     manifest: '/site.webmanifest',
     metadataBase: new URL(siteConfig.url),
+    // Bing Webmaster Tools site verification (public token, must stay after verification).
+    verification: {
+      other: { 'msvalidate.01': '0B709168E1F6A0F22BF2F7D54FC0933F' },
+    },
     alternates: {
       canonical: canonicalUrl || siteConfig.url,
       types: { 'application/rss+xml': `${siteConfig.url}/feed.xml` },
