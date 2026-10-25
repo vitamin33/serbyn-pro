@@ -1,0 +1,68 @@
+---
+title: 'How to audit your own Claude Code and Codex session logs, locally, in one command'
+slug: audit-claude-code-codex-session-logs-locally
+description: 'Claude Code and Codex keep a log of every session on your laptop. One script reads them and prints counts: how often the agent said "done" with a test run behind it, and how often without. Nothing is uploaded.'
+date: '2026-10-25'
+keywords:
+  - claude code session logs
+  - claude code analytics
+  - audit ai coding agent sessions
+  - codex session logs
+  - claude code projects folder
+category: engineering
+author: Vitalii Serbyn
+featured: false
+---
+
+Claude Code writes a log of every session to `~/.claude/projects`, and Codex writes one to `~/.codex/sessions`. They hold every tool call the agent made, so you can check, after the fact, what the agent ran before it said "done". I wrote a script that reads both folders and prints one block of counts. It needs Python 3.9 and nothing else, makes no network calls, and two months of history take under a minute. The block is the only output, and it is safe to share: counts and short hashes of project folders, no prompt, no reply, no command, no file name.
+
+## Running it
+
+```
+git clone https://github.com/vitamin33/proof-of-green
+cd proof-of-green
+python3 analysis/audit.py --since 2026-09-01 --out audit.txt
+```
+
+Pick `--since` so that it covers at least a few hundred claims. Below that the percentages jump around. The script is one file, `analysis/audit.py`, plus the two parsers it calls, and you can read all three before you run anything.
+
+## What it prints
+
+This is the block from my own history.
+
+```
+proof-of-green audit, local history since 2026-10-04 (counts only, nothing uploaded)
+
+  Claude Code    sessions   51  turns  4144  edit turns  505  claims  588  no fresh test run  294 (50%)  would warn  52  then failed   2
+  Codex          sessions   27  turns  1120  edit turns  249  claims  639  no fresh test run  154 (24%)  would warn  63  then failed  11
+
+  claims with no test run after the last code edit: 448 of 1227 (37%)
+  would-warn cases: 115; of those, the next test run on the same code failed: 13
+  test runs: 6403, output not parsed: 3851 (60%)
+```
+
+## How to read it
+
+"Edit turns" are replies in which the agent changed code. Test files and docs do not count.
+
+"Claims" are replies that end with "done", "fixed", "verified", "deployed" or "tests pass", in English or Ukrainian. The detection is strict on purpose. In a sample of 30 it found a real claim 26 times, so a few wrong hits are in the count.
+
+"No fresh test run" means that after the agent's last code change, no test command ran before the claim. This is a flag, and only a flag. In my history about 1 in 15 such flags held up when read by hand. The usual reasons a flag was wrong: the agent ran tests in a way the parser did not recognise. Or the claim was about a document or data. Or the "code change" was a throwaway script.
+
+"Then failed" is the strict signal. The agent claimed, and the next test run on the same code failed. Read those by hand before you conclude anything. In my history most of them were runs that were meant to fail, like a mutation check or a new test written to fail first.
+
+"Output not parsed" tells you how much the tool could not read. Test runners print results in many formats. A run the parser cannot read counts as unknown, never as a pass. In my history that was 60% of runs, which is the main reason the flags are so often wrong.
+
+## What it cannot show
+
+It does not judge test quality. A weak suite that passes counts as a pass. It misses claims phrased in other ways, and checks done outside the session, in CI or by a reviewer. It does not know what reached production. A claim with no test run can still be correct, and a passing run can still ship a bug. The block tells you where to look, and nothing about what you will find.
+
+## FAQ
+
+**Where does Claude Code store session logs?** In `~/.claude/projects`, one folder per project and one JSONL file per session. Codex stores its sessions under `~/.codex/sessions`, by date. Both hold every tool call with its input and output, which is what the audit reads.
+
+**Does the audit send anything anywhere?** No. The script makes no network calls, and the printed block holds counts and 6-character hashes of project folders only. If you send me the block, that is the whole of what leaves your machine.
+
+**Can I run it with only one of the two agents installed?** Yes. The script runs both parsers and prints "no data" for the row whose folder is missing. The totals then cover the agent you have.
+
+The numbers above and how the hand checks were done are in [the proof-of-green post](/blog/proof-of-green-checks-every-done). If you lead a team on coding agents and want a one-page read of your developers' blocks, the offer is at [/audit](/audit).

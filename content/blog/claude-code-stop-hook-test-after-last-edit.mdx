@@ -1,0 +1,64 @@
+---
+title: 'A Claude Code Stop hook that checks a test actually ran after the last edit'
+slug: claude-code-stop-hook-test-after-last-edit
+description: 'The hooks.json and the one rule behind it: a test run counts only if it ran after the last code change. What it looked like after a week on real sessions, and why I run it silently.'
+date: '2026-10-25'
+keywords:
+  - claude code stop hook
+  - claude code stop hook example
+  - claude code verification loop
+  - claude code posttooluse hook
+  - claude code hooks example
+category: engineering
+author: Vitalii Serbyn
+featured: false
+---
+
+A Stop hook in Claude Code runs a command when the agent finishes a reply, and gets the reply text in its payload. On its own it cannot know whether the tests ran. Add PostToolUse hooks that write down each edit and each test command. Then the Stop hook can answer one question: was there a test run after the last change to code? That is the whole rule in proof-of-green, the plugin I run. It never blocks. In one week on my real sessions the rule flagged 315 of 948 completion claims, and 3 of 46 flags held up when read by hand. So I run it silently.
+
+## The hooks
+
+Each entry is a Python script that reads JSON on stdin. The PostToolUse entries record facts. The Stop entry reads the record and grades the claim. This is the file, shortened to the parts that matter.
+
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      { "matcher": "Edit|Write|MultiEdit",
+        "hooks": [{ "type": "command",
+          "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/scripts/post_edit.py\"", "timeout": 5 }] },
+      { "matcher": "Bash",
+        "hooks": [{ "type": "command",
+          "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/scripts/post_bash.py\"", "timeout": 5 }] }
+    ],
+    "Stop": [
+      { "hooks": [{ "type": "command",
+          "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/scripts/stop.py\"", "timeout": 10 }] }
+    ]
+  }
+}
+```
+
+The edit hook writes one line per changed file: the path inside the project, and whether it is code, a test or a doc. The Bash hook looks at the command. If it is a test runner, it stores the command, the exit code and the pass and fail counts parsed from the output. Raw output is never stored. A shell command that writes a code file, such as `sed -i` or `cat > file`, counts as an edit too. In my history two thirds of code edits came that way.
+
+## The rule
+
+At Stop, the script looks for a claim in the reply: "tests pass", "done", "fixed", "verified", "deployed", in English or Ukrainian. If there is one, it finds the last code edit in the record and asks what happened after it. A full passing run after the edit is the best grade. A partial run, or a run with no readable counts, is a middle grade. No run is a flag. A failed run, or one that hid its exit code behind a pipe to `tail` or `grep`, is also a flag.
+
+In warn mode the hook returns one line for you and a short note for the agent, asking it once to run the full test command. It never stops the agent from finishing. The script always exits 0, so if anything inside it breaks, the session goes on as if the hook were not there.
+
+## What a week of it showed
+
+I ran it in observe mode first, so it recorded and said nothing. Then the flags were read one by one with the session open. The hand checks were done by Claude, the same model that wrote most of the replies, so treat the number as rough. 3 of 46 flags were fair. In 22 cases the tests had run and the parser did not recognise the command. In 12 the claim was about a document or data, where a test run is the wrong proof. The rest were throwaway scripts counted as code, or runs that were meant to fail.
+
+That is why the plugin ships with the warning off. The record is useful. A one-line reminder that is wrong 43 times out of 46 is not. If you build your own Stop hook, run it silently for a week before you let it speak, and read what it would have said.
+
+## FAQ
+
+**Can a Stop hook block Claude Code from finishing?** A Stop hook can return a decision that asks the agent to continue, and it has a `stop_hook_active` flag so it does not loop. Mine never uses that. It returns a message at most once per reply and lets the agent stop.
+
+**Does the Stop hook see whether the tests ran?** Only through the record left by the PostToolUse hooks. The Stop payload has the final reply text and the session id, nothing about tool calls. Without the recording hooks it can only read the reply.
+
+**Why not just run the test suite from the Stop hook?** You can. It costs a full test run on every reply, including replies that changed nothing. The record-and-check approach costs nothing per reply, and it tells you what the agent itself ran.
+
+The week's numbers and the breakdown of the 46 are in [the proof-of-green post](/blog/proof-of-green-checks-every-done). The plugin, the hooks and the scripts are at `github.com/vitamin33/proof-of-green`. If you lead a team and want the counts for your developers' sessions, see [/audit](/audit).
