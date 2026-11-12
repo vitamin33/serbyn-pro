@@ -29,6 +29,9 @@ export const siteConfig = {
   ],
 };
 
+// Longest title that still carries the full site name as its suffix.
+const TITLE_MAX = 70;
+
 interface SEOProps {
   title?: string;
   description?: string;
@@ -55,7 +58,13 @@ export function createMetadata({
   canonicalUrl,
   article,
 }: SEOProps = {}): Metadata {
-  const metaTitle = title ? `${title} | ${siteConfig.name}` : siteConfig.name;
+  // Google cuts a title at roughly 60 characters. The full site name adds 45,
+  // so a long page title (most posts) gets the short suffix instead.
+  const fullTitle = title ? `${title} | ${siteConfig.name}` : siteConfig.name;
+  const metaTitle =
+    title && fullTitle.length > TITLE_MAX
+      ? `${title} | ${siteConfig.creator}`
+      : fullTitle;
   const metaDescription = description;
   const includeImage = image !== null;
   const imageUrl = image ?? siteConfig.ogImage;

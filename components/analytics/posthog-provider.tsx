@@ -2,7 +2,13 @@
 
 import { usePathname, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect } from 'react';
-import { POSTHOG_HOST, POSTHOG_KEY, _registerCapture } from '@/lib/analytics';
+import {
+  POSTHOG_HOST,
+  POSTHOG_KEY,
+  POSTHOG_PROXY_PATH,
+  _registerCapture,
+  analyticsAllowed,
+} from '@/lib/analytics';
 
 let loading = false;
 let ready = false;
@@ -14,7 +20,10 @@ async function ensureInit(): Promise<void> {
   loading = true;
   const { default: posthog } = await import('posthog-js');
   posthog.init(POSTHOG_KEY, {
-    api_host: POSTHOG_HOST,
+    // Same-origin proxy (next.config.js rewrites), so ad blockers do not drop
+    // the events. ui_host keeps the links PostHog builds pointing at the app.
+    api_host: POSTHOG_PROXY_PATH,
+    ui_host: POSTHOG_HOST.replace('.i.posthog.com', '.posthog.com'),
     capture_pageview: false, // captured manually below for SPA route changes
     capture_pageleave: true,
     autocapture: true,
@@ -35,7 +44,7 @@ function PageviewTracker() {
   const search = useSearchParams();
   useEffect(() => {
     // /lab/* is internal (noindex, unlinked): no analytics, no external calls.
-    if (!POSTHOG_KEY || pathname?.startsWith('/lab')) return;
+    if (!analyticsAllowed() || pathname?.startsWith('/lab')) return;
     void ensureInit().then(() => {
       void import('posthog-js').then(({ default: posthog }) =>
         posthog.capture('$pageview', { $current_url: window.location.href })

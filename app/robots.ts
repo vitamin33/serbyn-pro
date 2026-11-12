@@ -12,9 +12,12 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
+        // /_next/ is deliberately NOT disallowed: it holds the CSS and JS, and
+        // Google has to fetch them to render a page. /ingest/ is the analytics
+        // proxy (see next.config.js).
         disallow: [
           '/api/',
-          '/_next/',
+          '/ingest/',
           '/admin/',
           '/private/',
           '*.json',
