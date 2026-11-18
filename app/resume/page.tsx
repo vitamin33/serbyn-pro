@@ -33,15 +33,22 @@ const TILES: {
   },
 ];
 
-const CERTIFICATIONS: { name: string; level: string; href: string }[] = [
+const CERTIFICATIONS: {
+  name: string;
+  level: string;
+  issued: string;
+  href: string;
+}[] = [
   {
     name: 'Claude Certified Architect',
     level: 'Professional',
+    issued: 'Sep 2026',
     href: 'https://www.credly.com/badges/7eb76008-726e-4a7b-9b73-cf6c4bd48f1b/public_url',
   },
   {
     name: 'Claude Certified Developer',
     level: 'Foundations',
+    issued: 'Aug 2026',
     href: 'https://www.credly.com/badges/2f39e398-b6f9-477a-91a9-9541afb07a74/public_url',
   },
 ];
@@ -263,7 +270,7 @@ export default function ResumePage() {
               </p>
               <SourceCell
                 source={{
-                  label: 'proctored exam · 2026 · Credly',
+                  label: `proctored exam · ${cert.issued} · Credly`,
                   href: cert.href,
                 }}
               />
