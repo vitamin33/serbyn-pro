@@ -4,7 +4,7 @@
     "label": "Agentic Systems Architect",
     "email": "serbyn.vitalii@gmail.com",
     "url": "https://serbyn.io",
-    "summary": "Agentic Systems Architect. I make AI agents reliable enough to run in production — agent reliability engineering (trajectory evals, false-green metering, evidence-binding, trust-tiered execution) and LLM cost engineering — for US, UK, and EU teams via Easelect LTD.",
+    "summary": "AI engineer and architect. I design and run multi-agent systems on Claude and other LLMs, measure where agents report success they did not earn, and bring LLM bills down. Claude Certified Architect (Professional). 13+ years of production engineering.",
     "location": {
       "city": "Kyiv",
       "countryCode": "UA",
@@ -28,55 +28,118 @@
       "name": "Easelect LTD",
       "position": "Agentic Systems Architect",
       "url": "https://serbyn.io",
-      "startDate": "2023-01-01",
+      "startDate": "2025-01-01",
       "summary": "Independent architect making AI agent systems reliable and cost-efficient for US/UK/EU teams.",
       "highlights": [
         "Designed and built Ascend: a 27-agent (18 mature) multi-agent orchestration daemon with trust-tiered L0-L4 execution, policy gates, budget guards, and 1,178 automated tests",
         "Built DW, an autonomous spec-driven development pipeline: 101 logged runs at a 0.94 pass rate, gated by acceptance checks",
         "Built Crest, a content marketing engine with tiered multi-model routing, editorial and fabrication checks, and publishing to LinkedIn and X",
         "Cut own-platform LLM spend 58% ($82 to $34/month) via multi-model routing and semantic caching, without lowering output quality",
-        "Deliver fixed-scope agent production-readiness audits and LLM cost teardowns for US/UK/EU teams"
+        "Contract, AI platform (assisterr, 2025): designed and shipped a quality-oracle service that verifies AI-agent quality before payment",
+        "Contract, platform engineering (Vitelle, 2026 to present): release engineering end to end, 26 store builds shipped in 2026"
       ]
     },
     {
-      "name": "EPAM, GlobalLogic, Startups",
-      "position": "Senior/Lead Engineer",
-      "startDate": "2013-01-01",
-      "endDate": "2023-01-01",
-      "summary": "Shipped production mobile, web, and cloud systems; led small teams and owned release trains.",
+      "name": "Luxoft",
+      "position": "Senior Software Engineer",
+      "startDate": "2023",
+      "endDate": "2024",
       "highlights": [
-        "Shipped a consumer app with 100M+ downloads and a Google Play Editor's Choice award (as engineer, in an employed role)",
-        "Delivered an 80-90% RPC cost reduction on a Web3 platform (as engineer, in an employed role)",
-        "Led teams of 2-6 engineers and owned release trains for high-traffic mobile apps",
-        "Introduced monitoring and incident routines with Prometheus/Grafana, reducing on-call noise"
+        "Led a company-wide Flutter UI library: 120+ widgets, used by 6 apps"
       ]
+    },
+    {
+      "name": "Precision OT Network",
+      "position": "Senior Full-Stack Engineer (Python and Flutter)",
+      "startDate": "2023",
+      "endDate": "2023",
+      "highlights": [
+        "Took a fragile MVP to production readiness; wrote the Flask and SQLAlchemy API"
+      ]
+    },
+    {
+      "name": "DarkstoreApp",
+      "position": "Lead Software Engineer",
+      "startDate": "2022",
+      "endDate": "2023",
+      "highlights": [
+        "Led the Android team on a multi-app logistics service"
+      ]
+    },
+    {
+      "name": "EPAM Systems",
+      "position": "Senior, then Lead Software Engineer",
+      "startDate": "2017",
+      "endDate": "2022",
+      "highlights": [
+        "Led teams of 3 to 4 for clients in US fintech, German sport, UK telecom and Spanish e-commerce"
+      ]
+    },
+    {
+      "name": "GlobalLogic",
+      "position": "Software Engineer",
+      "startDate": "2015",
+      "endDate": "2017",
+      "highlights": [
+        "Developed a video-editing app with 100M+ users and a Google Play Editors' Choice award"
+      ]
+    },
+    {
+      "name": "QArea, Sloboda Studio",
+      "position": "Android Developer",
+      "startDate": "2012",
+      "endDate": "2015"
     }
   ],
   "education": [
     {
-      "institution": "National Technical University of Ukraine",
+      "institution": "V.N. Karazin Kharkiv National University",
       "area": "Computer Science",
-      "studyType": "Master of Science",
-      "startDate": "2009-09-01",
-      "endDate": "2011-06-01"
+      "studyType": "Master",
+      "startDate": "2007-09-01",
+      "endDate": "2012-06-01"
     }
   ],
   "skills": [
     {
       "name": "Agent Reliability",
-      "keywords": ["Trajectory Evals", "False-Green Metering", "Evidence-Binding Gates", "Trust-Tiered Execution", "Policy Gates"]
+      "keywords": [
+        "Trajectory Evals",
+        "False-Green Metering",
+        "Evidence-Binding Gates",
+        "Trust-Tiered Execution",
+        "Policy Gates"
+      ]
     },
     {
       "name": "LLM & AI Frameworks",
-      "keywords": ["LangChain", "LangGraph", "OpenAI", "Anthropic", "vLLM", "RAG"]
+      "keywords": [
+        "LangChain",
+        "LangGraph",
+        "OpenAI",
+        "Anthropic",
+        "vLLM",
+        "RAG"
+      ]
     },
     {
       "name": "Cost Engineering",
-      "keywords": ["Multi-Model Routing", "Semantic Caching", "Per-Service Cost Tracking"]
+      "keywords": [
+        "Multi-Model Routing",
+        "Semantic Caching",
+        "Per-Service Cost Tracking"
+      ]
     },
     {
       "name": "Platform & DevOps",
-      "keywords": ["Python", "FastAPI", "Docker", "Kubernetes", "PostgreSQL", "Redis"]
+      "keywords": [
+        "Python",
+        "FastAPI",
+        "Docker",
+        "Kubernetes",
+        "PostgreSQL",
+        "Redis"
+      ]
     }
   ],
   "projects": [
@@ -88,7 +151,13 @@
         "1,178 automated tests",
         "6-provider LLM fallback"
       ],
-      "keywords": ["Python", "LangGraph", "FastAPI", "PostgreSQL", "Redis"],
+      "keywords": [
+        "Python",
+        "LangGraph",
+        "FastAPI",
+        "PostgreSQL",
+        "Redis"
+      ],
       "url": "https://github.com/vitamin33/ascend-core"
     },
     {
@@ -99,8 +168,41 @@
         "0.94 pass rate",
         "methodology defined at serbyn.io/methodology"
       ],
-      "keywords": ["Python", "LangGraph", "Evals"],
+      "keywords": [
+        "Python",
+        "LangGraph",
+        "Evals"
+      ],
       "url": "https://serbyn.io/methodology"
+    },
+    {
+      "name": "proof-of-green",
+      "description": "Claude Code plugin that flags a 'tests pass' claim made with no test run after the last edit.",
+      "url": "https://github.com/vitamin33/proof-of-green"
+    },
+    {
+      "name": "claude-code-statusline",
+      "description": "Cost-aware status line for Claude Code, plus a prompt-cache cost analyzer.",
+      "url": "https://github.com/vitamin33/claude-code-statusline"
+    },
+    {
+      "name": "agent-eval-labs",
+      "description": "Reproducible experiments on how agents verify their own work.",
+      "url": "https://github.com/vitamin33/agent-eval-labs"
+    }
+  ],
+  "certificates": [
+    {
+      "name": "Claude Certified Architect - Professional",
+      "issuer": "Anthropic",
+      "date": "2026",
+      "url": "https://www.credly.com/org/anthropic/badge/claude-certified-architect-professional"
+    },
+    {
+      "name": "Claude Certified Developer - Foundations",
+      "issuer": "Anthropic",
+      "date": "2026",
+      "url": "https://www.credly.com/org/anthropic/badge/claude-certified-developer-foundations"
     }
   ]
 }

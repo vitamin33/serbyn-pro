@@ -1,10 +1,221 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { Download, Mail, MapPin, Globe, Phone } from 'lucide-react';
+import { Download, Mail, MapPin, Globe } from 'lucide-react';
+
+// Source of truth for this page: the CV (work history, education) and
+// lib/facts.ts (numbers for the systems). Kept deliberately short on detail:
+// no phone number, clients of an employer or a contract are described by
+// industry and not by name, and only public repositories are linked.
+
+const SKILLS: { title: string; items: string[] }[] = [
+  {
+    title: 'Agent reliability',
+    items: [
+      'Trajectory evals',
+      'False-green metering',
+      'Evidence-binding gates',
+      'Trust-tiered execution',
+      'Policy gates',
+      'Claude Code hooks and plugins',
+    ],
+  },
+  {
+    title: 'LLM and agent frameworks',
+    items: [
+      'Claude API',
+      'Claude Code',
+      'MCP',
+      'LangGraph',
+      'LangChain',
+      'OpenAI API',
+      'RAG',
+    ],
+  },
+  {
+    title: 'LLM cost engineering',
+    items: [
+      'Multi-model routing',
+      'Prompt caching',
+      'Semantic caching',
+      'Per-service cost tracking',
+    ],
+  },
+  {
+    title: 'Backend and data',
+    items: [
+      'Python',
+      'FastAPI',
+      'Flask',
+      'Node.js/NestJS',
+      'Celery',
+      'PostgreSQL',
+      'Redis',
+      'Kafka',
+      'GraphQL',
+    ],
+  },
+  {
+    title: 'Cloud and delivery',
+    items: [
+      'Docker',
+      'Kubernetes',
+      'AWS (Lambda, AppSync, DynamoDB)',
+      'GCP/GKE',
+      'GitHub Actions',
+    ],
+  },
+  {
+    title: 'Evaluation and observability',
+    items: [
+      'Eval harnesses',
+      'LLM-as-judge calibration',
+      'Session-log audits',
+      'Prometheus',
+      'Grafana',
+      'Sentry',
+    ],
+  },
+];
+
+const CERTIFICATIONS: { name: string; issuer: string; href: string }[] = [
+  {
+    name: 'Claude Certified Architect – Professional',
+    issuer: 'Anthropic · 2026 · proctored exam',
+    href: 'https://www.credly.com/org/anthropic/badge/claude-certified-architect-professional',
+  },
+  {
+    name: 'Claude Certified Developer – Foundations',
+    issuer: 'Anthropic · 2026 · proctored exam',
+    href: 'https://www.credly.com/org/anthropic/badge/claude-certified-developer-foundations',
+  },
+];
+
+const EXPERIENCE: {
+  role: string;
+  where: string;
+  dates: string;
+  points: string[];
+}[] = [
+  {
+    role: 'Agentic Systems Architect',
+    where: 'Easelect LTD · Remote · own systems and client contracts',
+    dates: '2025 – Present',
+    points: [
+      'Designed and built Ascend, a multi-agent orchestration daemon: 27 agents (18 mature), trust-tiered L0–L4 execution, policy gates, budget guards, 6-provider LLM fallback, 1,178 automated tests',
+      'Built DW, a spec-driven development pipeline where an agent turns a spec into a working change, gated by acceptance checks: 101 logged runs at a 0.94 pass rate',
+      'Built Crest, an AI content engine live at usecrest.io: tiered multi-model routing, editorial and fabrication checks, 109 posts published from 1,455 generated (Aug 2026)',
+      'Ran controlled experiments on agent self-verification and published the results, including a checkpoint design that took silent failures from 22 of 40 runs to 0 of 40',
+      'Analysed 68,700 of my own Claude Code requests and traced 24% of spend to 1,119 prompt-cache rebuilds; shipped the status line that warns before one happens',
+      'Contract, AI platform (assisterr, 2025): largest contributor across 13 repositories; designed and shipped the quality-oracle service that verifies AI-agent quality before payment; production on AWS ECS',
+      'Contract, platform engineering (Vitelle, 2026 – present): own release engineering end to end; 26 store builds shipped in 2026, each gated by an end-to-end suite that runs against the shipped binary',
+      'Contract, multimodal pipeline (2025): a vision model captions ad creatives, an LLM analyses copy variants, local inference with a hosted fallback',
+    ],
+  },
+  {
+    role: 'Senior Software Engineer',
+    where: 'Luxoft · global dental-technology client · Remote',
+    dates: '2023 – 2024',
+    points: [
+      'Led a company-wide Flutter UI library: 120+ widgets, used by 6 apps, 40% faster time-to-feature, 90% test coverage',
+      'Automated the Figma to design tokens to generated code pipeline, and the release pipeline with GitHub Actions and Fastlane',
+    ],
+  },
+  {
+    role: 'Senior Full-Stack Engineer (Python and Flutter)',
+    where: 'Precision OT Network · AI-medicine startup · Remote',
+    dates: '2023',
+    points: [
+      'Took a fragile MVP to production readiness; wrote the Flask and SQLAlchemy API and cut unknown crashes by 30%',
+    ],
+  },
+  {
+    role: 'Lead Software Engineer',
+    where: 'DarkstoreApp · logistics startup',
+    dates: '2022 – 2023',
+    points: [
+      'Led the Android team on a multi-app logistics service where a branded app is generated per customer by the build pipeline; built its CI/CD',
+    ],
+  },
+  {
+    role: 'Senior, then Lead Software Engineer',
+    where:
+      'EPAM Systems · clients in US fintech, German sport, UK telecom and Spanish e-commerce',
+    dates: '2017 – 2022',
+    points: [
+      'Led teams of 3 to 4 from MVP to store launch, with a rating above 4 on first release for a Palo Alto fintech client',
+      'Ran CI/CD, technical interviews and the feature roadmap for a German sport client; mentored two trainees to middle level',
+      'Completed EPAM Management School (Software Engineering Manager), 2020',
+    ],
+  },
+  {
+    role: 'Software Engineer',
+    where: 'GlobalLogic · video-editing app, later acquired by Vimeo',
+    dates: '2015 – 2017',
+    points: [
+      'Developed an app with 100M+ users, Google Play Editors’ Choice and a store rating above 4.5',
+    ],
+  },
+  {
+    role: 'Android Developer',
+    where: 'QArea, Sloboda Studio',
+    dates: '2012 – 2015',
+    points: [],
+  },
+];
+
+const PROJECTS: { name: string; what: string; href?: string }[] = [
+  {
+    name: 'Ascend',
+    what: 'Multi-agent orchestration daemon with trust tiers, policy gates and budget guards.',
+    href: 'https://github.com/vitamin33/ascend-core',
+  },
+  {
+    name: 'DW',
+    what: 'Spec-driven development pipeline; how runs and passes are counted is public.',
+    href: 'https://serbyn.io/methodology',
+  },
+  {
+    name: 'Crest',
+    what: 'Content marketing engine with multi-model routing and fabrication checks.',
+    href: 'https://usecrest.io',
+  },
+  {
+    name: 'proof-of-green',
+    what: 'Claude Code plugin that flags a "tests pass" claim made with no test run after the last edit.',
+    href: 'https://github.com/vitamin33/proof-of-green',
+  },
+  {
+    name: 'claude-code-statusline',
+    what: 'Cost-aware status line for Claude Code, plus a prompt-cache cost analyzer.',
+    href: 'https://github.com/vitamin33/claude-code-statusline',
+  },
+  {
+    name: 'agent-eval-labs',
+    what: 'Reproducible experiments on how agents verify their own work.',
+    href: 'https://github.com/vitamin33/agent-eval-labs',
+  },
+  {
+    name: 'RAGline',
+    what: 'Streaming-first, multi-tenant Python back end with an optional RAG module.',
+    href: 'https://github.com/vitamin33/ragline',
+  },
+  {
+    name: 'High-load Python starter',
+    what: 'FastAPI, Kafka, Postgres and Redis scaffold with metrics, tracing and load tests.',
+    href: 'https://github.com/vitamin33/highload-python-starter-full',
+  },
+  {
+    name: 'Forge UI',
+    what: 'Agent that automates repetitive UI-library work.',
+  },
+  {
+    name: 'Moxy',
+    what: 'E-commerce shop for web and mobile: Flutter app and FastAPI back end. Part-time, 2022 – 2023.',
+    href: 'https://github.com/vitamin33/moxy',
+  },
+];
 
 export default function ResumePage() {
   const handlePrintResume = () => {
@@ -53,13 +264,39 @@ export default function ResumePage() {
               Professional Summary
             </h3>
             <p className="text-sm leading-relaxed">
-              Senior engineer with 13+ years shipping production systems in
-              mobile, web, and cloud. I design and run reliable LLM services
-              with clear SLOs, CI/CD, MLflow registries, cost controls, and real
-              observability. I have led small teams, owned release trains, and I
-              bring that discipline to building and operating AI platforms that
-              are easy to deploy, measure, and roll back.
+              AI engineer and architect. I design and run multi-agent systems on
+              Claude and other LLMs, measure where agents report success they
+              did not earn, and bring LLM bills down. Anthropic-certified
+              (Claude Certified Architect, Professional). Before AI: 12 years of
+              production engineering, including an app with 100M+ installs and
+              teams of up to 8 engineers, which is where the release and testing
+              discipline comes from.
             </p>
+          </section>
+
+          {/* Certifications */}
+          <section className="mb-8 page-break-inside-avoid">
+            <h3 className="text-lg font-semibold mb-3 border-b pb-1">
+              Certifications
+            </h3>
+            <ul className="text-sm space-y-2">
+              {CERTIFICATIONS.map(cert => (
+                <li key={cert.name}>
+                  <a
+                    href={cert.href}
+                    className="font-medium underline underline-offset-4"
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    {cert.name}
+                  </a>
+                  <span className="text-muted-foreground">
+                    {' '}
+                    · {cert.issuer}
+                  </span>
+                </li>
+              ))}
+            </ul>
           </section>
 
           {/* Technical Skills */}
@@ -67,286 +304,90 @@ export default function ResumePage() {
             <h3 className="text-lg font-semibold mb-3 border-b pb-1">
               Technical Skills
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-              <div>
-                <h4 className="font-medium mb-2">
-                  LLM & GenAI (Current Focus)
-                </h4>
-                <div className="flex flex-wrap gap-1 mb-3">
-                  <Badge variant="secondary">LangChain/LangGraph</Badge>
-                  <Badge variant="secondary">vLLM</Badge>
-                  <Badge variant="secondary">OpenAI API</Badge>
-                  <Badge variant="secondary">Ollama</Badge>
-                  <Badge variant="secondary">BLIP-2</Badge>
-                  <Badge variant="secondary">RAG</Badge>
-                  <Badge variant="secondary">Hybrid Retrieval</Badge>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 text-sm">
+              {SKILLS.map(group => (
+                <div key={group.title}>
+                  <h4 className="font-medium mb-2">{group.title}</h4>
+                  <div className="flex flex-wrap gap-1 mb-3">
+                    {group.items.map(item => (
+                      <Badge key={item} variant="secondary">
+                        {item}
+                      </Badge>
+                    ))}
+                  </div>
                 </div>
-
-                <h4 className="font-medium mb-2">MLOps & Platform</h4>
-                <div className="flex flex-wrap gap-1 mb-3">
-                  <Badge variant="secondary">MLflow</Badge>
-                  <Badge variant="secondary">SLO-gated CI</Badge>
-                  <Badge variant="secondary">A/B Evaluation</Badge>
-                  <Badge variant="secondary">Experiment Tracking</Badge>
-                  <Badge variant="secondary">Model Registry</Badge>
-                  <Badge variant="secondary">Canary Deployment</Badge>
-                </div>
-
-                <h4 className="font-medium mb-2">Backend & Data (13+ years)</h4>
-                <div className="flex flex-wrap gap-1 mb-3">
-                  <Badge variant="secondary">Python</Badge>
-                  <Badge variant="secondary">FastAPI</Badge>
-                  <Badge variant="secondary">Node.js/NestJS</Badge>
-                  <Badge variant="secondary">Celery</Badge>
-                  <Badge variant="secondary">PostgreSQL</Badge>
-                  <Badge variant="secondary">Redis</Badge>
-                  <Badge variant="secondary">RabbitMQ</Badge>
-                  <Badge variant="secondary">Qdrant</Badge>
-                </div>
-              </div>
-
-              <div>
-                <h4 className="font-medium mb-2">
-                  Cloud & Infrastructure (Production)
-                </h4>
-                <div className="flex flex-wrap gap-1 mb-3">
-                  <Badge variant="secondary">Kubernetes</Badge>
-                  <Badge variant="secondary">Docker</Badge>
-                  <Badge variant="secondary">AWS ECS/EKS</Badge>
-                  <Badge variant="secondary">GCP/GKE</Badge>
-                  <Badge variant="secondary">GitHub Actions</Badge>
-                  <Badge variant="secondary">Terraform basics</Badge>
-                </div>
-
-                <h4 className="font-medium mb-2">
-                  Observability & Ops (Expert)
-                </h4>
-                <div className="flex flex-wrap gap-1 mb-3">
-                  <Badge variant="secondary">Prometheus</Badge>
-                  <Badge variant="secondary">Grafana</Badge>
-                  <Badge variant="secondary">Jaeger</Badge>
-                  <Badge variant="secondary">Sentry</Badge>
-                  <Badge variant="secondary">CloudWatch</Badge>
-                  <Badge variant="secondary">PagerDuty</Badge>
-                </div>
-
-                <h4 className="font-medium mb-2">Frontend & Mobile</h4>
-                <div className="flex flex-wrap gap-1 mb-3">
-                  <Badge variant="secondary">Flutter</Badge>
-                  <Badge variant="secondary">Android/Kotlin</Badge>
-                  <Badge variant="secondary">React basics</Badge>
-                </div>
-              </div>
+              ))}
             </div>
           </section>
 
           {/* Professional Experience */}
           <section className="mb-8">
             <h3 className="text-lg font-semibold mb-3 border-b pb-1">
-              Professional Experience
+              Experience
             </h3>
-
-            {/* Experience 1 */}
-            <div className="mb-6 page-break-inside-avoid">
-              <div className="flex justify-between items-start mb-2">
-                <div>
-                  <h4 className="font-medium">Agentic Systems Architect</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Easelect LTD • Remote
-                  </p>
+            {EXPERIENCE.map(job => (
+              <div
+                key={job.role + job.dates}
+                className="mb-6 page-break-inside-avoid"
+              >
+                <div className="flex justify-between items-start gap-4 mb-2">
+                  <div>
+                    <h4 className="font-medium">{job.role}</h4>
+                    <p className="text-sm text-muted-foreground">{job.where}</p>
+                  </div>
+                  <span className="text-sm text-muted-foreground whitespace-nowrap">
+                    {job.dates}
+                  </span>
                 </div>
-                <span className="text-sm text-muted-foreground">
-                  2023 - Present
-                </span>
+                {job.points.length > 0 && (
+                  <ul className="list-disc list-inside text-sm space-y-1 ml-4">
+                    {job.points.map(point => (
+                      <li key={point}>{point}</li>
+                    ))}
+                  </ul>
+                )}
               </div>
-              <ul className="list-disc list-inside text-sm space-y-1 ml-4">
-                <li>
-                  Designed Ascend: 27-agent (18 mature) autonomous orchestration
-                  system with trust-gated L0-L4 execution across 4 production
-                  projects
-                </li>
-                <li>
-                  Built policy engine with YAML-based permission boundaries,
-                  reducing costs from $82 to $34/mo (58% reduction)
-                </li>
-                <li>
-                  Built Crest, a content marketing engine live at usecrest.io:
-                  tiered multi-model routing, Thompson Sampling, editorial and
-                  fabrication checks, publishing to LinkedIn and X
-                </li>
-                <li>
-                  Delivered 3 concurrent client projects (healthcare, Web3,
-                  content) across 9+ repos serving 10k+ users
-                </li>
-                <li>
-                  Applied production discipline to AI systems: trust layers,
-                  cost controls, observability, fast rollback
-                </li>
-              </ul>
-            </div>
-
-            {/* Experience 2 */}
-            <div className="mb-6 page-break-inside-avoid">
-              <div className="flex justify-between items-start mb-2">
-                <div>
-                  <h4 className="font-medium">Senior/Lead Engineer</h4>
-                  <p className="text-sm text-muted-foreground">
-                    EPAM, GlobalLogic, Startups • Remote/Hybrid
-                  </p>
-                </div>
-                <span className="text-sm text-muted-foreground">
-                  2013 - 2023
-                </span>
-              </div>
-              <ul className="list-disc list-inside text-sm space-y-1 ml-4">
-                <li>
-                  Led teams of 2–6 engineers, owned release trains with 99.5+
-                  uptime for mobile apps (5M+ MAU)
-                </li>
-                <li>
-                  Optimized backend APIs serving 1M+ requests/day with p95
-                  latency &lt;200ms (Redis caching, query optimization)
-                </li>
-                <li>
-                  Implemented A/B testing frameworks processing 100k+ events/day
-                  for user behavior analysis
-                </li>
-                <li>
-                  Built event-driven architectures with message queues handling
-                  50k+ messages/min peak load
-                </li>
-                <li>
-                  Established monitoring with Prometheus/Grafana: 15+ custom
-                  metrics, alert rules, SLA tracking
-                </li>
-                <li>
-                  Reduced deployment time from 45min to 3min using Docker +
-                  Kubernetes + automated rollback
-                </li>
-              </ul>
-              <p className="text-xs text-muted-foreground mt-2 italic">
-                <strong>AI Relevance:</strong> These same patterns apply to LLM
-                services: p95 latency SLOs, request/response caching, event
-                processing for model inputs, monitoring for drift detection, and
-                fast rollback for model deployments.
-              </p>
-            </div>
+            ))}
           </section>
 
-          {/* Key Projects */}
+          {/* Projects */}
           <section className="mb-8">
             <h3 className="text-lg font-semibold mb-3 border-b pb-1">
-              Key Projects
+              Projects
             </h3>
+            <ul className="text-sm space-y-2">
+              {PROJECTS.map(project => (
+                <li key={project.name} className="page-break-inside-avoid">
+                  {project.href ? (
+                    <a
+                      href={project.href}
+                      className="font-medium underline underline-offset-4"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
+                      {project.name}
+                    </a>
+                  ) : (
+                    <span className="font-medium">{project.name}</span>
+                  )}
+                  <span className="text-muted-foreground">
+                    {' '}
+                    · {project.what}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </section>
 
-            <div className="space-y-4">
-              <div className="page-break-inside-avoid">
-                <h4 className="font-medium">
-                  Threads-Agent — GenAI Content Platform
-                </h4>
-                <p className="text-sm text-muted-foreground mb-2">
-                  LangGraph • MLflow • Kubernetes • Prometheus • 2024 • Personal
-                  R&D
-                </p>
-                <ul className="list-disc list-inside text-sm space-y-1 ml-4">
-                  <li>
-                    Multi-service system: persona runtime, optimizer service,
-                    publishing adapters
-                  </li>
-                  <li>
-                    MLflow model registry with evaluation jobs tied to CI for
-                    automated quality gates
-                  </li>
-                  <li>
-                    SLO-gated deployments on p95 latency, error rate, and
-                    token-cost deltas
-                  </li>
-                  <li>
-                    Full observability stack: Prometheus metrics, Grafana
-                    dashboards, Jaeger tracing
-                  </li>
-                </ul>
-              </div>
-
-              <div className="page-break-inside-avoid">
-                <h4 className="font-medium">
-                  ROI-Agent — Media Buyer Automation
-                </h4>
-                <p className="text-sm text-muted-foreground mb-2">
-                  BLIP-2 • Ollama • Meta Ads API • Celery • 2024 • Personal R&D
-                </p>
-                <ul className="list-disc list-inside text-sm space-y-1 ml-4">
-                  <li>
-                    Multimodal pipeline: BLIP-2 for creative captions, LLM
-                    analysis for copy variants
-                  </li>
-                  <li>
-                    Hybrid inference: local Ollama (Mixtral) with OpenAI
-                    fallback and structured output
-                  </li>
-                  <li>
-                    A/B testing with sequential decision rules, performance
-                    rollups, policy guardrails
-                  </li>
-                  <li>
-                    Integrations: Facebook Graph API, Shopify webhooks, Slack to
-                    Linear automation
-                  </li>
-                </ul>
-              </div>
-
-              <div className="page-break-inside-avoid">
-                <h4 className="font-medium">
-                  Achievement Collector — Portfolio Automation
-                </h4>
-                <p className="text-sm text-muted-foreground mb-2">
-                  GitHub API • Impact Analysis • Portfolio Generation • 2024 •
-                  Personal R&D
-                </p>
-                <ul className="list-disc list-inside text-sm space-y-1 ml-4">
-                  <li>
-                    GitHub PR analysis extracting technical metrics and
-                    generating ImpactScores
-                  </li>
-                  <li>
-                    Automated portfolio generation from development activity and
-                    MLflow experiments
-                  </li>
-                  <li>
-                    CI integration for consistent reporting and resume bullet
-                    generation
-                  </li>
-                </ul>
-              </div>
-
-              <div className="page-break-inside-avoid">
-                <h4 className="font-medium">
-                  High-Traffic Mobile Backend Infrastructure
-                </h4>
-                <p className="text-sm text-muted-foreground mb-2">
-                  Node.js • PostgreSQL • Redis • Kubernetes • 2018-2022 •
-                  EPAM/GlobalLogic
-                </p>
-                <ul className="list-disc list-inside text-sm space-y-1 ml-4">
-                  <li>
-                    API gateway handling 1M+ requests/day with circuit breakers
-                    and rate limiting
-                  </li>
-                  <li>
-                    Real-time event processing: 100k+ events/day through Redis
-                    Streams and message queues
-                  </li>
-                  <li>
-                    Database optimization: query performance tuning reducing p95
-                    response time from 800ms to 120ms
-                  </li>
-                  <li>
-                    Monitoring implementation: 20+ custom Prometheus metrics
-                    with Grafana dashboards and PagerDuty alerts
-                  </li>
-                </ul>
-              </div>
-            </div>
+          {/* Education */}
+          <section className="mb-8 page-break-inside-avoid">
+            <h3 className="text-lg font-semibold mb-3 border-b pb-1">
+              Education
+            </h3>
+            <p className="text-sm">
+              Master’s degree, Computer Science · V.N. Karazin Kharkiv National
+              University · 2007 – 2012
+            </p>
           </section>
 
           {/* Business Setup & Legal */}
