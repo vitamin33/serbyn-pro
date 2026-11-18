@@ -42,7 +42,7 @@ const CERTIFICATIONS: { name: string; level: string; href: string }[] = [
   {
     name: 'Claude Certified Developer',
     level: 'Foundations',
-    href: 'https://www.credly.com/org/anthropic/badge/claude-certified-developer-foundations',
+    href: 'https://www.credly.com/badges/2f39e398-b6f9-477a-91a9-9541afb07a74/public_url',
   },
 ];
 
