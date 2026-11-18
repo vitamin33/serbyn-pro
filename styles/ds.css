@@ -3494,3 +3494,194 @@ a.ds-pom:hover {
 a.ds-mlink:hover {
   color: var(--accent);
 }
+
+/* ── Résumé (design variant B, "claim and proof") ───────────────────────── */
+.ds-resume {
+  padding: 72px 0 120px;
+}
+.ds-resume-wrap {
+  max-width: calc(var(--wide) + 2 * var(--page-pad));
+}
+.ds-resume-head {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.ds-resume-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-top: 8px;
+}
+.ds-resume-meta {
+  font: 400 12px/1.5 var(--mono);
+  color: var(--muted);
+  margin: 0;
+}
+.ds-resume-tiles {
+  list-style: none;
+  padding: 0;
+  margin: 48px 0 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+.ds-resume-tile {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+.ds-resume-num {
+  font: 800 44px/1 var(--display);
+  letter-spacing: -0.04em;
+  margin: 0 0 8px;
+}
+.ds-resume-num span {
+  font-size: 22px;
+  letter-spacing: 0;
+}
+.ds-resume-num[data-claim-tone='claim'] {
+  color: var(--claim-text);
+}
+.ds-resume-cap {
+  margin: 0 0 8px;
+}
+.ds-resume-sec {
+  margin-top: 72px;
+}
+.ds-resume-sec .ds-h2 {
+  margin: 8px 0 24px;
+}
+.ds-resume-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  gap: 24px;
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+  align-items: start;
+}
+.ds-resume-row p {
+  margin: 0;
+}
+.ds-resume-job {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr);
+  gap: 24px;
+  padding: 16px 0;
+  border-top: 1px solid var(--line);
+}
+.ds-resume-job p {
+  margin: 4px 0 0;
+}
+.ds-resume-yr {
+  font: 500 12px/1.6 var(--mono);
+}
+.ds-resume-role {
+  font: 800 18px/1.25 var(--display);
+  letter-spacing: -0.02em;
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+.ds-resume-projects {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 10px 32px;
+  margin-top: 16px;
+}
+.ds-resume-projects p {
+  margin: 0;
+}
+.ds-resume-foot {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 32px;
+}
+.ds-resume-foot p {
+  margin: 12px 0 0;
+}
+.ds-resume-foot .ds-eyebrow:not(:first-child) {
+  margin-top: 28px;
+}
+@media (max-width: 760px) {
+  .ds-resume-row,
+  .ds-resume-job {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+}
+@media print {
+  .ds-resume {
+    padding: 0;
+  }
+  .ds-resume-sec {
+    margin-top: 18pt;
+  }
+  .ds-resume-tiles {
+    margin-top: 14pt;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8pt;
+  }
+  .ds-resume-tile {
+    padding: 8pt;
+    break-inside: avoid;
+  }
+  .ds-resume-num {
+    font-size: 20pt;
+  }
+  .ds-resume-row {
+    grid-template-columns: minmax(0, 1fr) 150pt;
+    padding: 5pt 0;
+    break-inside: avoid;
+  }
+  .ds-resume-job {
+    padding: 6pt 0;
+    break-inside: avoid;
+  }
+  .ds-resume .ds-resume-role {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 11pt;
+  }
+  /* The links stay clickable in the PDF; printing each URL after its label
+     tripled the height of the source column. */
+  .ds-resume a[href]::after {
+    content: none;
+  }
+  .ds-resume .ds-h1 {
+    font-size: 26pt;
+    margin: 0;
+  }
+  .ds-resume .ds-h2 {
+    font-size: 15pt;
+    margin: 2pt 0 8pt;
+  }
+  .ds-resume .ds-verdict {
+    font-size: 13pt;
+  }
+  .ds-resume-head {
+    gap: 6pt;
+  }
+  .ds-resume-sec {
+    margin-top: 14pt;
+  }
+  .ds-resume-sec .ds-eyebrow,
+  .ds-resume-sec .ds-h2 {
+    break-after: avoid;
+  }
+  .ds-resume-job p,
+  .ds-resume-foot p {
+    margin-top: 2pt;
+  }
+  .ds-resume-foot,
+  .ds-resume-projects {
+    gap: 6pt 18pt;
+    grid-template-columns: 1fr 1fr;
+  }
+  .ds-resume-foot .ds-eyebrow:not(:first-child) {
+    margin-top: 10pt;
+  }
+}
