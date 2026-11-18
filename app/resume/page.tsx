@@ -37,7 +37,7 @@ const CERTIFICATIONS: { name: string; level: string; href: string }[] = [
   {
     name: 'Claude Certified Architect',
     level: 'Professional',
-    href: 'https://www.credly.com/org/anthropic/badge/claude-certified-architect-professional',
+    href: 'https://www.credly.com/badges/7eb76008-726e-4a7b-9b73-cf6c4bd48f1b/public_url',
   },
   {
     name: 'Claude Certified Developer',
