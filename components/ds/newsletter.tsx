@@ -59,8 +59,7 @@ export function Masthead({
   const form =
     state === 'done' ? (
       <p className="ds-field-done" role="status">
-        <span aria-hidden="true">✓</span>subscribed — check your inbox to
-        confirm.
+        <span aria-hidden="true">✓</span>subscribed.
       </p>
     ) : (
       <form className="ds-field" onSubmit={onSubmit}>

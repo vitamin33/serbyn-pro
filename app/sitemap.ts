@@ -9,7 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // timestamp every build is meaningless freshness noise (F24). Bump when static
   // content materially changes (mirrors lib/facts UPDATED). Posts use their own
   // dates below.
-  const siteUpdated = '2026-07-07';
+  const siteUpdated = '2026-11-19';
 
   const caseStudies = getAllCaseStudies();
   const caseStudyRoutes = caseStudies.map(study => ({
@@ -76,7 +76,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly' as const,
       priority: 0.8,
     },
-    // /resume is intentionally omitted (noindex, vendor not candidate — D1).
+    {
+      url: `${baseUrl}/resume`,
+      lastModified: siteUpdated,
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    },
     ...caseStudyRoutes,
     ...blogRoutes,
     {

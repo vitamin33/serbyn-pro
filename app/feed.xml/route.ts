@@ -34,7 +34,7 @@ export async function GET() {
 <rss version="2.0">
   <channel>
     <title>${escapeXml(siteConfig.name)}</title>
-    <link>${siteConfig.url}/blog</link>
+    <link>${siteConfig.url}/writing</link>
     <description>${escapeXml(siteConfig.description)}</description>
     <language>en</language>${items}
   </channel>

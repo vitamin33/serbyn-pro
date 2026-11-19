@@ -15,7 +15,7 @@ export default function WorkPage() {
         <div className="ds-stack" style={{ gap: 20, maxWidth: 860 }}>
           <Eyebrow>Index / work</Eyebrow>
           <h1 className="ds-h1" data-size="index">
-            High-performance AI systems &amp; infrastructure
+            Agent systems I built and run
           </h1>
           <p className="ds-lede" style={{ color: 'var(--muted)' }}>
             Real projects with authentic metrics — from autonomous agent

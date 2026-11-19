@@ -68,3 +68,80 @@ test.describe('traffic — analytics hygiene', () => {
     expect(hits).toEqual([]);
   });
 });
+
+// Cleanup package (2026-11-19).
+test.describe('traffic — cleanup package', () => {
+  test('/resume is indexable and in the sitemap', async ({ request }) => {
+    const xml = await (await request.get('/sitemap.xml')).text();
+    expect(xml).toContain('<loc>https://serbyn.io/resume</loc>');
+    const html = await (await request.get('/resume')).text();
+    expect(html).not.toMatch(/<meta name="robots" content="[^"]*noindex/i);
+  });
+
+  test('no sitemap page has a description past 160 characters or lacks a social image', async ({
+    request,
+  }) => {
+    const xml = await (await request.get('/sitemap.xml')).text();
+    const paths = Array.from(
+      xml.matchAll(/<loc>https:\/\/serbyn\.io([^<]*)<\/loc>/g)
+    ).map(m => m[1] || '/');
+    for (const path of paths) {
+      const html = await (await request.get(path)).text();
+      const description =
+        html.match(/<meta name="description" content="([^"]*)"/)?.[1] ?? '';
+      const length = description
+        .replace(/&#x27;|&quot;|&amp;/g, 'x')
+        .length;
+      expect(length, `${path} description`).toBeGreaterThan(50);
+      expect(length, `${path} description`).toBeLessThanOrEqual(160);
+      expect(html, `${path} og:image`).toMatch(/<meta property="og:image"/);
+    }
+  });
+
+  test('the newsletter link from the site is not tagged as LinkedIn', async ({
+    request,
+  }) => {
+    const site = await request.get('/newsletter?src=site', { maxRedirects: 0 });
+    expect(site.status()).toBe(302);
+    expect(site.headers()['location']).toContain('utm_source=serbyn.io');
+    const featured = await request.get('/newsletter', { maxRedirects: 0 });
+    expect(featured.headers()['location']).toContain('utm_source=linkedin');
+    const comment = await request.get('/newsletter?src=comment', {
+      maxRedirects: 0,
+    });
+    expect(comment.headers()['location']).toContain('utm_medium=comment');
+  });
+
+  test('a long post headline gets a shorter title tag and keeps its H1', async ({
+    request,
+  }) => {
+    const html = await (
+      await request.get('/blog/proof-of-green-checks-every-done')
+    ).text();
+    const title = html.match(/<title>([^<]*)<\/title>/)?.[1] ?? '';
+    expect(title.length).toBeLessThanOrEqual(80);
+    expect(html).toMatch(/<h1[^>]*>[^<]*I built a tool/);
+  });
+
+  test('posts link to posts from their own cluster and case studies link out', async ({
+    request,
+  }) => {
+    const old = await (
+      await request.get(
+        '/blog/six-false-greens-in-a-self-auditing-agent-pipeline'
+      )
+    ).text();
+    expect(old).toContain('Related posts');
+    const study = await (
+      await request.get('/work/ascend-autonomous-agents')
+    ).text();
+    expect(study).toContain('href="/llm-cost-teardown"');
+    expect(study).toContain('"@type":"Article"');
+  });
+
+  test('baseline security headers are set', async ({ request }) => {
+    const headers = (await request.get('/')).headers();
+    expect(headers['x-content-type-options']).toBe('nosniff');
+    expect(headers['referrer-policy']).toBe('strict-origin-when-cross-origin');
+  });
+});

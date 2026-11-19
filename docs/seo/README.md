@@ -54,3 +54,15 @@ What changed in the code:
 Tests: `tests/refactor/traffic.spec.ts`.
 
 Numbers before and after this date are not comparable: the proxy adds readers that ad blockers used to hide, and the filters remove the owner and local runs.
+
+## Cleanup package (2026-11-19)
+
+- `/resume` is indexed and in the sitemap (reverses the earlier noindex decision D1).
+- Meta descriptions are clamped to 160 characters in `createMetadata` (`clampDescription`); the home, offer and work descriptions were rewritten to fit.
+- Posts can set `metaTitle` in frontmatter: a shorter `<title>` while the H1 keeps the headline.
+- `/work`, `/writing`, `/about`, `/methodology`, `/resume` and the legal pages now emit `og:image` (segment files re-export the root card).
+- Posts show "Related posts" picked by shared keywords, then publish date, so old posts link forward. Cost posts point to `/llm-cost-teardown`, the rest to `/audit`. Case studies link to the three offers and the newest posts and emit `Article` JSON-LD.
+- `/newsletter?src=site` (the footer link, or any click with a serbyn.io referrer) is tagged `utm_source=serbyn.io`, lane `site`, instead of LinkedIn.
+- `/api/subscribe` sends signups to beehiiv when `BEEHIIV_API_KEY` and `BEEHIIV_PUBLICATION_ID` are set; until then it keeps using the Resend audience.
+- Security headers: `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`.
+- Privacy page: PostHog runs without cookies; Vercel Analytics, Resend, beehiiv and Calendly are named.

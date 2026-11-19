@@ -6,7 +6,7 @@ import { FRACTIONAL_CONTENT } from '@/lib/offer-content';
 export const metadata = createMetadata({
   title: 'Fractional AI Architect',
   description:
-    'Ongoing architectural ownership of your agent platform — reliability, LLM cost, and gated-rollout discipline, about one day a week. From $4,000/mo, 3-month minimum. Advisory also available at $200/hr.',
+    'Ongoing architectural ownership of your agent platform: reliability, LLM cost and gated rollouts, about one day a week. From $4,000/mo.',
   canonicalUrl: 'https://serbyn.io/fractional',
 });
 

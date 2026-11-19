@@ -6,6 +6,8 @@ import {
   getAllBlogPosts,
   getBlogPostBySlug,
   getDraftSlugs,
+  getRelatedPosts,
+  isCostPost,
   isoDate,
 } from '@/lib/blog-posts';
 import { createMetadata, siteConfig } from '@/lib/seo';
@@ -44,7 +46,7 @@ export async function generateMetadata({ params }: PageProps) {
   if (!post) return {};
 
   return createMetadata({
-    title: post.title,
+    title: post.metaTitle ?? post.title,
     description: post.description,
     image: null, // use the dynamic opengraph-image.tsx card
     canonicalUrl: `${siteConfig.url}/blog/${post.slug}`,
@@ -65,9 +67,10 @@ export default async function BlogPostPage({ params }: PageProps) {
     .filter(s => s.portfolio_ready)
     .slice(0, 3);
 
-  const otherPosts = getAllBlogPosts()
-    .filter(p => p.slug !== post.slug)
-    .slice(0, 3);
+  const otherPosts = getRelatedPosts(post);
+  const offer = isCostPost(post)
+    ? { href: '/llm-cost-teardown', label: 'or see the LLM cost teardown' }
+    : { href: '/audit', label: 'or see the audit this method comes from' };
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -215,7 +218,7 @@ export default async function BlogPostPage({ params }: PageProps) {
           )}
           {otherPosts.length > 0 && (
             <RelatedList
-              title="More posts"
+              title="Related posts"
               items={otherPosts.map(p => ({
                 href: `/blog/${p.slug}`,
                 title: p.title,
@@ -226,13 +229,9 @@ export default async function BlogPostPage({ params }: PageProps) {
         </div>
 
         <DiscussCta
-          body="I help teams build autonomous agent systems and production AI infrastructure."
+          body="Tell me what your agents do and where they worry you, and I'll tell you whether an audit, a cost teardown or a retainer fits."
           location={`blog_${post.slug}`}
-          label="Book Architecture Review"
-          secondary={{
-            href: '/audit',
-            label: 'or see the audit this method comes from',
-          }}
+          secondary={offer}
         />
 
         <div style={{ margin: '48px 0 0', paddingBottom: 96 }}>

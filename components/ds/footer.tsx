@@ -9,7 +9,7 @@ const SITE_LINKS = [
   ...NAV_OFFERS.map(o => ({ href: o.href, label: o.label })),
   { href: '/work', label: 'Work' },
   { href: '/writing', label: 'Writing' },
-  { href: '/newsletter', label: 'False Green newsletter' },
+  { href: '/newsletter?src=site', label: 'False Green newsletter' },
 ];
 
 function BottomBar() {

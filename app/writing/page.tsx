@@ -6,7 +6,7 @@ import { Eyebrow, Masthead, PostWall } from '@/components/ds';
 // each row shows the post's headline number from its `exhibit:` frontmatter.
 // Low motion budget: the mini bars draw once. /blog redirects here.
 export const metadata = createMetadata({
-  title: 'Writing',
+  title: 'Writing on Agent Reliability and LLM Cost',
   description:
     'Field notes on agent reliability and LLM cost engineering — false greens, evidence-binding, trajectory evals, and multi-model routing.',
   canonicalUrl: `${siteConfig.url}/writing`,

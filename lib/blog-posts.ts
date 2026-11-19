@@ -11,6 +11,9 @@ export interface BlogPostMeta {
   date: string;
   /** Last material edit (YYYY-MM-DD). Feeds sitemap lastmod and dateModified. */
   updated?: string;
+  /** Shorter title for the <title> tag and social cards when the headline
+      runs past what a search result shows. The page H1 keeps `title`. */
+  metaTitle?: string;
   keywords: string[];
   category: 'architecture' | 'engineering' | 'operations' | 'strategy';
   author: string;
@@ -162,4 +165,34 @@ export function groupPostsByMonth(posts: BlogPost[]) {
     else groups.push({ month, posts: [toPostSummary(p)] });
   }
   return groups;
+}
+
+/** Slugs and keywords that mark a post as being about LLM spend. */
+const COST_RE = /cost|spend|bill|cache|token|pricing/i;
+
+export function isCostPost(post: BlogPostMeta): boolean {
+  return (
+    COST_RE.test(post.slug) || (post.keywords ?? []).some(k => COST_RE.test(k))
+  );
+}
+
+/**
+ * Posts to show under a post: the ones sharing the most keywords, then the
+ * ones published closest in time (series and experiment batches were written
+ * together). Unlike "the three newest", this links old posts forward and gives
+ * every post inbound links from its own cluster.
+ */
+export function getRelatedPosts(post: BlogPost, count = 4): BlogPost[] {
+  const own = new Set((post.keywords ?? []).map(k => k.toLowerCase()));
+  const at = new Date(post.date).getTime();
+  return getAllBlogPosts()
+    .filter(p => p.slug !== post.slug)
+    .map(p => ({
+      p,
+      shared: (p.keywords ?? []).filter(k => own.has(k.toLowerCase())).length,
+      gap: Math.abs(new Date(p.date).getTime() - at),
+    }))
+    .sort((a, b) => b.shared - a.shared || a.gap - b.gap)
+    .slice(0, count)
+    .map(x => x.p);
 }

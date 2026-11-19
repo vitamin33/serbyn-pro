@@ -1,12 +1,15 @@
 import { notFound } from 'next/navigation';
 import { getAllCaseStudies, getCaseStudyBySlug } from '@/lib/case-studies';
 import { PROJECT_LABEL } from '@/lib/taxonomy';
-import { createMetadata } from '@/lib/seo';
+import { createMetadata, PERSON_ID, siteConfig } from '@/lib/seo';
+import { getAllBlogPosts, isoDate } from '@/lib/blog-posts';
+import { OFFERS } from '@/lib/facts';
 import { slugify } from '@/lib/toc';
 import {
   Chip,
   DiscussCta,
   Eyebrow,
+  RelatedList,
   SignoffStrip,
   TextLink,
   Toc,
@@ -37,8 +40,29 @@ export default function CaseStudyPage({ params }: PageProps) {
   const study = getCaseStudyBySlug(params.slug);
   if (!study) notFound();
 
+  // The newest posts: the writing is where the methods in these systems are
+  // measured, and case studies had no links into it.
+  const posts = getAllBlogPosts().slice(0, 3);
+  const url = `${siteConfig.url}/work/${study.slug}`;
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: study.title,
+    description: study.summary,
+    datePublished: isoDate(study.date),
+    author: { '@id': PERSON_ID },
+    publisher: { '@id': 'https://serbyn.io/#organization' },
+    image: `${url}/opengraph-image`,
+    mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+    url,
+  };
+
   return (
     <div className="ds-post">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="ds-wrap">
         <a className="ds-link ds-mono" data-tone="muted" href="/work">
           <span style={{ fontSize: 13 }}>← Work</span>
@@ -105,11 +129,29 @@ export default function CaseStudyPage({ params }: PageProps) {
       </div>
 
       <div className="ds-wrap ds-post-end" style={{ paddingBottom: 96 }}>
+        <div className="ds-cards" style={{ gap: 48 }}>
+          <RelatedList
+            title="Work with me"
+            metaAt="end"
+            items={OFFERS.map(o => ({
+              href: o.href,
+              title: o.name,
+              meta: o.price,
+            }))}
+          />
+          <RelatedList
+            title="From the writing"
+            items={posts.map(p => ({
+              href: `/blog/${p.slug}`,
+              title: p.title,
+              meta: isoDate(p.date),
+            }))}
+          />
+        </div>
         <DiscussCta
           title="Discuss this architecture"
           body="Want to explore how similar patterns could work for your system?"
           location="work_case_study"
-          label="Book Architecture Review"
         />
       </div>
     </div>

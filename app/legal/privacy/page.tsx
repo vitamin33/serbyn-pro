@@ -70,9 +70,15 @@ export default function PrivacyPage() {
                 </div>
                 <div className="rounded-lg border border-primary/30 bg-primary/10 p-4">
                   <p className="text-sm text-foreground">
-                    <strong>Note:</strong> We use PostHog for product analytics,
-                    which sets first-party cookies to measure usage. If you
-                    visit via a campaign link, we also store the referral (UTM)
+                    <strong>Note:</strong> We use PostHog for product analytics.
+                    It runs without analytics cookies: nothing is kept in your
+                    browser between visits, and events are sent through this
+                    site&apos;s own domain. Vercel Analytics and Speed Insights
+                    record page views and load times without cookies. If you
+                    subscribe to the newsletter, your email address is stored
+                    with our email providers (Resend and beehiiv). If you book a
+                    call, Calendly processes the booking details. If you visit
+                    via a campaign link, we also store the referral (UTM)
                     parameters in a first-party cookie for up to 30 days. We do
                     not sell your data or use it to build advertising profiles.
                   </p>

@@ -5,8 +5,10 @@ export const dynamic = 'force-dynamic';
 
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
-// Newsletter / lead capture → Resend Audiences. Until RESEND_API_KEY +
-// RESEND_AUDIENCE_ID are set, runs in stub mode. Stub mode FAILS CLOSED
+// Newsletter signup. The newsletter itself is sent from beehiiv, so when
+// BEEHIIV_API_KEY + BEEHIIV_PUBLICATION_ID are set the address goes straight
+// there (one list, with beehiiv's own welcome email). Without them it falls
+// back to Resend Audiences, and without those either it runs in stub mode. Stub mode FAILS CLOSED
 // (ok:false) and logs — a silent ok:true would drop every real signup on a
 // misconfigured production deploy. [VS-TODO:resend-keys] verify in Vercel env.
 // See docs/redesign/03_PUBLISHING_PIPELINE.md §5.
@@ -27,6 +29,37 @@ export async function POST(req: Request) {
       { ok: false, error: 'invalid email' },
       { status: 422 }
     );
+  }
+
+  const beehiivKey = process.env.BEEHIIV_API_KEY;
+  const publication = process.env.BEEHIIV_PUBLICATION_ID;
+  if (beehiivKey && publication) {
+    const res = await fetch(
+      `https://api.beehiiv.com/v2/publications/${publication}/subscriptions`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${beehiivKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          reactivate_existing: false,
+          send_welcome_email: true,
+          utm_source: 'serbyn.io',
+          utm_medium: 'form',
+          utm_campaign: 'site',
+          referring_site: 'https://serbyn.io',
+        }),
+      }
+    );
+    if (!res.ok) {
+      return NextResponse.json(
+        { ok: false, error: 'provider error' },
+        { status: 502 }
+      );
+    }
+    return NextResponse.json({ ok: true });
   }
 
   const key = process.env.RESEND_API_KEY;

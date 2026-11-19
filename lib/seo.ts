@@ -32,6 +32,27 @@ export const siteConfig = {
 // Longest title that still carries the full site name as its suffix.
 const TITLE_MAX = 70;
 
+// Search results cut a description at roughly 160 characters. Longer text is
+// trimmed to the whole sentences that fit, or at a word boundary when the
+// first sentence alone is too short to say anything.
+const DESCRIPTION_MAX = 160;
+const DESCRIPTION_MIN = 90;
+
+export function clampDescription(text: string): string {
+  const clean = text.replace(/\s+/g, ' ').trim();
+  if (clean.length <= DESCRIPTION_MAX) return clean;
+  const sentences = clean.match(/[^.!?]+[.!?]+(?=\s|$)/g) ?? [];
+  let out = '';
+  for (const sentence of sentences) {
+    if ((out + sentence).trim().length > DESCRIPTION_MAX) break;
+    out += sentence;
+  }
+  out = out.trim();
+  if (out.length >= DESCRIPTION_MIN) return out;
+  const cut = clean.slice(0, DESCRIPTION_MAX - 1);
+  return `${cut.slice(0, cut.lastIndexOf(' ')).replace(/[,;:—-]+$/, '')}…`;
+}
+
 interface SEOProps {
   title?: string;
   description?: string;
@@ -65,7 +86,7 @@ export function createMetadata({
     title && fullTitle.length > TITLE_MAX
       ? `${title} | ${siteConfig.creator}`
       : fullTitle;
-  const metaDescription = description;
+  const metaDescription = clampDescription(description);
   const includeImage = image !== null;
   const imageUrl = image ?? siteConfig.ogImage;
 
@@ -149,7 +170,7 @@ export const pageMetadata = {
   home: () =>
     createMetadata({
       description:
-        'Fixed-scope AI agent audits from $3,500. I make AI agents reliable enough to run in production — agent reliability engineering (trajectory evals, false-green metering, evidence-binding) and LLM cost engineering, for US/UK/EU teams.',
+        'I make AI agents reliable enough to run in production. Agent reliability audits from $3,500 and LLM cost teardowns for US, UK and EU teams.',
       canonicalUrl: siteConfig.url,
     }),
 
@@ -163,9 +184,9 @@ export const pageMetadata = {
 
   work: () =>
     createMetadata({
-      title: 'Work',
+      title: 'AI Agent Systems: Case Studies',
       description:
-        'Real projects: 27-agent (18 mature) autonomous system, signal-driven AI platform, multi-project enterprise delivery. Architecture case studies with authentic metrics.',
+        'Case studies: a 27-agent orchestration daemon with trust tiers, an AI content engine, and full-stack delivery across healthcare and Web3.',
       canonicalUrl: `${siteConfig.url}/work`,
     }),
 
@@ -197,11 +218,10 @@ export const pageMetadata = {
     createMetadata({
       title: 'Resume',
       description:
-        'Agentic Systems Architect resume. 13+ years production systems, autonomous agent orchestration, MLOps.',
+        'Resume of Vitalii Serbyn: Claude Certified Architect, multi-agent systems on Claude, agent reliability and LLM cost work, with a source for every line.',
       canonicalUrl: `${siteConfig.url}/resume`,
-      // Vendor site, not a job hunt: keep the route reachable but out of the
-      // index so it doesn't read as "hireable candidate" in search (D1).
-      noIndex: true,
+      // Indexed since 2026-11-19 (reverses D1): the one engaged search visit
+      // the site had before that landed here.
     }),
 };
 

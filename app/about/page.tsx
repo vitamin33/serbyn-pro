@@ -38,7 +38,7 @@ export default function AboutPage() {
             I&apos;ve been shipping production systems for 13+ years. Started
             building Android apps at EPAM and GlobalLogic — one of them
             (Magisto) hit 100M+ users and won a Google Play award. Led teams of
-            2-6 engineers, owned release trains, and learned the production
+            3-4 engineers, owned release trains, and learned the production
             discipline that I now apply to AI systems.
           </p>
           <p>

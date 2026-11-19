@@ -8,7 +8,7 @@ import { SAMPLE_REPORT_HREF, sampleAuditReportExists } from '@/lib/assets';
 export const metadata = createMetadata({
   title: 'AI Agent Production-Readiness Audit',
   description:
-    '$3,500 flat, ~2 weeks: an AI agent production-readiness audit that measures your agents the way production will — trajectory evals, false-green metering, evidence-binding — and hands you a prioritized fix list.',
+    '$3,500 flat, about 2 weeks. An AI agent production-readiness audit: trajectory evals, false-green metering, evidence-binding and a prioritized fix list.',
   canonicalUrl: 'https://serbyn.io/audit',
 });
 
