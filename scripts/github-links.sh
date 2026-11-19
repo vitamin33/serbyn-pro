@@ -12,6 +12,10 @@ gh repo edit "$ME/proof-of-green" \
   --add-topic claude-code --add-topic codex --add-topic ai-agents \
   --add-topic agent-reliability --add-topic hooks
 
+echo "claude-code-statusline"
+gh repo edit "$ME/claude-code-statusline" \
+  --homepage "$SITE/tools/claude-code-cache-rebuilds"
+
 echo "agent-eval-labs"
 gh repo edit "$ME/agent-eval-labs" \
   --homepage "$SITE/blog/same-model-0-and-100-where-the-verifier-gap-actually-lives"

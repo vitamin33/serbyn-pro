@@ -9,6 +9,7 @@ const SITE_LINKS = [
   ...NAV_OFFERS.map(o => ({ href: o.href, label: o.label })),
   { href: '/work', label: 'Work' },
   { href: '/writing', label: 'Writing' },
+  { href: '/tools/claude-code-cache-rebuilds', label: 'Cache rebuild checker' },
   { href: '/newsletter?src=site', label: 'False Green newsletter' },
 ];
 

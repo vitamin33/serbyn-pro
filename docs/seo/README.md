@@ -66,3 +66,8 @@ Numbers before and after this date are not comparable: the proxy adds readers th
 - `/api/subscribe` sends signups to beehiiv when `BEEHIIV_API_KEY` and `BEEHIIV_PUBLICATION_ID` are set; until then it keeps using the Resend audience.
 - Security headers: `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`.
 - Privacy page: PostHog runs without cookies; Vercel Analytics, Resend, beehiiv and Calendly are named.
+
+## Tool page and cost posts (2026-11-19)
+
+- `/tools/claude-code-cache-rebuilds` reads Claude Code session logs in the browser and prices prompt-cache rebuilds (`lib/tools/cache-rebuilds.ts`, a port of `analyze_cache.py` from the status-line repo). Nothing is uploaded; the only event is `tool_used`.
+- Two cost posts are in `content/blog/` as `draft: true` (`claude-code-prompt-cache-rebuild-cost`, `claude-code-prompt-cache-rebuild-triggers`). Drafts are not routable in production; remove the flag to publish.

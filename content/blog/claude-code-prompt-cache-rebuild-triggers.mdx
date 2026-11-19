@@ -1,0 +1,106 @@
+---
+title: 'What triggers a Claude Code prompt-cache rebuild'
+slug: claude-code-prompt-cache-rebuild-triggers
+description: 'Seven triggers checked against 30 days of my own Claude Code logs: an hour of idle time, a model switch, compaction, subagents, resume, effort, and tools.'
+date: '2026-11-19'
+keywords:
+  - claude code cache invalidation
+  - claude code prompt cache rebuild
+  - claude code cache ttl
+  - claude code model switch cache
+  - claude code compaction cost
+category: engineering
+author: Vitalii Serbyn
+featured: false
+draft: true
+---
+
+In 30 days of my own Claude Code logs, 486 of 502 messages sent after more than an hour away rebuilt the prompt cache. All 27 model switches did too. A change of effort level did it 0 times out of 17. This page goes through each trigger and says if I measured it, if Anthropic documents it, or if I could not check it.
+
+A rebuild here means a request that writes 50,000 tokens or more into the cache. A normal turn writes a few thousand. The data is 104,756 requests from 2026-10-20 to 2026-11-18, read from the session files Claude Code keeps under `~/.claude/projects/`. The cost side is in [24% of my Claude Code spend was prompt-cache rebuilds](/blog/claude-code-prompt-cache-rebuild-cost).
+
+## More than an hour of idle time
+
+Measured. In the main conversation, 502 requests came more than an hour after the one before, and 486 of them were rebuilds. With subagents counted too, idle time gave 501 of the 1,697 rebuilds in the period and 69% of rebuild dollars. The average write was 343k tokens.
+
+The reason is the cache lifetime. Every cache write in my main conversations used the one-hour lifetime, 351.1M tokens in total. Anthropic's docs say a cached entry is refreshed each time it is read, so the hour counts from the last request.
+
+A break shorter than an hour is safe in the main conversation. 2,489 requests came between 5 minutes and an hour after the one before. 10 of them were rebuilds.
+
+## A model switch
+
+Measured. I changed the model in the main conversation 27 times in the period, and all 27 were followed by a rebuild. The average write was 235k tokens.
+
+I did not find a line about this in the invalidation table of the docs. The behaviour in my logs is consistent: a new model does not read what the previous model cached. Switching for one hard step means writing the whole conversation for the new model, and then again on the way back.
+
+An earlier write-up of mine gave a much higher count. It mixed in subagents on another model. The 27 here are changes inside one conversation.
+
+## Compaction
+
+Measured. Compaction is when Claude Code replaces the old part of a long conversation with a summary. The logs mark it, and 159 requests followed such a mark. 125 of them were rebuilds.
+
+It is cheap. The conversation after compaction is short, so the average write was 66k tokens and the 125 rebuilds cost $81 together. The other 34 wrote less than my 50,000 threshold.
+
+## A subagent starting
+
+Measured. A subagent has its own conversation, so its first request writes its context. That was 619 rebuilds, the most common kind, with an average of 69k tokens and $132 in total.
+
+Subagents also explain the rebuilds after short breaks. Almost every cache write in my subagent threads used the five-minute lifetime, 164.2M tokens in total. A subagent that waits more than five minutes for a tool or for another agent comes back to an expired cache. 119 of the 129 rebuilds after a break of 5 minutes to an hour were in subagents.
+
+## Starting or resuming a session
+
+Measured, with a limit. 259 rebuilds were the first request I have for a main conversation, with an average of 139k tokens. A new session with a small context does not reach 50,000 tokens, so most of these are old sessions opened again. The logs do not tell me which were resumes and which were new sessions that started big.
+
+## A change of effort level
+
+Measured, and it did not match what I expected. The docs say a change to the effort setting can invalidate the cached messages. In my main conversations the effort level changed 17 times with no long break and no model switch around it. None of the 17 was a rebuild. The median write after a change was 1,147 tokens.
+
+17 is a small number, and I did not look at how Claude Code sends the setting. In these versions, on these models, changing effort in a session did not cost me a rebuild.
+
+## Tools, MCP servers and the system prompt
+
+Documented, and I could not check it. The docs say that changing a tool definition invalidates the whole cache, and that the cache is built in the order tools, system prompt, messages. A change at one level invalidates that level and everything after it. An MCP server that reconnects with a different tool list would be such a change.
+
+My logs do not record the tool list of each request, so I cannot count these. 43 rebuilds in the period happened with no break, no model change and no compaction. Some of them may be this. I do not know.
+
+The docs also list fast mode, images and tool choice. I had no fast-mode requests in the period and did not check the other two.
+
+## The same list, as counts
+
+```
+main conversation, 2026-10-20 to 2026-11-18
+trigger                        times   rebuilds
+more than 1 hour idle            502        486
+5 minutes to 1 hour idle       2,489         10
+model switch                      27         27
+compaction                       159        125
+effort change                     17          0
+```
+
+## What this does not show
+
+One user, one period, one version range of Claude Code. The cache lifetimes are what my logs show for my account, and another plan or setup may get different ones.
+
+The triggers are read from timestamps, model names and the compaction mark. The logs do not say why a cache missed. When two things happened together, such as a long break and a model switch, I counted the break.
+
+## What to do with it
+
+Three habits follow from the counts. Do not send a small message to a big session after an hour away, unless you mean to continue it. Do not switch the model in a big session for one step. A subagent on the other model has its own conversation, and in my logs it left the main cache alone. Compaction and short breaks need no attention.
+
+The [claude-code-statusline repository](https://github.com/vitamin33/claude-code-statusline) has the status line I use to see the hour running out, and the [cache rebuild page](/tools/claude-code-cache-rebuilds) counts rebuilds in a session log in the browser. If rebuilds turn out to be a large share of an API bill, an [LLM cost teardown](/llm-cost-teardown) is where I would look at it with you.
+
+Official reference: [Prompt caching, what invalidates the cache](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#what-invalidates-the-cache).
+
+## FAQ
+
+**How long does Claude Code keep the prompt cache?** In my logs the main conversation always wrote with the one-hour lifetime, and subagents almost always wrote with the five-minute lifetime. Each read refreshes the entry, so the time counts from the last request.
+
+**Does switching models in Claude Code reset the cache?** In my logs, yes. All 27 model changes inside a conversation were followed by a rebuild, with an average of 235k tokens written.
+
+**Does compaction cause a cache rebuild?** Usually, and a small one. 125 of 159 compactions were followed by a write of 50,000 tokens or more. The average was 66k tokens.
+
+**Does changing the effort level reset the cache?** Not in my logs. 0 of 17 effort changes were followed by a rebuild. The docs say it can, so check your own version.
+
+**Why do subagents rebuild the cache after short pauses?** Their cache entries used the five-minute lifetime in my logs. A subagent that waits longer than that writes its context again.
+
+The check for your own system this week: find one request that came right after you changed the model. Read how many tokens it wrote to the cache.

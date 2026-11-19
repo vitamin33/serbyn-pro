@@ -1,0 +1,139 @@
+---
+title: '24% of my Claude Code spend was prompt-cache rebuilds'
+slug: claude-code-prompt-cache-rebuild-cost
+description: 'I counted 68,700 of my own Claude Code requests. 1,119 prompt-cache rebuilds cost 24% of spend at list price. What causes them, and what a second run showed.'
+date: '2026-11-19'
+keywords:
+  - claude code prompt cache
+  - claude code cost
+  - claude code cache rebuild
+  - claude code token usage
+  - prompt caching cost
+category: engineering
+author: Vitalii Serbyn
+featured: false
+draft: true
+---
+
+Over 53 days and 68,700 requests, 1,119 prompt-cache rebuilds cost $4,612 at list price. That was 24% of everything my Claude Code sessions would have cost on the API. I ran the count again this month on 104,756 requests and the share was 20.5%. One habit explains most of it both times.
+
+## The short version
+
+**What a rebuild is:** a request that has to write a big part of the conversation into the cache again, because the cached copy is gone. I count a request as a rebuild when it writes 50,000 tokens or more.
+
+**How often:** 1.63% of requests in the first study and 1.62% in the second. The cache hit ratio was 97.5% and then 98.3%.
+
+**What it costs:** 24% of spend in August and September, 20.5% in the last 30 days, both at list price.
+
+**The main cause:** coming back to a big session after more than an hour. In the second run this was 69% of rebuild dollars.
+
+**What I got wrong the first time:** I blamed model switches for 350 rebuilds. Most of those were subagents starting up.
+
+## Why I counted
+
+I run Claude Code most of the day, in sessions that live for days and grow past 600k tokens. Every status line I had seen shows a cache hit ratio. Mine said 97.5%, which looks like nothing to fix.
+
+But the bill does not follow the ratio. A token read from the cache costs a small part of the normal price. A token written into the cache costs more than the normal price. So a few requests that write a lot can cost more than thousands that read.
+
+I am on a subscription, so none of these dollars were billed to me. They are what the same traffic costs on the API at public prices.
+
+## How I counted
+
+Claude Code keeps every session as a JSONL file under `~/.claude/projects/`. Each reply from the model has a usage block with four numbers: new input tokens, tokens written to the cache, tokens read from the cache, and output tokens. I took one record per request and priced it with the public rates.
+
+A normal turn writes a few thousand tokens, which is the new message and the reply before it. A write of 50,000 tokens or more means the old part of the conversation was written again. That is my definition of a rebuild. The threshold is a judgment. In the first study, raising it to 100,000 dropped a third of the events and 6% of the dollars.
+
+The first study covers 2026-08-01 to 2026-09-23. The script and the full write-up are in the [claude-code-statusline repository](https://github.com/vitamin33/claude-code-statusline), in `analyze_cache.py` and `docs/cache-economics.md`. The second run covers 2026-10-20 to 2026-11-18 and uses a changed copy of the script that is not in the repository yet. It has the November prices, and it counts the main conversation and each subagent as separate threads.
+
+## What the first study showed
+
+The total at list price was $19,292. Cache writes were $6,115 of that. Most writes are small and cannot be avoided, because every new message is written once. The part that can be avoided is the 1,119 rebuilds, which cost $4,612.
+
+Size decides the price. A third of the rebuilds were under 100k tokens and cost $207 together. The 484 rebuilds of 300k tokens or more cost $3,874. More than half of all my requests ran above 200k tokens, so most of my work happens where a rebuild is expensive.
+
+The biggest cause was idle time. Claude Code keeps the main conversation in the cache for one hour after the last request. I left a session for more than an hour and then sent one more message 403 times. Those rebuilds cost $2,644, with an average of 487k tokens written each time.
+
+## What a rebuild costs next to a read
+
+On Opus 5.5 a cache read is $0.20 per million tokens. A cache write with the one-hour lifetime is $8 per million. So the same tokens cost 40 times more when they are written again.
+
+Take the average idle rebuild from my second run, 343k tokens. Read from the cache, that prefix costs about 7 cents. Written again, it costs $2.74. The message that caused it was often two words long.
+
+On Fable 5.2 the gap is wider. A read is $0.20 per million and a one-hour write is $16, which is 80 times.
+
+## The second run, two months later
+
+```
+2026-10-20 to 2026-11-18, 30 days, list prices of November 2026
+requests            104,756
+rebuilds              1,697
+total spend         $11,496
+rebuild spend        $2,362
+
+cause                         n        $
+idle over 1 hour            501    1,627
+session start or resume     259      292
+subagent start              619      132
+idle 5 min to 1 hour        129      107
+compaction                  125       81
+model switch                 21       69
+other                        43       54
+```
+
+Rebuilds were 20.5% of spend. The two periods use different models and different prices, so I do not read the move from 24% as an improvement. The number that can be compared is rebuilds per request, and it did not move.
+
+Idle time is still the main cause. 501 rebuilds after more than an hour away cost $1,627, which is 69% of rebuild dollars. On the main conversation, 486 of 502 requests sent after more than an hour were rebuilds.
+
+Subagents are the most common cause and a cheap one. A subagent has its own conversation and writes its context once. That happened 619 times and cost $132.
+
+## What I got wrong in the first write-up
+
+The first study said model switches caused 350 rebuilds and $1,114. That number is too high, and the reason is how I counted.
+
+For each rebuild, the first script looked at the request before it in the same session. A session holds the main conversation and its subagents together. When a subagent on another model started right after a main request, the script saw two different models in a row and called it a model switch.
+
+Counting each thread on its own gives a different picture. On the 45,124 requests that still exist from the first period, the old rule finds 212 model switches and the new rule finds 76. In the last 30 days the old rule finds 476 and the new rule finds 21.
+
+Model switches are still real. In the last 30 days I changed the model in the main conversation 27 times, and all 27 were followed by a rebuild. They are just a small line in the table.
+
+The 24% does not depend on this. It is a sum over all rebuilds, whatever caused them.
+
+## What I changed, and what it did
+
+After the first study I added warnings to my status line. It shows a countdown to the moment the cache expires. When the cache is cold, it shows the price of the next message in dollars. After a model switch above 300k tokens it shows what the switch will cost. On a 1M context it turns yellow at 300k tokens and red at 500k.
+
+Three days later the numbers were inside the daily noise, and the write-up said so. Two months later, rebuilds per request have not changed. I still come back to big sessions after an hour, about 17 times a day. The average idle rebuild went from 487k to 343k tokens. The two periods were counted with different rules, so I do not claim that as a result.
+
+A warning I can see did not change the habit. The part I find useful is the price on the screen. I now know that "ok continue" in an old session costs about $3 before any work starts.
+
+If you want the same count without installing anything, the [cache rebuild page](/tools/claude-code-cache-rebuilds) reads a session log in your browser. If the result is a large share, that is the kind of thing an [LLM cost teardown](/llm-cost-teardown) starts from.
+
+## What this does not show
+
+One user and one way of working: long sessions, big contexts, many subagents. Someone who clears the session every hour will get a different table.
+
+The dollars are list price. On a subscription they are a measure of load. I did not check how they map to the usage limits.
+
+Part of the first period's logs is gone, so the first study cannot be run again in full. Its numbers are the ones published in September. The check of the model-switch count uses the 45,124 requests that remain.
+
+The causes are a rule applied to timestamps and model names. The logs do not record why the cache missed. 43 rebuilds in the second run match no cause I can name.
+
+## What a team can do on Monday
+
+Run the count on one developer's machine. The script prints totals only and nothing leaves the laptop. Look at two numbers: the share of spend that went to rebuilds, and the size of the average idle rebuild.
+
+If the idle line is the big one, the fix is a habit. Before leaving a big session for lunch, decide if it will be continued. If it will not, start a new session after the break with a short note of where things stand. A new session writes a small context once.
+
+## FAQ
+
+**What is a prompt-cache rebuild in Claude Code?** It is a request that writes a large part of the conversation into the prompt cache again, because the cached copy expired or no longer matches. I count a request as a rebuild when it writes 50,000 tokens or more.
+
+**How much do rebuilds cost?** In my logs, 1,119 rebuilds over 53 days cost $4,612 at list price, which was 24% of all spend. In a second 30-day run, 1,697 rebuilds cost $2,362, which was 20.5%.
+
+**What causes most of the cost?** Coming back to a big session after more than an hour. Claude Code keeps the main conversation cached for one hour. In the second run, idle rebuilds were 501 of 1,697 events and 69% of rebuild dollars.
+
+**Is a 97% cache hit ratio good enough?** The ratio was 97.5% in the first study and 98.3% in the second, and rebuilds still cost a fifth to a quarter of spend. The ratio counts tokens. A written token costs 40 times more than a read token on Opus 5.5.
+
+The lesson I keep from this. The number on the dashboard was a ratio, and the ratio was fine. The cost sat in under 2% of requests, and I only saw it after pricing each request on its own. I also got one cause wrong in public, because I grouped subagents with the main conversation.
+
+The check for your own system this week: open one long session and find the first request after a break of more than an hour. Read how many tokens it wrote to the cache.

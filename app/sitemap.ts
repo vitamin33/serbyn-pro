@@ -77,6 +77,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
+      url: `${baseUrl}/tools/claude-code-cache-rebuilds`,
+      lastModified: siteUpdated,
+      changeFrequency: 'monthly' as const,
+      priority: 0.8,
+    },
+    {
       url: `${baseUrl}/resume`,
       lastModified: siteUpdated,
       changeFrequency: 'monthly' as const,

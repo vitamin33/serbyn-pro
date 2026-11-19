@@ -1,0 +1,249 @@
+/* Tools (/tools/*). Uses the tokens from theme.css and sits next to the ds-
+   classes; imported by the tool page itself, so it loads only there. */
+
+.ds-tool {
+  padding: 72px 0 120px;
+}
+.ds-tool-wrap {
+  max-width: calc(var(--wide) + 2 * var(--page-pad));
+}
+.ds-tool-head {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.ds-tool-head .ds-intro {
+  margin: 4px 0 0;
+}
+.ds-tool-sec {
+  margin-top: 64px;
+}
+.ds-tool-sec .ds-h2 {
+  margin: 8px 0 20px;
+  font-size: clamp(26px, 2.6vw, 34px);
+}
+.ds-tool-sec p {
+  max-width: var(--measure);
+}
+
+/* drop zone */
+.ds-tool-drop {
+  margin-top: 40px;
+  background: var(--surface);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition:
+    border-color var(--dur-quick) var(--ease-settle),
+    background var(--dur-quick) var(--ease-settle);
+}
+.ds-tool-drop[data-over='true'] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.ds-tool-drop p {
+  margin: 0;
+}
+.ds-tool-drop code,
+.ds-tool-sec code {
+  font: 400 0.9em var(--mono);
+  background: var(--chip);
+  border-radius: var(--radius-xs);
+  padding: 2px 6px;
+  overflow-wrap: anywhere;
+}
+.ds-tool-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+.ds-tool-file {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.ds-tool-status {
+  font: 400 12px/1.5 var(--mono);
+  color: var(--muted);
+  min-height: 18px;
+}
+.ds-tool-status[data-tone='claim'] {
+  color: var(--claim-text);
+}
+.ds-tool-progress {
+  height: 4px;
+  background: var(--chip);
+  border-radius: var(--radius-bar);
+  overflow: hidden;
+}
+.ds-tool-progress > span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transition: width var(--dur-quick) linear;
+}
+
+/* result */
+.ds-tool-result {
+  margin-top: 48px;
+}
+.ds-tool-headline {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  gap: 32px;
+  align-items: end;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--fg);
+}
+.ds-tool-share {
+  font: 800 clamp(72px, 11vw, 132px) / 0.9 var(--display);
+  letter-spacing: -0.05em;
+  color: var(--claim-text);
+  margin: 8px 0 0;
+}
+.ds-tool-headline .ds-verdict {
+  max-width: 30ch;
+}
+.ds-tool-bar {
+  display: flex;
+  height: 10px;
+  margin-top: 18px;
+  border-radius: var(--radius-bar);
+  overflow: hidden;
+  background: var(--baseline);
+}
+.ds-tool-bar > span {
+  display: block;
+  background: var(--claim);
+}
+.ds-tool-tiles {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 16px;
+}
+.ds-tool-tile {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px;
+}
+.ds-tool-num {
+  font: 800 30px/1 var(--display);
+  letter-spacing: -0.03em;
+  margin: 0 0 8px;
+}
+.ds-tool-num[data-tone='claim'] {
+  color: var(--claim-text);
+}
+.ds-tool-cap {
+  font: 400 12px/1.5 var(--mono);
+  color: var(--muted);
+  margin: 0;
+}
+
+/* causes */
+.ds-tool-causes {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.ds-tool-cause {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) 150px;
+  gap: 8px 20px;
+  align-items: center;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+.ds-tool-cause p {
+  margin: 0;
+}
+.ds-tool-track {
+  height: 10px;
+  background: var(--chip);
+  border-radius: var(--radius-bar);
+  overflow: hidden;
+}
+.ds-tool-track > span {
+  display: block;
+  height: 100%;
+  background: var(--claim);
+  border-radius: var(--radius-bar);
+}
+.ds-tool-cause-num {
+  font: 400 12px/1.5 var(--mono);
+  color: var(--muted);
+  text-align: right;
+}
+
+/* fixes */
+.ds-tool-fixes {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.ds-tool-fix {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  gap: 8px 24px;
+  padding: 16px 0;
+  border-top: 1px solid var(--line);
+}
+.ds-tool-fix p {
+  margin: 0;
+}
+.ds-tool-fix[data-top='true'] {
+  border-top-color: var(--accent);
+}
+.ds-tool-fix-tag {
+  font: 500 11px/1.6 var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.ds-tool-fix[data-top='true'] .ds-tool-fix-tag {
+  color: var(--accent);
+}
+.ds-tool-warn {
+  font: 400 12px/1.5 var(--mono);
+  color: var(--interim);
+  background: var(--interim-soft);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  margin: 20px 0 0;
+}
+.ds-tool-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+  align-items: center;
+}
+
+@media (max-width: 760px) {
+  .ds-tool-headline {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .ds-tool-cause {
+    grid-template-columns: 1fr;
+  }
+  .ds-tool-cause-num {
+    text-align: left;
+  }
+  .ds-tool-fix {
+    grid-template-columns: 1fr;
+  }
+  .ds-tool-drop {
+    padding: 20px;
+  }
+}
