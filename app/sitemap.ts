@@ -9,7 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // timestamp every build is meaningless freshness noise (F24). Bump when static
   // content materially changes (mirrors lib/facts UPDATED). Posts use their own
   // dates below.
-  const siteUpdated = '2026-11-19';
+  const siteUpdated = '2026-11-20';
 
   const caseStudies = getAllCaseStudies();
   const caseStudyRoutes = caseStudies.map(study => ({

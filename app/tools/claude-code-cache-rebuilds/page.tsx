@@ -87,7 +87,16 @@ export default function CacheRebuildsPage() {
             </TextLink>
             , where 1,119 rebuilds across 68,700 requests came to 24% of spend.
             The repo has the same analysis as a Python script and a status line
-            that shows the cache countdown while you work.
+            that shows the cache countdown while you work. The numbers are
+            written up in{' '}
+            <TextLink href="/blog/claude-code-prompt-cache-rebuild-cost">
+              24% of my Claude Code spend was prompt-cache rebuilds
+            </TextLink>{' '}
+            and{' '}
+            <TextLink href="/blog/claude-code-prompt-cache-rebuild-triggers">
+              what triggers a rebuild
+            </TextLink>
+            .
           </p>
         </section>
 

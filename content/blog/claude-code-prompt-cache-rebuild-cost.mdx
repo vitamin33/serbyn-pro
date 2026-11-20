@@ -2,7 +2,7 @@
 title: '24% of my Claude Code spend was prompt-cache rebuilds'
 slug: claude-code-prompt-cache-rebuild-cost
 description: 'I counted 68,700 of my own Claude Code requests. 1,119 prompt-cache rebuilds cost 24% of spend at list price. What causes them, and what a second run showed.'
-date: '2026-11-19'
+date: '2026-11-20'
 keywords:
   - claude code prompt cache
   - claude code cost
@@ -12,7 +12,7 @@ keywords:
 category: engineering
 author: Vitalii Serbyn
 featured: false
-draft: true
+draft: false
 ---
 
 Over 53 days and 68,700 requests, 1,119 prompt-cache rebuilds cost $4,612 at list price. That was 24% of everything my Claude Code sessions would have cost on the API. I ran the count again this month on 104,756 requests and the share was 20.5%. One habit explains most of it both times.
@@ -43,7 +43,7 @@ Claude Code keeps every session as a JSONL file under `~/.claude/projects/`. Eac
 
 A normal turn writes a few thousand tokens, which is the new message and the reply before it. A write of 50,000 tokens or more means the old part of the conversation was written again. That is my definition of a rebuild. The threshold is a judgment. In the first study, raising it to 100,000 dropped a third of the events and 6% of the dollars.
 
-The first study covers 2026-08-01 to 2026-09-23. The script and the full write-up are in the [claude-code-statusline repository](https://github.com/vitamin33/claude-code-statusline), in `analyze_cache.py` and `docs/cache-economics.md`. The second run covers 2026-10-20 to 2026-11-18 and uses a changed copy of the script that is not in the repository yet. It has the November prices, and it counts the main conversation and each subagent as separate threads.
+The first study covers 2026-08-01 to 2026-09-23. The script and the full write-up are in the [claude-code-statusline repository](https://github.com/vitamin33/claude-code-statusline), in `analyze_cache.py` and `docs/cache-economics.md`. The second run covers 2026-10-20 to 2026-11-18 and uses a changed copy of the script, `analyze_cache_threads.py`, in the same repository. It has the November prices, and it counts the main conversation and each subagent as separate threads.
 
 ## What the first study showed
 
